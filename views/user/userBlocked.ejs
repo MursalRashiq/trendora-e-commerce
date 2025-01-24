@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Blocked</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .warning-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 30%, #ff000015 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, #ff000015 0%, transparent 50%);
+            animation: backgroundPulse 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes backgroundPulse {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .blocked-container {
+            background: rgba(25, 25, 25, 0.95);
+            padding: 3.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            box-shadow: 
+                0 0 30px rgba(0, 0, 0, 0.3),
+                0 0 60px rgba(255, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            backdrop-filter: blur(10px);
+            animation: containerAppear 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes containerAppear {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .danger-symbol {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 2.5rem;
+            position: relative;
+            border: 3px solid #ff3333;
+            border-radius: 50%;
+            animation: symbolRotate 20s linear infinite;
+        }
+
+        .danger-symbol::before {
+            content: '!';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 45px;
+            font-weight: 700;
+            color: #ff3333;
+            text-shadow: 0 0 15px rgba(255, 51, 51, 0.5);
+        }
+
+        @keyframes symbolRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        h1 {
+            color: #ff3333;
+            margin-bottom: 1.5rem;
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(255, 51, 51, 0.3);
+            animation: titlePulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titlePulse {
+            0% { opacity: 0.9; }
+            100% { opacity: 1; }
+        }
+
+        p {
+            color: #ffffff;
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .back-button, .support-button {
+            background: linear-gradient(135deg, #ff3333 0%, #ff0000 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .support-button {
+            background: transparent;
+            border: 2px solid #ff3333;
+            color: #ff3333;
+        }
+
+        .back-button:hover, .support-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
+        }
+
+        .back-button:active, .support-button:active {
+            transform: translateY(0);
+        }
+
+        .support-button:hover {
+            background: rgba(255, 51, 51, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            .blocked-container {
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="warning-background"></div>
+    <div class="blocked-container">
+        <div class="danger-symbol"></div>
+        <h1>Access Denied</h1>
+        <p>Your account has been temporarily blocked due to suspicious activity. This is a security measure to protect your information. Please contact our support team for immediate assistance.</p>
+        <div class="button-container">
+            <button onclick="window.location.href='mailto:support@example.com'" class="support-button">Contact Support</button>
+            <a href="/login" class="back-button">Return to Login</a>
+        </div>
+    </div>
+</body>
+</html>

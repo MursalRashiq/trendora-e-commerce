@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Password</title>
+    <!-- Your CSS styles -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .content-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 80px;
+            padding-bottom: 80px;
+        }
+
+        .card-login {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: #ffffff;
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        .card-title {
+            font-size: 1.75em;
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 1em;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            width: 100%;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .text-danger {
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
+
+        .text-center a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .text-center a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <section class="content-main mt-80 mb-80">
+       <div class="card mx-auto card-login" style="max-width: 400px;">
+           <div class="card-body">
+               <h4 class="card-title mb-4 text-center">Change Name</h4>
+               <form method="post" action="/change-name" onsubmit="return validateForm()">
+                   <div class="mb-3 position-relative">
+                       <input class="form-control" name="newPass1" id="newPass1" placeholder="Enter new Name" type="name" required>
+                       <div id="newPass1Error" class="text-danger position-absolute"></div>
+                   </div>
+                   <div class="mb-3 position-relative">
+                       <input class="form-control" name="newPass2" id="newPass2" placeholder="Re-enter new Name" type="name" required>
+                       <div id="newPass2Error" class="text-danger position-absolute"></div>
+                   </div>
+                   <div class="mb-4">
+                       <button type="submit" class="btn btn-primary w-100">Change Name</button>
+                   </div>
+                   <% if (locals.message && message.length > 0) { %>
+                   <div id="alertMessage" class="alert alert-danger text-center">
+                       <%= message %>
+                   </div>
+                   <% } %>
+               </form>
+               <p class="text-center mt-4">Don't have an account? <a href="/signup">Sign up</a></p>
+           </div>
+       </div>
+    </section>
+
+    <!-- Include SweetAlert JS -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        function validateForm() {
+            const newPass1 = document.getElementById('newPass1').value;
+            const newPass2 = document.getElementById('newPass2').value;
+            const newPass1Error = document.getElementById('newPass1Error');
+            const newPass2Error = document.getElementById('newPass2Error');
+
+            let valid = true;
+
+            if (newPass1.length < 8) {
+                newPass1Error.textContent = 'Password must be at least 8 characters long';
+                valid = false;
+            } else {
+                newPass1Error.textContent = '';
+            }
+
+            if (newPass1 !== newPass2) {
+                newPass2Error.textContent = 'Passwords do not match';
+                valid = false;
+            } else {
+                newPass2Error.textContent = '';
+            }
+
+            if (!valid) {
+                Swal({
+                    title: 'Error!',
+                    text: 'Please correct the errors before submitting.',
+                    icon: 'error',
+                    button: 'OK',
+                });
+            }
+
+            return valid;
+        }
+    </script>
+</body>
+</html>
+

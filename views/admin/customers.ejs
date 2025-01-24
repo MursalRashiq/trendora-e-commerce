@@ -1,0 +1,214 @@
+<%- include("../../views/partials/admin/header")%>
+<style>
+   body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+}
+
+.content-header {
+    padding-top: 120px;
+    padding-left: 15px;
+}
+
+.content-title {
+    font-size: 24px;
+    color: #333333;
+    margin-bottom: 20px;
+}
+
+.content {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table th,
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-top: 1px solid #dee2e6;
+    text-align: center;
+}
+
+.table thead th {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.btn {
+    padding: 8px 12px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn a {
+    color: white;
+    text-decoration: none;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}
+
+.btn-success {
+    background-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination .page-item {
+    margin: 0 5px;
+}
+
+.pagination .page-item .page-link {
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #004494;
+}
+
+@media (max-width: 768px) {
+    .content-header {
+        padding-top: 60px;
+        padding-left: 10px;
+    }
+
+    .content-title {
+        font-size: 20px;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.5rem;
+    }
+
+    .pagination .page-item .page-link {
+        padding: 5px 10px;
+    }
+}
+
+        
+</style>
+
+        <div class="content-header">
+            <h2 class="content-title" style="padding-left: 15px;">User Management</h2>
+        </div>
+
+        <div class="content">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col"><b>Name</b></th>
+                        <th scope="col"><b>Email</b></th>
+                        <th scope="col"><b>Phone No</b></th>
+                        <th scope="col"><b>Action</b></th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <% for(let i = 0; i < data.length; i++) { %>
+                        <tr>
+                            <td><%= data[i].name %></td>
+                            <td><%= data[i].email %></td>
+                            <td><%= data[i].phone %></td>
+                            <td>
+                                <% if (data[i].isBlocked === false) { %>
+                                <button class="btn btn-danger btn-block">
+                                    <a href="/admin/blockCustomer?id=<%= data[i].id %>" class="text-white" style="text-decoration: none;" id="blockUser" onclick="blockUser()">Block</a>
+                                </button>
+                                <% } else { %>
+                                <button class="btn btn-success btn-unblock">
+                                    <a href="/admin/unblockCustomer?id=<%= data[i].id %>" class="text-white" style="text-decoration: none;" onclick="unBlockUser()">Unblock</a>
+                                </button>
+                                <% } %>
+                            </td>
+                        </tr>
+                        <% } %>
+                     <!-- Repeat rows as necessary -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="container mt-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-20">
+                    <%for(let i = 1; i <= totalPages; i++){%>
+                        <li class="page-item <%=(i===currentPage)?'active' : '' %>">
+                            <a class="page-link" href="?page=<%=i%>"><%=i%></a>
+                        </li>
+                        <%}%>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</body>
+
+<script>
+
+function blockUser() {
+    const confirmAction = confirm("Are you sure you want to block this user?");
+    if (confirmAction) {
+        // Perform block action (e.g., redirect or call a function)
+        window.location.href = '/admin/blockCustomer?id=' + customerId; // Assuming customerId is available
+    }
+}
+
+
+function unBlockUser() {
+    const confirmAction = confirm("You want to unblock this user!");
+    if (confirmAction) {
+        // Perform block action (e.g., redirect or call a function)
+        window.location.href = '/admin/blockCustomer?id=' + customerId; // Assuming customerId is available
+    }
+}
+</script>
+
+<%- include("../../views/partials/admin/footer")%>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- <link rel="stylesheet" href="/css/bootstrap.min.css" /> -->
+  
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+      font-family: 'Inter', sans-serif;
+      color: #333;
+    }
+
+    .container {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-container {
+      background: rgb(220, 224, 161);
+      width: 100%;
+      max-width: 400px;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .login-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #333;
+      margin: 0;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+    }
+
+    .form-control {
+      width: 90%;
+      height: 48px;
+      padding: 0 16px;
+      font-size: 15px;
+      border: 2px solid #e1e1e1;
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    .error-message {
+      color: #dc3545;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      height: 48px;
+      background: #007bff;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #0056b3;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      padding: 0;
+    }
+   
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="login-container">
+      <div class="login-header">
+        <h1>Admin Login</h1>
+      </div>
+      <form id="adminLoginForm" method="post" action="/admin/login">
+        <div class="form-group" >
+          <label for="adminEmail" >Email Address</label>
+          <input
+
+            type="email"
+            class="form-control"
+            id="adminEmail"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+          <div id="emailError" class="error-message"></div>
+        </div>
+        <div class="form-group">
+          <label for="adminPassword">Password</label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              class="form-control"
+              id="adminPassword"
+              name="password"
+              placeholder="Enter your password"
+              required
+            />
+            <button type="button" class="toggle-password">👁️</button>
+          </div>
+          <div id="passwordError" class="error-message"></div>
+        </div>
+
+        <% if (messages.error) { %>
+          <div class="alert alert-danger" 
+          style="margin-bottom: 10px;
+          color: #dc3545;">
+            <%= messages.error %>
+          </div>
+        <% } %>
+        <!-- <div><p><%= locals.message%></p></div> -->
+        <button type="submit" class="btn-primary">Log In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- <script src="/js/jquery.min.js"></script>
+  <script src="/js/bootstrap.bundle.min.js"></script> -->
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const form = document.getElementById("adminLoginForm");
+      const emailField = document.getElementById("adminEmail");
+      const passwordField = document.getElementById("adminPassword");
+      const emailError = document.getElementById("emailError");
+      const passwordError = document.getElementById("passwordError");
+      const togglePassword = document.querySelector(".toggle-password");
+
+      togglePassword.addEventListener("click", function() {
+        const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+        passwordField.setAttribute("type", type);
+        this.textContent = type === "password" ? "👁️" : "🔒";
+      });
+
+      function validateEmail() {
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailPattern.test(emailField.value);
+      }
+
+      form.addEventListener("submit", function(event) {
+        let isValid = true;
+
+        if (!validateEmail()) {
+          emailError.textContent = "Please enter a valid email address";
+          isValid = false;
+        } else {
+          emailError.textContent = "";
+        }
+
+        if (passwordField.value.length < 8) {
+          passwordError.textContent = "Password must be at least 8 characters";
+          isValid = false;
+        } else {
+          passwordError.textContent = "";
+        }
+
+        if (!isValid) {
+          event.preventDefault();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,433 @@
+<%- include("../../views/partials/user/header") %>
+<head>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+
+
+<style>
+/* Main Layout Styles */
+.main {
+    padding: 20px 0;
+    background: #f7f8fa;
+}
+
+.breadcrumb-wrap {
+    padding: 15px 0;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.breadcrumb span::before {
+    content: '/';
+    color: #888;
+}
+
+/* Product Gallery Styles */
+.detail-gallery {
+    position: relative;
+    width: 100%;
+}
+
+.product-image-slider {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.product-image-slider figure {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 10px;
+    cursor: zoom-in;
+}
+
+.product-image-slider img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+/* Thumbnail Slider */
+.slider-nav-thumbnails {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.slider-nav-thumbnails::-webkit-scrollbar {
+    display: none;
+}
+
+.slider-nav-thumbnails div {
+    flex: 0 0 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.slider-nav-thumbnails div.slick-current {
+    border-color: #3BB77E;
+}
+
+.slider-nav-thumbnails img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Product Info Styles */
+.detail-info {
+    padding: 20px;
+}
+
+.title-detail {
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: #253D4E;
+}
+
+/* Rating Stars */
+.product-rate-cover {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.product-rate {
+    position: relative;
+    height: 20px;
+    width: 100px;
+}
+
+.product-rating {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='%23ffc107'%3E%3Cpath d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E") repeat-x;
+    background-size: 20px;
+}
+
+.product-rate::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='%23e4e5e9'%3E%3Cpath d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E") repeat-x;
+    background-size: 20px;
+}
+
+/* Price Styles */
+.product-price-cover {
+    margin: 25px 0;
+}
+
+.product-price {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.text-brand {
+    color: #3BB77E;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.old-price {
+    color: #888;
+    text-decoration: line-through;
+}
+
+.save-price {
+    background: #ffeae5;
+    color: #fd474a;
+    padding: 4px 12px;
+    border-radius: 4px;
+}
+
+/* Quantity and Add to Cart */
+.detail-extralink {
+    display: flex;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.detail-qty {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    padding: 5px 15px;
+}
+
+.qty-val {
+    width: 40px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.button-add-to-cart {
+    background: #3BB77E;
+    color: white;
+    border: none;
+    padding: 12px 35px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.button-add-to-cart:hover {
+    background: #2f9d68;
+}
+
+/* Product Meta */
+.product-meta {
+    list-style: none;
+    padding: 0;
+    margin-top: 30px;
+    border-top: 1px solid #e5e5e5;
+    padding-top: 20px;
+}
+
+.product-meta li {
+    margin-bottom: 10px;
+    color: #7E7E7E;
+}
+
+/* Image Zoom Effect */
+.zoomed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.zoomed img {
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+}
+
+
+</style>
+<main class="main">
+ <div class="page-header breadcrumb-wrap">
+     <div class="container">
+         <div class="breadcrumb">
+             <a href="/" rel="nofollow">Home</a>
+             <span><a href="/shop" rel="nofollow"> Fashion</a></span>
+             <span></span>product detail page
+         </div>
+     </div>
+ </div>
+ <section class="mt-50 mb-50">
+     <div class="container">
+         <div class="row">
+             <div class="col-lg-9">
+                 <div class="product-detail accordion-detail">
+                     <div class="row mb-50">
+                         <div class="col-md-6 col-sm-12 col-xs-12">
+                             <div class="detail-gallery">
+                                 <div class="zoom-icon"><i class="bi bi-search"></i></div>
+                                 <div class="product-image-slider">
+                                     <figure class="border-radius-10">
+                                         <img src="/uploads/re-image/<%=product.productImage[0]%>" alt="produt Image">
+                                     </figure>
+                                     <figure class="border-radius-10">
+                                       <img src="/uploads/re-image/<%=product.productImage[1]%>" alt="">
+                                   </figure>
+                                   <figure class="border-radius-10">
+                                       <img src="/uploads/re-image/<%=product.productImage[2]%>" alt="">
+                                   </figure>
+                                   <figure class="border-radius-10">
+                                       <img src="/uploads/re-image/<%=product.productImage[3]%>" alt="">
+                                   </figure>
+                                   <figure class="border-radius-10">
+                                       <img src="/uploads/re-image/<%=product.productImage[4]%>" alt="">
+                                   </figure>
+                                 </div>
+                                 <div  class="slider-nav-thumbnails pl-15 pr-15">
+                                        <%for(let i = 0; i < product.productImage.length; i++){%>
+                                       <div>
+                                           <img style="object-fit:contain ;" src="/uploads/re-image/<%=product.productImage[i]%>" alt="prouct-Image">
+                                       </div>
+                                       <%}%>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="col-md-6 col-sm-12 col-xs-12">
+                             <div class="detail-info">
+                                 <h2 class="title-detail"><%=product.productName%></h2>
+                                 <div class="product-detail-rating">
+                                     <div class="pro-details-brand">
+                                         <!-- <span> Brands: <a href="#"><%=brand%></a></span> -->
+                                         <p>Brands: <%= brand %></p>
+                                     </div>
+                                     <div class="product-rate-cover text-end">
+                                         <div class="product-rate d-inline-block">
+                                             <div class="product-rating" style="width:90%">
+                                             </div>
+                                         </div>
+                                         <span class="font-small ml-5 text-muted"> (25 reviews)</span>
+                                     </div>
+                                 </div>
+                                 <div class="clearfix product-price-cover">
+                                     <div class="product-price primary-color float-left">
+                                         <ins><span class="text-brand"><%=product.salePrice%></span></ins>
+                                         <ins><span class="old-price font-md ml-15"><%=product.regularPrice%></span></ins>
+                                         <span class="save-price  font-md color3 ml-15">
+                                            <%if(!totalOffer){%>
+                                                    No Offers
+
+                                            <%}else{%>
+                                                    <%=totalOffer%>% Offer
+                                                <%}%>
+                                       </span>
+                                     </div>
+                                 </div>
+                                 <div class="bt-1 border-color-1 mt-15 mb-15"></div>
+                                 <div class="short-desc mb-30">
+                                     <p><%=product.description%></p>
+                                 </div>
+                                 <div class="product_sort_info font-xs mb-30">
+                                     <ul>
+                                         <li class="mb-10"><i class="fi-rs-crown mr-5"></i> 1 Year Brand Warranty</li>
+                                         <li class="mb-10"><i class="fi-rs-refresh mr-5"></i> 30 Day Return Policy</li>
+                                         <li><i class="fi-rs-credit-card mr-5"></i> Cash on Delivery available</li>
+                                     </ul>
+                                 </div>
+                               
+                                 <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                 <div class="detail-extralink">
+                                     <div class="detail-qty border radius">
+                                         <a href="#" class="qty-down" onclick="" ><i class="fi-rs-angle-small-down"></i></a>
+                                         <span class="qty-val" id="quantity">1</span>
+                                         <a href="#" class="qty-up" onclick=""><i class="fi-rs-angle-small-up"></i></a>
+                                     </div>
+                                     <div class="product-extra-link2">
+                                      
+                                         <button type="submit" class="button button-add-to-cart" onclick="">Add to cart</button>
+                                       
+                                         <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#"><i class="fi-rs-heart"></i></a>
+                                     </div>
+                                 </div>
+                                 <ul class="product-meta font-xs color-grey mt-50">
+                                     <li class="mb-5">Stock Code: <a href="#" style="color: #05a03c;">FWM15VKT</a></li>
+                                     <li class="mb-5">Tags: <a href="#" rel="tag"></a> <a href="#" rel="tag" style="color: #05a03c;"><%=category.name%></a> <a href="#" rel="tag"></a> </li>
+                                     <li>Availability:<span class="in-stock text-success ml-5"><%=quantity%> Items in Stock</span></li>
+                                 </ul>
+                             </div>
+                         </div>
+                     </div>
+                    
+                 </div>
+             </div>
+         </div>
+     </div>
+ </section>
+ <script>
+
+
+  // Initialize Slick Slider
+  $('.product-image-slider').slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: false,
+      fade: true,
+      asNavFor: '.slider-nav-thumbnails'
+  });
+  
+  $('.slider-nav-thumbnails').slick({
+      slidesToShow: 5,
+      slidesToScroll: 1,
+      asNavFor: '.product-image-slider',
+      dots: false,
+      focusOnSelect: true,
+      prevArrow: '<button type="button" class="slick-prev"><i class="fi-rs-angle-left"></i></button>',
+      nextArrow: '<button type="button" class="slick-next"><i class="fi-rs-angle-right"></i></button>',
+      responsive: [
+          {
+              breakpoint: 768,
+              settings: {
+                  slidesToShow: 4
+              }
+          },
+          {
+              breakpoint: 480,
+              settings: {
+                  slidesToShow: 3
+              }
+          }
+      ]
+  });
+  
+  // Image Zoom Functionality
+  const productImages = document.querySelectorAll('.product-image-slider figure img');
+  productImages.forEach(img => {
+      img.addEventListener('click', function() {
+          const zoomContainer = document.createElement('div');
+          zoomContainer.className = 'zoomed';
+          
+          const zoomedImg = document.createElement('img');
+          zoomedImg.src = this.src;
+          
+          zoomContainer.appendChild(zoomedImg);
+          document.body.appendChild(zoomContainer);
+          
+          zoomContainer.addEventListener('click', function() {
+              this.remove();
+          });
+      });
+  });
+  
+  // Quantity Controls
+  const qtyDown = document.querySelector('.qty-down');
+  const qtyUp = document.querySelector('.qty-up');
+  const qtyVal = document.querySelector('.qty-val');
+  
+  qtyDown.addEventListener('click', function(e) {
+      e.preventDefault();
+      const currentVal = parseInt(qtyVal.textContent);
+      if(currentVal > 1) {
+          qtyVal.textContent = currentVal - 1;
+      }
+  });
+  
+  qtyUp.addEventListener('click', function(e) {
+      e.preventDefault();
+      const currentVal = parseInt(qtyVal.textContent);
+      qtyVal.textContent = currentVal + 1;
+  });
+  
+  
+  </script>
+</main>
+
+<%- include("../../views/partials/user/footer") %>
+
+
+

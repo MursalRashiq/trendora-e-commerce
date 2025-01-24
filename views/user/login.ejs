@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zxx">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Male_Fashion Template" />
+    <meta name="keywords" content="Male_Fashion, unica, creative, html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Male-Fashion</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css" />
+    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css" />
+    <link rel="stylesheet" href="css/nice-select.css" type="text/css" />
+    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+     /* General Styles */
+     
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ef 100%);
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 1000px;
+    overflow: hidden;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 40px;
+    padding: 0;
+}
+
+.login-section {
+    display: flex;
+    width: 100%;
+}
+
+.login-form {
+    flex: 1;
+    padding: 40px;
+    max-width: 450px;
+}
+
+.login-image {
+    flex: 1;
+    position: relative;
+    background: #f8f9fa;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.login-image:hover img {
+    transform: scale(1.05);
+}
+
+.card-title {
+    color: #2c3e50;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #4a5568;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    outline: none;
+}
+
+.forgot-password-link {
+    color: #4a5568;
+    text-decoration: none;
+    font-size: 14px;
+    margin-top: 8px;
+    display: inline-block;
+    transition: color 0.3s ease;
+}
+
+.forgot-password-link:hover {
+    color: #2b6cb0;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #4299e1;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2b6cb0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.2);
+}
+
+.btn-outline-danger {
+    border: 2px solid #e53e3e;
+    background: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-outline-danger:hover {
+    background: #fff5f5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.1);
+}
+
+.social-btns {
+    display: flex;
+    gap: 10px;
+}
+
+.sign-up-link {
+    color: #4a5568;
+    text-decoration: none;
+    font-weight: 500;
+    position: absolute;
+    bottom: 30px;
+    transition: color 0.3s ease;
+    margin-left: 120px;
+    
+    
+}
+
+.sign-up-link:hover {
+    color: #2b6cb0;
+}
+
+.error-message {
+    color: #e53e3e;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.alert {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.alert-danger {
+    background: #fff5f5;
+    border: 1px solid #feb2b2;
+    color: #c53030;
+}
+
+@media (max-width: 768px) {
+    .card-body {
+        flex-direction: column;
+    }
+
+    .login-form {
+        padding: 30px;
+        max-width: 100%;
+    }
+
+    .login-image {
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+
+    .login-form {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 24px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+    }
+}
+
+.d-flex {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #4299e1;
+    color: white;
+    min-width: 120px;
+}
+
+.btn-primary:hover {
+    background: #2b6cb0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.2);
+}
+
+.social-btns {
+    display: flex;
+    align-items: center;
+}
+
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    padding: 11px;
+    height: 45px;
+    width: 45px;
+    transition: all 0.3s ease;
+}
+
+.btn-google:hover {
+    background: #f8f9fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.btn-google img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* Ensure proper alignment in the form */
+#loginform {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Mobile responsiveness for buttons */
+@media (max-width: 480px) {
+    .form-actions {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+
+    .btn-primary {
+        width: 100%;
+    }
+
+    .social-btns {
+        justify-content: center;
+    }
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="card-body login-section">
+          <div class="login-form mt-5">
+            <h3 class="card-title text-center">Log In</h3>
+            <form id="loginform" method="post" action="/login">
+              <div class="form-group mt-3px">
+                <label for="email">Email address</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  id="email"
+                  placeholder="Enter email"
+                />
+                <div id="error1" class="error-message"></div>
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  name="password"
+                  id="password"
+                  placeholder="Password"
+                />
+               
+                <div id="error2" class="error-message"></div>
+
+                <div class="from-group d-flex justify-content-end">
+                  <a href="/forgot-password" class="forgot-password-link ms-auto">Forgot Password</a>
+                </div>
+              </div>
+              <!-- <%if(locals.message && message.length>0){%>
+                <div class="alter alert-danger text-center">
+                    <%=message%>
+                </div>
+              <%}%> -->
+              <%if(locals.message && message.length>0){%>
+              <div class="alert alert-danger text-center">
+                <%=message%>
+              </div>
+              <%}%>
+              <div class="d-flex justify-content-between align-items-center">
+                <button type="submit" class="btn btn-primary">Log In</button>
+                <div class="social-btns">
+                  <a href="/auth/google" class="btn btn-outline-danger">
+                    <img
+                      src="/assets/img/googlesignup.png"
+                      alt="Google Logo"
+                      style="width: 24px; height: 24px"
+
+                    />
+                  </a>
+
+                </div>
+              </div>
+              <div class="text-center mt-2">
+                <a href="/signup" class="sign-up-link" >Not registered? Sign up</a>
+              </div>
+
+            </form>
+          </div>
+          <div class="login-image">
+            <a href="/">
+              <img src="/assets/img/man-wearing-coat-posing.jpg" alt="Shopping Site" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const emailid = document.getElementById("email");
+      const passid = document.getElementById("password");
+      const error1 = document.getElementById("error1");
+      const error2 = document.getElementById("error2");
+      const loginform = document.getElementById("loginform");
+
+      function emailValidateChecking(e) {
+        const emailval = emailid.value;
+        const emailpattern =
+          /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$/;
+
+        if (!emailpattern.test(emailval)) {
+          error1.style.display = "block";
+          error1.innerHTML = "Invalid Format";
+        } else {
+          error1.style.display = "none";
+          error1.innerHTML = "";
+        }
+      }
+
+      function passValidateChecking(e) {
+        const passval = passid.value;
+        if (passval.length < 8) {
+          error2.style.display = "block";
+          error2.innerHTML = "Should contain at least 8 characters";
+        } else {
+          error2.style.display = "none";
+          error2.innerHTML = "";
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        loginform.addEventListener("submit", function (e) {
+          emailValidateChecking();
+          passValidateChecking();
+
+          if (!emailid || !passid || !error1 || !error2 || !loginform) {
+            console.error("One or more elements not found");
+          }
+
+          if (error1.innerHTML || error2.innerHTML) {
+            e.preventDefault();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+

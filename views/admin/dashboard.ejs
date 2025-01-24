@@ -1,0 +1,155 @@
+<%- include("../../views/partials/admin/header") %>
+<head>
+    <style>
+        .container-fluid {
+  padding: 20px;
+}
+
+.dashboard-main {
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.card {
+  background-color: white;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.stat-box {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+h2 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+    </style>
+</head>
+<div class="container-fluid" style="padding-top: 150px; display: flex; justify-content: center;">
+    <div class="row" style="width: 100%; padding-left: 50px;">
+     
+      <div class="col-md-9">
+        <!-- Main Content -->
+        <div class="dashboard-main">
+          <h1 class="mb-4">Admin Dashboard</h1>
+          
+          <!-- Welcome/Overview Section -->
+          <div class="overview">
+            <h2>Overview</h2>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h5>Total Sales</h5>
+                    <p>$50,000</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h5>New Users</h5>
+                    <p>150</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h5>Total Orders</h5>
+                    <p>500</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Recent Activity Section -->
+          <div class="recent-activity">
+            <h2>Recent Activity</h2>
+            <ul>
+              <li>User1 logged in</li>
+              <li>User2 placed an order</li>
+              <li>Product3 updated</li>
+            </ul>
+          </div>
+  
+          <!-- Quick Stats Section -->
+          <div class="quick-stats">
+            <h2>Quick Stats</h2>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="stat-box">
+                  <h5>Total Revenue</h5>
+                  <p>$100,000</p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="stat-box">
+                  <h5>Active Users</h5>
+                  <p>1,000</p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="stat-box">
+                  <h5>Open Tickets</h5>
+                  <p>10</p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="stat-box">
+                  <h5>New Signups</h5>
+                  <p>50</p>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Sales/Order Statistics Section -->
+          <div class="sales-stats">
+            <h2>Sales/Order Statistics</h2>
+            <canvas id="salesChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  var ctx = document.getElementById('salesChart').getContext('2d');
+  var salesChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      datasets: [{
+        label: 'Sales',
+        data: [12000, 15000, 10000, 17000, 14000, 19000, 22000],
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)'
+      }]
+    },
+//     options: {
+//       responsive: true,
+//       maintainAspectRatio: false
+//     }
+  });
+</script>
+
+
+  
+
+
+   
+    <%- include("../../views/partials/admin/footer") %>
