@@ -1,4 +1,4 @@
-const mongoose = requre('mongoose')
+const mongoose = require('mongoose')
 const {Schema} = mongoose
 
 
@@ -23,7 +23,7 @@ const addressSchema = new Schema({
         },
         landmark:{
             type: String,
-            required: true
+            required: false
         },
         state: {
             type: String,
@@ -36,6 +36,10 @@ const addressSchema = new Schema({
         phone: {
             type: String,
             required: true
+        },
+        altPhone: {
+            type: String,
+            required: false
         }
 
     }]

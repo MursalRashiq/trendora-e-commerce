@@ -38,7 +38,7 @@ const getProductAddPage = async (req, res)=>{
 
 const addProducts = async (req, res) => {
     try {
-        console.log(req.files);
+        //console.log(req.files);
          // Check the incoming data
 
         const products = req.body;
@@ -198,7 +198,7 @@ const addProductOffer = async (req, res) => {
     const removeProductOffer = async (req, res) => {
         try {
             const { productId } = req.body;
-            console.log("productId", productId)
+           // console.log("productId", productId)
     
             // Check if productId is provided
             if (!productId) {
@@ -279,7 +279,7 @@ const addProductOffer = async (req, res) => {
             const category = await Category.find({})
             const brand = await Brand.find({})
 
-            console.log("category", category)
+           // console.log("category", category)
 
             res.render("edit-product",{
                 product:product,
@@ -301,8 +301,8 @@ const addProductOffer = async (req, res) => {
     const editProduct = async (req, res) => {
         try {
             let id = req.params.id?.trim(); // Trim the ID to remove spaces
-            console.log("Raw Product ID:", req.params.id);
-            console.log("Trimmed Product ID:", id);
+           // console.log("Raw Product ID:", req.params.id);
+           // console.log("Trimmed Product ID:", id);
     
             // Validate product ID
             if (!id || !mongoose.Types.ObjectId.isValid(id)) {
@@ -332,7 +332,7 @@ const addProductOffer = async (req, res) => {
     
             // Process uploaded files
             const images = req.files?.map(file => file.filename) || [];
-            console.log("Uploaded Images:", images);
+          //  console.log("Uploaded Images:", images);
     
             // Build update fields
             const updateFields = {
@@ -354,8 +354,8 @@ const addProductOffer = async (req, res) => {
     
             // Update the product
             await Product.findByIdAndUpdate(id, updateFields, { new: true });
-            console.log("Product updated successfully");
-            res.redirect("/admin/products");
+          //  console.log("Product updated successfully");
+           // res.redirect("/admin/products");
         } catch (error) {
             console.error("Error updating product:", error.message, error.stack);
             res.redirect("/pageerror");
@@ -373,10 +373,10 @@ const addProductOffer = async (req, res) => {
             const product = await Product.findByIdAndUpdate(productIdToServer, { $pull: { productImage: imageNameToServer } });
             const imagePath = path.join("public", "uploads", "re-image", imageNameToServer);
     
-            console.log(`imagePath: ${imagePath}`);
+           // console.log(`imagePath: ${imagePath}`);
             if (fs.existsSync(imagePath)) {
                 fs.unlinkSync(imagePath); // Synchronously delete the file
-                console.log(`Image ${imageNameToServer} deleted successfully`);
+              //  console.log(`Image ${imageNameToServer} deleted successfully`);
             } else {
                 console.log(`Image ${imageNameToServer} not found`);
             }

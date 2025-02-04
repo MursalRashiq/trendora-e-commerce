@@ -265,7 +265,7 @@ body {
                                     <label for="offerPrice" class="form-label">Offer Price</label>
                                     <input type="number" class="form-control" id="offerPrice" name="offerPrice" required>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100">Create Category</button>
+                                <button type="submit" class="btn btn-primary w-100" onclick="validateForm()">Create Category</button>
                             </form>
                         </div>
         
@@ -414,27 +414,53 @@ body {
         }
 
         function validateForm() {
-            clearErrorMessages();
+    clearErrorMessages();
 
-            const name = document.getElementsByName("name")[0].value.trim();
-            const description = document.getElementById("categoryDescription").value.trim();
-            let isValid = true;
+    const name = document.getElementsByName("name")[0].value.trim();
+    const description = document.getElementById("categoryDescription").value.trim();
+    const offerPrice = document.getElementById("offerPrice").value.trim();
+    let isValid = true;
 
-            if (name === "") {
-                displayErrorMessage("name-error", "Please enter a name");
-                isValid = false;
-            } else if (!/[a-zA-Z/s]+$/.test(name)) {
-                displayErrorMessage("name-error", "Category name should only contain alphabetic characters");
-                isValid = false;
-            }
+    // Add error message elements to your HTML form
+    const nameErrorElement = document.createElement('div');
+    nameErrorElement.id = 'name-error';
+    nameErrorElement.className = 'error-message text-danger';
+    document.querySelector('input[name="name"]').after(nameErrorElement);
 
-            if (description === "") {
-                displayErrorMessage("description-error", "Please enter a description");
-                isValid = false;
-            }
+    const descriptionErrorElement = document.createElement('div');
+    descriptionErrorElement.id = 'description-error';
+    descriptionErrorElement.className = 'error-message text-danger';
+    document.getElementById('categoryDescription').after(descriptionErrorElement);
 
-            return isValid;
-        }
+    // Improved name validation
+    if (name === "") {
+        displayErrorMessage("name-error", "Please enter a category name");
+        isValid = false;
+    } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+        displayErrorMessage("name-error", "Category name should only contain alphabetic characters and spaces");
+        isValid = false;
+    }
+
+    if (description === "") {
+        displayErrorMessage("description-error", "Please enter a description");
+        isValid = false;
+    }
+
+    // Add offer price validation
+    if (offerPrice === "" || parseFloat(offerPrice) < 0) {
+    const offerPriceErrorElement = document.createElement('div');
+    offerPriceErrorElement.id = 'offer-price-error';
+    offerPriceErrorElement.className = 'error-message text-danger';
+    document.getElementById('offerPrice').after(offerPriceErrorElement);
+    
+    displayErrorMessage("offer-price-error", parseFloat(offerPrice) < 0 
+        ? "Offer price cannot be negative" 
+        : "Please enter an offer price");
+    isValid = false;
+}
+
+    return isValid;
+}
 
 
         function displayErrorMessage(elementId,message){
@@ -528,6 +554,8 @@ async function removeOffer(categoryId) {
         console.error("Error removing offer:", error);
     }
 }
+
+
 
 
     </script>

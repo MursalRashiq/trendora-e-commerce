@@ -17,13 +17,26 @@ const loadHomePage = async (req, res) => {
 
         
         //console.log(user)
-        if (user) {
 
-            const locals = await User.findOne({ _id: user })
-            res.render("home", { locals, error: null })
-        } else {
-            return res.render('home', { error: null })
-        }
+            const locals = await User.findOne({ _id: user,  })
+            
+       
+        const categories = await Category.find({ isListed: true });
+        let productData = await Product.find({
+            isBlocked: false,
+            category: { $in: categories.map((category) => category._id) },
+            quantity: { $gt: 0 },
+        });
+
+        console.log(productData,"qwertyuigf")
+  
+        productData.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
+        productData = productData.slice(0, 4);
+
+        res.render("home",{
+            locals: locals,
+            products: productData
+        })
 
     } catch (error) {
         console.log("Home page not found")
@@ -166,7 +179,7 @@ const verifyOtp = async (req, res) => {
 
             req.session.user = saveUserData._id;
             //console.log( req.session.user )
-            res.json({success: true, redirectUrl:"/"})
+            res.json({success: true, redirectUrl:"/                             "})
         } else {
             res.status(400).json({ success: false, message: " Invalid OTP, Please try again " })
         }
@@ -314,11 +327,14 @@ const loadShoppingPage = async (req, res) => {
         const totalPages = Math.ceil(totalProducts / limit);
 
 
+        
+
+
         res.render("shop", {
             locals: userData,
             products: products,
             categories: categories, // Pass categories to the view
-            brand: brands,
+            brands: brands,
             totalProducts: totalProducts,
             currentPage: page,
             totalPages: totalPages,
@@ -383,7 +399,7 @@ const filterProduct = async (req, res) => {
             locals: userData,
             products: currentProduct,
             categories: categories,
-            brand: brands,
+            brands: brands,
             totalPages,
             currentPage,
 
@@ -405,6 +421,87 @@ const transition = async(req, res) =>{
 }
 
 
+const sortProduct = async (req, res) => {
+    try {
+        const user = req.session.user;
+        const sortOption = req.query.sort || ''; // If undefined, assign empty string
+        const category = req.query.category;
+        const brand = req.query.brand;
+        const page = parseInt(req.query.page) || 1; // Handle pagination
+        const limit = 10; // Number of products per page
+        const skip = (page - 1) * limit; // Skip based on the current page
+
+        let query = { isBlocked: false, quantity: { $gt: 0 } };
+
+        if (category) {
+            query.category = category;
+        }
+
+        if (brand) {
+            query.brand = brand;
+        }
+
+        let sortCriteria = {};
+
+        switch (sortOption) {
+            case "a-z":
+                sortCriteria = { productName: 1 };
+                break;
+            case "z-a":
+                sortCriteria = { productName: -1 };
+                break;
+            case "low-high":
+                sortCriteria = { salePrice: 1 };
+                break;
+            case "high-low":
+                sortCriteria = { salePrice: -1 };
+                break;
+            default:
+                sortCriteria = {};
+                break;
+        }
+
+        // Get products with pagination and sorting
+        const products = await Product.find(query)
+            .sort(sortCriteria)
+            .skip(skip)
+            .limit(limit)
+            .lean();
+
+        // Get total count of products to calculate pagination
+        const totalProducts = await Product.countDocuments(query);
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        const categories = await Category.find({ isListed: true });
+        const brands = await Brand.find();
+
+
+        const userData = await User.findOne({_id: user})
+
+        if (req.xhr || req.headers['x-requested-with'] === 'XMLHttpRequest') { // Check if it's an AJAX request
+            // Render only the product grid partial
+            return res.render('partials/product-grid', { products }); // No layout
+        } else {
+            // Normal request, render the full shop view
+            res.render("shop", {
+                products,
+                categories,
+                brands,
+                sortOption: req.query.sort || '',
+                currentPage: page,
+                totalPages,
+                locals: user // Assuming 'user' is defined somewhere
+            });
+        }
+
+        
+    } catch (error) {
+        console.error("Sorting error", error);
+        res.status(500).send("Server Error");
+    }
+};
+
+
     
 
 
@@ -422,5 +519,6 @@ module.exports = {
     logout,
     loadShoppingPage,
     filterProduct,
-    transition
+    transition,
+    sortProduct
 }

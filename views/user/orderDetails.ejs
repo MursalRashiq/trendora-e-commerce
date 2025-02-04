@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Dashboard</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --warning: #ca8a04;
+            --error: #dc2626;
+            --background: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .order-status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            background: #ecfdf5;
+            color: var(--success);
+        }
+
+        .order-timeline {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-left: 2px solid #e2e8f0;
+            margin-left: 1rem;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -0.5rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .order-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-card-header i {
+            padding: 0.75rem;
+            border-radius: 12px;
+            background: #eff6ff;
+            color: var(--primary);
+        }
+
+        .products-list {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .product-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            align-items: center;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .product-price {
+            color: var(--text-secondary);
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-outline {
+            border: 1px solid #e2e8f0;
+            background: transparent;
+        }
+
+        .summary-section {
+            margin-top: 2rem;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .summary-item {
+            padding: 1rem;
+            border-radius: 12px;
+            background: #f8fafc;
+        }
+
+        .summary-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .product-image {
+                margin: 0 auto;
+            }
+
+            .product-actions {
+                justify-content: center;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Order Details</h2>
+            <div class="order-timeline">
+                <div class="timeline-item">
+                    <div>
+                        <h4>Order Placed</h4>
+                        <p><%= new Date(orders.createdAt).toLocaleDateString() %></p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div>
+                        <h4>Payment Confirmed</h4>
+                        <p>Via <%= orders.paymentMethod %></p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div>
+                        <h4>Current Status</h4>
+                        <p><%= orders.status %></p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Order Header -->
+            <div class="order-header">
+                <div>
+                    <h1>Order #<%= orders.orderId %></h1>
+                    <p class="text-secondary">Placed on <%= new Date(orders.createdAt).toLocaleDateString() %></p>
+                </div>
+                <span class="order-status-badge"><%= orders.status %></span>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="order-grid">
+                <!-- Customer Info -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <i class="material-icons">person</i>
+                        <h3>Customer Information</h3>
+                    </div>
+                    <div>
+                        <p><strong>Name:</strong> <%= user && user.name ? user.name : 'N/A' %></p>
+                        <p><strong>Email:</strong> <%= user && user.email ? user.email : 'N/A' %></p>
+                        <p><strong>Phone:</strong> <%= user && user.phone ? user.phone : 'N/A' %></p>
+                    </div>
+                </div>
+
+                <!-- Payment Info -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <i class="material-icons">payment</i>
+                        <h3>Payment Details</h3>
+                    </div>
+                    <div>
+                        <p><strong>Method:</strong> <%= orders.paymentMethod %></p>
+                        <p><strong>Status:</strong> <%= orders.status %></p>
+                        <p><strong>Amount:</strong> ₹<%= finalAmount.toLocaleString() %></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products List -->
+            <div class="products-list">
+                <% orders.orderItems.forEach(item => { %>
+                <div class="product-item">
+                    <img src="/uploads/product-images/<%= item.product.productImage[0] %>" alt="Product" class="product-image">
+                    <div class="product-details">
+                        <span class="product-name"><%= item.product?.productName || 'N/A' %></span>
+                        <span class="product-price">
+                            ₹<%= item.product.salePrice ? item.product.salePrice.toLocaleString() : item.product.regularPrice.toLocaleString() %>
+                            × <%= item.quantity %>
+                        </span>
+                    </div>
+                    <div class="product-actions">
+                        <% if (orders.status === 'Cancelled') { %>
+                          <span class="text-muted">Order Cancelled</span> <!-- Display a message if cancelled -->
+                        <% } else { %>
+                          <select class="btn btn-outline" onchange="handleDropdownChange(this)">
+                            <option value="" disabled selected>Actions</option>
+                            <option value="cancel">Cancel Order</option>
+                            <option value="returnrequest">Return Request</option>
+                            <option value="retry" disabled>Retry Payment</option>
+                          </select>
+                        <% } %>
+                      </div>
+                </div>
+                <% }) %>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="summary-section">
+                <h3>Order Summary</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-label">Subtotal</div>
+                        <div class="summary-value">₹<%= totalGrant.toLocaleString() %></div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Discount</div>
+                        <div class="summary-value">₹<%= discount.toLocaleString() %></div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Final Amount</div>
+                        <div class="summary-value">₹<%= finalAmount.toLocaleString() %></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <input type="hidden" id="orderId" value="<%= orders._id %>">
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        function handleDropdownChange(selectElement) {
+    const selectedValue = selectElement.value;
+    const orderId = document.getElementById("orderId").value;
+
+    if (selectedValue === "cancel") {
+        confirmCancelOrder(orderId);
+    } else if (selectedValue === "returnrequest") {
+        returnRequestOrder(orderId);
+    }
+
+    // Reset dropdown after selection
+    selectElement.selectedIndex = 0;
+}
+
+function confirmCancelOrder(orderId) {
+    Swal.fire({
+        title: 'Confirm Cancel Order',
+        text: 'Are you sure you want to cancel this order?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, cancel it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            cancelOrder(orderId);
+        }
+    });
+}
+
+function cancelOrder(orderId) {
+    $.ajax({
+        url: '/cancelOrder',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ orderId: orderId }),
+        success: (response) => {
+            if (response.message === "Order cancelled successfully") {
+                Swal.fire({
+                    title: 'Success!',
+                    text: response.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: response.message || 'Failed to cancel order',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        },
+        error: (xhr, status, error) => {
+            let errorMessage = 'An error occurred while canceling the order';
+            
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+
+            Swal.fire({
+                title: 'Error!',
+                text: errorMessage,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+}
+    function returnRequestOrder(orderId) {
+        $.ajax({
+            url: '/returnrequestOrder',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ orderId: orderId }),
+            success: (response) => {
+                if (response.result.modifiedCount === 1) {
+                    window.location.reload();
+                }
+            },
+            error: (error) => {
+                alert(error);
+            }
+        });
+    }
+    </script>
+</body>
+</html>

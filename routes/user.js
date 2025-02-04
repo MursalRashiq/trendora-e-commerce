@@ -5,7 +5,8 @@ const passport = require('../config/passport')
 const {userAuth, alreadyLoggedIn} = require("../middleware/auth")
 const productController = require("../controller/user/productController")
 const profileController = require("../controller/user/profileController")
-
+const cartController = require("../controller/user/cratController")
+const orderController = require("../controller/user/orderController")
 
 
 router.get("/",userController.loadHomePage)
@@ -16,12 +17,13 @@ router.post("/verify-otp",userController.verifyOtp)
 //router.get("/verify-otp",userController.verifyOtp)
 router.post("/resend-otp",userController.resendOtp)
 router.get("/auth/google",alreadyLoggedIn,passport.authenticate('google',{scope:['profile', 'email']}))
-router.get('/auth/google/callback',alreadyLoggedIn,passport.authenticate('google', {failureRedirect:'/signup'}), (req, res)=>{
-    if (req.user) {
-        // Adding user data to session or locals for next page access
-        req.session.user = req.user; // Save user to session (if using sessions)
-      }
-    res.redirect('/')
+router.get('/auth/google/callback', alreadyLoggedIn, passport.authenticate('google', {failureRedirect:'/signup'}), (req, res)=>{
+  if (req.user) {
+      const userId = req.user._id || req.user.id;
+      req.session.user = userId; 
+      //console.log("Google Auth User ID:", userId);
+  }
+  res.redirect('/')
 })
 
 router.get('/login',alreadyLoggedIn,userController.loadLogin)
@@ -51,9 +53,37 @@ router.get("/change-email",userAuth,profileController.changeEmail)
 router.post("/change-email",userAuth,profileController.changeEmailValid)
 router.post("/verify-email-otp", userAuth,profileController.verifyEmailOtp)
 router.post("/update-email",userAuth,profileController.updateEmail);
-router.get("/change-password", userAuth,profileController.changePassword)
-router.post("/change-password",userAuth,profileController.changePasswordValid)
-router.post("/verify-changepassword-otp",userAuth, profileController.verifyChangePassOtp)
+router.get("/change-password",userAuth,profileController.changeUserPass)
+router.post("/change-password",userAuth,profileController.changeUserPassPost)
+//address Manegement
+router.get("/addAddress",userAuth,profileController.addAddress)
+router.post("/addAddress",userAuth,profileController.postAddAddress)
+router.get("/editAddress",userAuth,profileController.editAddress)
+router.post("/editAddress", userAuth,profileController.postEditAddress)
+router.get("/deleteAddress", userAuth,profileController.deleteAddress)
+
+
+// cart Management
+
+router.get("/cart",userAuth,cartController.getCartPage)
+router.post("/addToCart",userAuth, cartController.addToCart)
+router.post("/changeQuantity", userAuth,cartController.changeQuantity)
+router.get("/deleteItem", userAuth, cartController.deleteProduct)
+
+//sorting
+
+router.get("/products/sort",userAuth,userController.sortProduct)
+
+
+//order Management
+
+
+router.get("/checkout",userAuth,orderController.getCheckoutPage)
+router.post("/orderPlaced",userAuth,orderController.orderPlaced)
+router.get('/orderSuccess', userAuth,orderController.orderSuccess)
+router.get("/orderDetails", userAuth, orderController.getOrderDetailsPage);
+router.post("/cancelOrder", userAuth, orderController.cancelOrder);
+
 
 
 

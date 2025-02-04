@@ -167,4 +167,44 @@ aside.minimized .menu-link span {
                 </div>
             </section>
 
+
+            <script>
+                document.querySelector('form').addEventListener('submit', function(event) {
+    let isValid = true;
+    const nameInput = document.querySelector('input[name="name"]');
+    const descriptionInput = document.querySelector('textarea[name="description"]');
+    
+    // Clear previous error messages
+    document.querySelectorAll('.error-message').forEach(el => el.remove());
+
+    // Name validation
+    if (nameInput.value.trim() === '') {
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-message text-danger';
+        errorElement.textContent = 'Category name is required';
+        nameInput.after(errorElement);
+        isValid = false;
+    } else if (!/^[a-zA-Z\s]+$/.test(nameInput.value.trim())) {
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-message text-danger';
+        errorElement.textContent = 'Category name should only contain alphabetic characters and spaces';
+        nameInput.after(errorElement);
+        isValid = false;
+    }
+
+    // Description validation
+    if (descriptionInput.value.trim() === '') {
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-message text-danger';
+        errorElement.textContent = 'Description is required';
+        descriptionInput.after(errorElement);
+        isValid = false;
+    }
+
+    if (!isValid) {
+        event.preventDefault();
+    }
+});
+            </script>
+
         </body>

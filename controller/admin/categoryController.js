@@ -45,7 +45,7 @@ const categoryInfo = async (req, res)=>{
 const addCategory = async(req, res) =>{
     const {name, description} = req.body
 
-    console.log(req.body)
+   // console.log(req.body)
     try {
         
         const existingCategory = await Category.findOne({name: { $regex: new RegExp(`^${name}$`, 'i') } })
@@ -187,7 +187,7 @@ const editCategory = async (req, res) => {
         const { name, description } = req.body; // Access name instead of categoryName
 
         // Check if the form fields are being passed correctly
-        console.log(req.body);  // Log the request body to debug
+       // console.log(req.body);  // Log the request body to debug
 
         // Validate inputs
         if (!name || !description) {
