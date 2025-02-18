@@ -14,9 +14,9 @@ const couponSchema = new Schema({
     },
     expireOn :{
         type: Date,
-        require: true
+        required: true
     },
-    offerPriice:{
+    offerPrice:{
         type: Number,
         required: true
     },
@@ -35,4 +35,4 @@ const couponSchema = new Schema({
 })
 
 const Coupon = mongoose.model('Coupon',couponSchema)
-module.exports = Coupon
+module.exports = Coupon;

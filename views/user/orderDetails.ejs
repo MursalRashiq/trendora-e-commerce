@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Dashboard</title>
+    <!-- <link rel="stylesheet" href="./user-assets/css/maind134.css"> -->
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
@@ -241,6 +238,39 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .order-details {
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.invoice-section {
+    margin-bottom: 1rem;
+}
+
+.download-invoice {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+}
+
+.download-invoice:hover {
+    background-color: #45a049;
+    text-decoration: none;
+    color: white;
+}
+
+.order-info {
+    margin-top: 1rem;
+}
     </style>
 </head>
 <body>
@@ -281,9 +311,9 @@
                 <span class="order-status-badge"><%= orders.status %></span>
             </div>
 
-            <!-- Info Cards -->
+            <!-- Info Cards Grid -->
             <div class="order-grid">
-                <!-- Customer Info -->
+                <!-- Customer Info Card -->
                 <div class="info-card">
                     <div class="info-card-header">
                         <i class="material-icons">person</i>
@@ -296,16 +326,29 @@
                     </div>
                 </div>
 
-                <!-- Payment Info -->
+                <!-- Payment Info Card -->
                 <div class="info-card">
                     <div class="info-card-header">
                         <i class="material-icons">payment</i>
                         <h3>Payment Details</h3>
                     </div>
-                    <div>
-                        <p><strong>Method:</strong> <%= orders.paymentMethod %></p>
-                        <p><strong>Status:</strong> <%= orders.status %></p>
-                        <p><strong>Amount:</strong> ₹<%= finalAmount.toLocaleString() %></p>
+                    <div class="order-details" style="display: contents; justify-content: end;">
+                        <% if(orders.status === "delivered") { %>
+                            <div class="invoice-section">
+                                <a href="/downloadInvoice/<%= orders._id %>" class="btn btn-primary btn-sm download-invoice">
+                                    <i class="fas fa-download"></i> Download Invoice
+                                </a>
+                            </div>
+                        <% } %>
+                        <div class="order-info">
+                            <p><strong>Payment Method:</strong> <%= orders.payment %></p>
+                            <p><strong>Order Status:</strong> 
+                                <span class="status-badge <%= orders.status.toLowerCase() %>">
+                                    <%= orders.status %>
+                                </span>
+                            </p>
+                            <p><strong>Total Amount:</strong> ₹<%= finalAmount %></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -313,29 +356,39 @@
             <!-- Products List -->
             <div class="products-list">
                 <% orders.orderItems.forEach(item => { %>
-                <div class="product-item">
-                    <img src="/uploads/product-images/<%= item.product.productImage[0] %>" alt="Product" class="product-image">
-                    <div class="product-details">
-                        <span class="product-name"><%= item.product?.productName || 'N/A' %></span>
-                        <span class="product-price">
-                            ₹<%= item.product.salePrice ? item.product.salePrice.toLocaleString() : item.product.regularPrice.toLocaleString() %>
-                            × <%= item.quantity %>
-                        </span>
+                    <div class="product-item">
+                        <img src="<%= item.product.productImage[0]%>" alt="Product" class="product-image">
+                        <div class="product-details">
+                            <span class="product-name"><%= item.product?.productName || 'N/A'  %></span>
+                            <span class="product-price">
+                                ₹<%= item.product.salePrice ? item.product.salePrice.toLocaleString() : item.product.regularPrice.toLocaleString() %>
+                                × <%= item.quantity %>
+                            </span>
+                        </div>
+                        <div class="product-actions">
+                            <% if (orders.status === 'Cancelled') { %>
+                                <span class="text-muted">Order Cancelled</span>
+                            <% } else if (orders.status === 'Return Request') { %>
+                                <span class="text-muted">Return Request Pending</span>
+                            <% } else if (orders.status === 'Returned') { %>
+                                <span class="text-muted">Order Returned</span>
+                            <% } else { %>
+                                <select class="btn btn-outline" onchange="handleDropdownChange(this)">
+                                    <option value="" disabled selected>Actions</option>
+                                    <% if (orders.status !== 'delivered') { %>
+                                        <option value="cancel">Cancel Order</option>
+                                    <% } %>
+                                    <% if (orders.status === 'delivered') { %>
+                                        <option value="returnrequest">Return Request</option>
+                                    <% } %>
+                                    <% if (orders.status === 'failed') { %>
+                                        <option value="retry">Retry Payment</option>
+                                    <% } %>
+                                </select>
+                            <% } %>
+                        </div>
                     </div>
-                    <div class="product-actions">
-                        <% if (orders.status === 'Cancelled') { %>
-                          <span class="text-muted">Order Cancelled</span> <!-- Display a message if cancelled -->
-                        <% } else { %>
-                          <select class="btn btn-outline" onchange="handleDropdownChange(this)">
-                            <option value="" disabled selected>Actions</option>
-                            <option value="cancel">Cancel Order</option>
-                            <option value="returnrequest">Return Request</option>
-                            <option value="retry" disabled>Retry Payment</option>
-                          </select>
-                        <% } %>
-                      </div>
-                </div>
-                <% }) %>
+                <% }); %>
             </div>
 
             <!-- Order Summary -->
@@ -438,22 +491,33 @@ function cancelOrder(orderId) {
         }
     });
 }
-    function returnRequestOrder(orderId) {
-        $.ajax({
-            url: '/returnrequestOrder',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ orderId: orderId }),
-            success: (response) => {
-                if (response.result.modifiedCount === 1) {
-                    window.location.reload();
-                }
-            },
-            error: (error) => {
-                alert(error);
-            }
-        });
-    }
+function returnRequestOrder(orderId) {
+    $.ajax({
+        url: '/returnrequestOrder',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ orderId: orderId }),
+        success: (response) => {
+            Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: response.message,
+                confirmButtonText: "OK",
+            }).then(() => {
+                window.location.reload();
+            });
+        },
+        error: (error) => {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.responseJSON?.message || "Something went wrong",
+                confirmButtonText: "OK",
+            });
+        }
+    });
+}
+
     </script>
 </body>
-</html>
+

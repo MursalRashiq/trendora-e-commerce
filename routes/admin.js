@@ -10,6 +10,18 @@ const uploads = multer({storage: storage});
 const brandController = require("../controller/admin/brandController")
 const productController = require("../controller/admin/productController")
 const orderController = require("../controller/admin/orderController")
+const couponController = require("../controller/admin/couponController")
+const salesController = require("../controller/admin/salesController")
+const bannerController = require("../controller/admin/bannerController")
+
+
+
+
+
+
+
+
+
 
 
 router.get("/pageerror",adminController.pageerror)
@@ -44,19 +56,35 @@ router.post("/addProductOffer",adminAuth,productController.addProductOffer);
 router.post("/removeProductOffer",adminAuth,productController.removeProductOffer)
 router.get("/blockProduct",adminAuth,productController.blockProduct)
 router.get("/unBlockProduct",adminAuth,productController.unBlockProduct)
-router.get("/editProduct",adminAuth,productController.getEditProduct)
+router.get("/edit-product/:id", adminAuth, productController.getEditProduct);
 router.post("/editProduct/:id",adminAuth,uploads.array("images",4),productController.editProduct)
 router.post("/deleteImage", adminAuth, productController.deleteSingleImage)
-
-
-
-
 //order Management
-
-
 router.get("/orderList", adminAuth, orderController.getOrderListPageAdmin)
 router.get("/orderDetailsAdmin", adminAuth, orderController.getOrderDetailsPageAdmin)
 router.get("/changeStatus", adminAuth, orderController.changeOrderStatus);
+router.get("/approveReturn",adminAuth,orderController.approveReturn)
+//coupon management
+router.get("/coupon", adminAuth, couponController.loadCoupon)
+router.post("/createCoupon",adminAuth,couponController.createCoupon)
+router.get("/editCoupon",adminAuth,couponController.editCoupon)
+router.post("/updateCoupon",adminAuth,couponController.updateCoupon)
+router.get("/deleteCoupon",adminAuth,couponController.deleteCoupon)
+//sales management
+router.get('/salesReport', adminAuth, salesController.getSalesReport);
+// router.get('/dateWiseFilter', adminAuth, salesController.dateWiseFilter);
+router.get('/generatePdf', adminAuth, salesController.downloadSalesReportPDF);
+router.get('/downloadExcel', adminAuth, salesController.downloadSalesReportExcel);
+//Banner Management 
+router.get("/banner",adminAuth,bannerController.getBannerPage)
+router.get('/addBanner',adminAuth,bannerController.getAddBannerPage)
+router.post('/addBanner',adminAuth,uploads.single("images"),bannerController.postAddBanner)
+router.get("/deleteBanner",adminAuth,bannerController.deleteBanner)
+
+
+
+
+
 
 
 

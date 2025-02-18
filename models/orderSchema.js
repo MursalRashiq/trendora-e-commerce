@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const {Schema} = mongoose
 const {v4:uuidv4} = require('uuid')
+const Coupon = require('./couponSchema');
+
 
 
 const orderSchema = new Schema({
@@ -57,7 +59,18 @@ finalAmound:{
     status:{
         type: String,
         required:true,
-        enum: ["Pending","Confirmed", "Processing","Shipped","Delivered","Cancelled","Return Request","Returned"]
+        enum: [
+            "Pending",
+            "Confirmed", 
+            "processing",
+            "Shipped",
+            "delivered",
+            "Cancelled",
+            "Return Request",
+            "Returned",
+            "Failed",
+            
+         ]
     },
     createdAt:{
         type:Date,
@@ -68,11 +81,24 @@ finalAmound:{
         type:Boolean,
         default:false
     },
-    paymentMethod: { 
+    couponDiscount: { 
+        type: Number,
+        default: 0
+    },
+    payment: { 
         type: String,
         required: true,
-        enum: ['Bank Transfer', 'cod'], 
-      }
+        enum: ['razorpay', 'cod', 'wallet'], 
+      },
+      
+      razorpayOrderId: {
+         type: String 
+        },
+      razorpayPaymentId: { 
+        type: String 
+    },
+      razorpaySignature: { 
+        type: String }, 
 })
 
 const Order = mongoose.model('Order', orderSchema)

@@ -19,6 +19,11 @@ const getProductDetails = async (req, res) => {
             throw new Error("User not found in the database.");
         }
 
+        let cartQuantity = 0;
+        if (userData && userData.cart.length > 0) {
+          cartQuantity = userData.cart.reduce((total, item) => total + item.quantity, 0);
+        }
+
         // Fetch product data
         const productId = req.query.id;
         if (!productId) {
@@ -29,6 +34,9 @@ const getProductDetails = async (req, res) => {
         if (!product) {
             throw new Error("Product not found in the database.");
         }
+
+        
+
 
         // Extract category and offers
         const findCategory = product.category;

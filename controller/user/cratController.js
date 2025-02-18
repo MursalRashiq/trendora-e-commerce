@@ -12,7 +12,13 @@ const getCartPage = async (req, res) => {
   
       const query = id.length === 24 ? { _id: new mongodb.ObjectId(id) } : { googleId: id };
       const locals = await User.findOne(query);
-  
+
+      const findUser = await User.findOne({ _id: id })
+
+
+      console.log("findUserfindUserfindUserfindUser",findUser.wallet)
+
+      
       if (!locals) {
         console.error("User not found for ID:", id);
         return res.redirect("/login"); // Redirect to login if user not found
@@ -61,6 +67,8 @@ const getCartPage = async (req, res) => {
         quantity, // Total quantity
         data, // Cart data with product details
         grandTotal, // Total price
+        findUser,
+        
       });
     } catch (error) {
       console.error("get cart error:", error);
@@ -71,50 +79,75 @@ const getCartPage = async (req, res) => {
 
   const addToCart = async (req, res) => {
     try {
-      const id = req.body.productId;
-      const userId = req.session.user;
-      const findUser = await User.findById(userId);
-      const product = await Product.findById({ _id: id }).lean();
-      
-      if (!product) {
-        return res.json({ status: "Product not found" });
-      }
-      
-      if (product.quantity <= 0) {
-        return res.json({ status: "Out of stock" });
-      }
-  
-      const cartIndex = findUser.cart.findIndex((item) => item.productId == id);
-  
-      if (cartIndex === -1) {
-        const quantity = 1;
-        await User.findByIdAndUpdate(userId, {
-          $addToSet: {
-            cart: {
-              productId: id,
-              quantity: quantity,
-            },
-          },
-        });
-        return res.json({ status: true, cartLength: findUser.cart.length + 1, user: userId });
-      } else {
-        const productInCart = findUser.cart[cartIndex];
-        if (productInCart.quantity < product.quantity) {
-          const newQuantity = productInCart.quantity + 1;
-          await User.updateOne(
-            { _id: userId, "cart.productId": id },
-            { $set: { "cart.$.quantity": newQuantity } }
-          );
-          return res.json({ status: true, cartLength: findUser.cart.length, user: userId });
-        } else {
-          return res.json({ status: "Out of stock" });
+        const id = req.body.productId;
+        const userId = req.session.user;
+        const findUser = await User.findById(userId);
+        const product = await Product.findById({ _id: id }).lean();
+        
+        if (!product) {
+            return res.json({ status: "Product not found" });
         }
-      }
+        
+        if (product.quantity <= 0) {
+            return res.json({ status: "Out of stock" });
+        }
+
+        const cartIndex = findUser.cart.findIndex((item) => item.productId == id);
+
+        // Check and remove from wishlist if present
+        let removedFromWishlist = false;
+        if (findUser.wishlist.includes(id)) {
+            await User.findByIdAndUpdate(userId, {
+                $pull: { wishlist: id }
+            });
+            removedFromWishlist = true;
+        }
+
+        if (cartIndex === -1) {
+            const quantity = 1;
+            await User.findByIdAndUpdate(userId, {
+                $addToSet: {
+                    cart: {
+                        productId: id,
+                        quantity: quantity,
+                    },
+                },
+                // Remove from wishlist to ensure consistency
+                $pull: { wishlist: id }
+            });
+            return res.json({ 
+                status: true, 
+                cartLength: findUser.cart.length + 1, 
+                user: userId,
+                wishlistRemoved: removedFromWishlist
+            });
+        } else {
+            const productInCart = findUser.cart[cartIndex];
+            if (productInCart.quantity < product.quantity) {
+                const newQuantity = productInCart.quantity + 1;
+                await User.updateOne(
+                    { _id: userId, "cart.productId": id },
+                    { 
+                        $set: { "cart.$.quantity": newQuantity },
+                        // Remove from wishlist to ensure consistency
+                        $pull: { wishlist: id }
+                    }
+                );
+                return res.json({ 
+                    status: true, 
+                    cartLength: findUser.cart.length, 
+                    user: userId,
+                    wishlistRemoved: removedFromWishlist
+                });
+            } else {
+                return res.json({ status: "Out of stock" });
+            }
+        }
     } catch (error) {
-      console.error(error);
-      return res.redirect("/pageNotFound");
+        console.error(error);
+        return res.redirect("/pageNotFound");
     }
-  };
+};
   
 
 
@@ -233,6 +266,9 @@ const getCartPage = async (req, res) => {
       res.redirect("/pageNotFound");
     }
   };
+  
+
+
   
 
     

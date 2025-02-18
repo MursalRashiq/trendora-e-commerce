@@ -17,7 +17,7 @@ const wishlistSchema = new Schema({
             default: Date.now
         },
         addedOn:{
-            type: Data,
+            type: Date,
             default:Date.name
         }
     }]

@@ -40,10 +40,14 @@ const productSchema = new Schema ({
         type:String,
         required: true
     },
-    productImage:{
-        type: [String],
+    productImage: [{
+        type: String,
         required: true
-    },
+    }],
+    cloudinaryIds: [{
+        type: String,
+        required: true
+    }],
     isBlocked:{
         type: Boolean,
         default: false

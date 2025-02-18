@@ -7,7 +7,9 @@ const productController = require("../controller/user/productController")
 const profileController = require("../controller/user/profileController")
 const cartController = require("../controller/user/cratController")
 const orderController = require("../controller/user/orderController")
-
+const wishlistController = require("../controller/user/wishlistController")
+const walletController = require("../controller/user/walletController");
+const raitingController = require("../controller/user/ratingController")
 
 router.get("/",userController.loadHomePage)
 router.get("/pageNotFound", userController.pageNotFound)
@@ -29,8 +31,13 @@ router.get('/auth/google/callback', alreadyLoggedIn, passport.authenticate('goog
 router.get('/login',alreadyLoggedIn,userController.loadLogin)
 router.post('/login',alreadyLoggedIn,userController.loginPage)
 router.get("/logout", userController.logout)
+
+
+//shop management
 router.get("/shop",userController.loadShoppingPage)
 router.get("/filter",userController.filterProduct)
+router.get("/filterPrice",userAuth,userController.filterByPrice)
+router.post("/search", userAuth,userController.searchProducts)
 
 //transition
 router.get("/transition",userController.transition)
@@ -55,6 +62,10 @@ router.post("/verify-email-otp", userAuth,profileController.verifyEmailOtp)
 router.post("/update-email",userAuth,profileController.updateEmail);
 router.get("/change-password",userAuth,profileController.changeUserPass)
 router.post("/change-password",userAuth,profileController.changeUserPassPost)
+router.get("/changeName",userAuth,profileController.changeName)
+router.post("/changeName",userAuth,profileController.changeNamePost)
+router.get('/change-phone',userAuth,profileController.changePhone);
+router.post('/change-phone',userAuth,profileController.changePhonePost);
 //address Manegement
 router.get("/addAddress",userAuth,profileController.addAddress)
 router.post("/addAddress",userAuth,profileController.postAddAddress)
@@ -70,22 +81,38 @@ router.post("/addToCart",userAuth, cartController.addToCart)
 router.post("/changeQuantity", userAuth,cartController.changeQuantity)
 router.get("/deleteItem", userAuth, cartController.deleteProduct)
 
-//sorting
-
-router.get("/products/sort",userAuth,userController.sortProduct)
-
-
 //order Management
 
 
 router.get("/checkout",userAuth,orderController.getCheckoutPage)
 router.post("/orderPlaced",userAuth,orderController.orderPlaced)
-router.get('/orderSuccess', userAuth,orderController.orderSuccess)
+router.get('/orderSuccess', userAuth,orderController.getOrderSuccessPage)
 router.get("/orderDetails", userAuth, orderController.getOrderDetailsPage);
 router.post("/cancelOrder", userAuth, orderController.cancelOrder);
+router.post("/applyCoupon",userAuth,userController.applyCoupon);
+router.post('/paymentConfirm',userAuth,orderController.paymentConfirm);
+router.post("/verifyPayment", userAuth, orderController.verify);
+
+router.post("/returnrequestOrder",userAuth,orderController.returnorder);
+router.get("/downloadInvoice/:orderId", userAuth, (req, res, next) => {
+  console.log("Route hit - downloadInvoice");
+  console.log("OrderId:", req.params.orderId);
+  next();
+}, orderController.downloadInvoice);
 
 
-
+//wishlist management 
+router.get("/wishlist",userAuth,wishlistController.loadWishlist)
+router.post("/addTOWishlist",userAuth,wishlistController.addToWishlist)
+router.get("/removeFromWishlist",userAuth,wishlistController.removeProduct)
+router.post('/addToCartFromWishlist',userAuth,wishlistController.addToCartFromWishlist);
+//wallet Management
+router.post("/addMoney", userAuth, walletController.addMoneyToWallet)
+router.post("/verify-payment", userAuth, walletController.verify_payment)
+//rating management
+router.get('/rate-product', userAuth, raitingController.getRatingPage);
+//count
+router.get("/getCountOfCartWish",userController.getCount)
 
 
 

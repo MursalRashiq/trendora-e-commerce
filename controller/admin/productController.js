@@ -7,6 +7,7 @@ const User = require("../../models/userSchema")
 const sharp = require("sharp")
 const Product = require("../../models/productSchema")
 const mongoose = require("mongoose");
+const { uploadToCloudinary, cloudinary } = require('../../config/cloudinaryConfig');
 
 
 const getProductAddPage = async (req, res)=>{
@@ -38,69 +39,63 @@ const getProductAddPage = async (req, res)=>{
 
 const addProducts = async (req, res) => {
     try {
-        //console.log(req.files);
-         // Check the incoming data
-
         const products = req.body;
-        console.log(req.body, "req.body"); 
         const productExists = await Product.findOne({ productName: products.productName });
 
-        const regularPrice = parseFloat(products.regularPrice);
-        const salePrice = parseFloat(products.salePrice);
+        if (productExists) {
+            return res.status(400).send("Product already exists, please try with another name.");
+        }
 
-        // if (regularPrice < salePrice) {
-        //      res.render("add-product",{message: "Enter a valid price"})
-        // }        
-  
-        // Ensure description is a string
-         const description = Array.isArray(products.description) ? products.description.join('\n') : products.description;
-       
-        if (!productExists) {
-            const images = [];
-            if (req.files && req.files.length > 0) {
-                for (let i = 0; i < req.files.length; i++) {
-                    const originalImagePath = req.files[i].path;
-                    const resizedImagePath = path.join("public", "uploads", "product-images", req.files[i].filename);
-
-                    await sharp(originalImagePath)
-                        .resize({ width: 440, height: 440 })
-                        .toFile(resizedImagePath);
-
-                    images.push(req.files[i].filename);
+        // Initialize images array for cloudinary URLs
+        const images = [];
+        
+        // Upload images to cloudinary
+        if (req.files && req.files.length > 0) {
+            for (const file of req.files) {
+                try {
+                    const result = await uploadToCloudinary(file);
+                    images.push({
+                        url: result.secure_url,
+                        public_id: result.public_id
+                    });
+                } catch (error) {
+                    console.error('Error uploading to Cloudinary:', error);
+                    return res.status(500).send("Error uploading images");
                 }
             }
-
-            if (images.length === 0) {
-                return res.status(400).json({ message: "At least one image is required." });
-            }
-
-            const categoryId = await Category.findOne({ name: products.category });
-            if (!categoryId) {
-                return res.status(400).json({ message: "Invalid category name." });
-            }
-                const newProduct = new Product({
-                productName: products.productName,  // Fixed typo from product to products
-                description: products.description,
-                brand: products.brand,
-                category: categoryId._id,
-                regularPrice: products.regularPrice,
-                salePrice: products.salePrice,  // Fixed typo from salesPrice
-                createdOn: new Date(),
-                color: products.color,
-                quantity: products.quantity,  // Added quantity field
-                productImage: images,
-                status: "Available"
-    
-            });
-
-            await newProduct.save();
-            res.redirect("/admin/products");
-        } else {
-            res.status(400).json({ message: "Product already exists, please try with another name." });
         }
+
+        if (images.length === 0) {
+            return res.status(400).send("At least one image is required.");
+        }
+
+        const categoryId = await Category.findOne({ name: products.category });
+        if (!categoryId) {
+            return res.status(400).send("Invalid category name.");
+        }
+
+        // Create new product with cloudinary URLs
+        const newProduct = new Product({
+            productName: products.productName,
+            description: products.description,
+            brand: products.brand,
+            category: categoryId._id,
+            regularPrice: products.regularPrice,
+            salePrice: products.salePrice,
+            createdOn: new Date(),
+            color: products.color,
+            quantity: products.quantity,
+            productImage: images.map(img => img.url), // Store only the URLs
+            cloudinaryIds: images.map(img => img.public_id), // Store cloudinary public_ids
+            status: "Available"
+        });
+
+        await newProduct.save();
+        return res.redirect("/admin/products");
+
     } catch (error) {
         console.error("Error adding product:", error);
-        res.redirect("/admin/pageerror");
+        return res.status(500).send("Error adding product: " + error.message);
     }
 };
 
@@ -269,124 +264,223 @@ const addProductOffer = async (req, res) => {
         }
     }
 
-    const getEditProduct = async(req, res)=>{
+    const getEditProduct = async (req, res) => {
         try {
+            const productId = req.params.id;
+            console.log("1. Requested Product ID:", productId);
 
+            if (!mongoose.Types.ObjectId.isValid(productId)) {
+                console.log("Invalid Product ID format");
+                return res.redirect("/admin/products");
+            }
 
-            const id = req.query.id;
-           // console.log(id)
-            const product = await Product.findOne({_id:id})
-            const category = await Category.find({})
-            const brand = await Brand.find({})
-
-           // console.log("category", category)
-
-            res.render("edit-product",{
-                product:product,
-                cat:category,
-                brand: brand,
-                productImage:product.productImage
-            })
+            // Fetch the product with populated category
+            const product = await Product.findById(productId).populate('category');
             
+            if (!product) {
+                console.log("Product not found");
+                return res.redirect("/admin/products");
+            }
+
+            // Fetch categories and brands
+            const [categories, brands] = await Promise.all([
+                Category.find({}),
+                Brand.find({})
+            ]);
+
+            // Debug logs
+            console.log("2. Product Data:", {
+                id: product._id,
+                name: product.productName,
+                images: product.productImage,
+                imageCount: product.productImage.length
+            });
+
+            // Render the page with all necessary data
+            res.render("edit-product", {
+                product: product,
+                cat: categories,
+                brand: brands,
+                currentImages: product.productImage,
+                message: ""
+            });
+
         } catch (error) {
-
-            console.error(error)
-
-            res.redirect("/pageerror")
-            
+            console.error("Error in getEditProduct:", error);
+            console.error('Full error stack:', error.stack);
+            res.redirect("/admin/products");
         }
-    }
+    };
 
 
     const editProduct = async (req, res) => {
         try {
-            let id = req.params.id?.trim(); // Trim the ID to remove spaces
-           // console.log("Raw Product ID:", req.params.id);
-           // console.log("Trimmed Product ID:", id);
+            let id = req.params.id?.trim();
     
             // Validate product ID
             if (!id || !mongoose.Types.ObjectId.isValid(id)) {
                 return res.status(400).json({ error: "Invalid or missing Product ID" });
             }
     
-            // Fetch the product by ID
+            // Fetch the product
             const product = await Product.findById(id);
             if (!product) {
                 return res.status(404).json({ error: "Product not found" });
             }
     
             const data = req.body;
-            console.log("Request Data:", data);
-    
-            // Check for existing product with the same name
+            
+            // Check for existing product with same name
             const existingProduct = await Product.findOne({
                 productName: data.productName,
-                _id: { $ne: id }, // Exclude the current product ID
+                _id: { $ne: id }
             });
-    
+
             if (existingProduct) {
                 return res.status(400).json({
-                    error: "Product with this name already exists. Please try with another name.",
+                    error: "Product with this name already exists"
                 });
             }
-    
-            // Process uploaded files
-            const images = req.files?.map(file => file.filename) || [];
-          //  console.log("Uploaded Images:", images);
-    
+
+            // Handle image uploads to Cloudinary
+            const images = [];
+            if (req.files && req.files.length > 0) {
+                for (const file of req.files) {
+                    try {
+                        const result = await uploadToCloudinary(file);
+                        images.push({
+                            url: result.secure_url,
+                            public_id: result.public_id
+                        });
+                    } catch (error) {
+                        console.error('Error uploading to Cloudinary:', error);
+                        return res.status(500).send("Error uploading images");
+                    }
+                }
+            }
+
+            // Handle category
+            let categoryId;
+            if (mongoose.Types.ObjectId.isValid(data.category)) {
+                categoryId = data.category;
+            } else {
+                const category = await Category.findOne({ name: data.category });
+                if (!category) {
+                    return res.status(400).json({ error: "Invalid category" });
+                }
+                categoryId = category._id;
+            }
+
             // Build update fields
             const updateFields = {
                 productName: data.productName,
                 description: data.description,
                 brand: data.brand,
-                category: product.category,
-                regularPrice: data.regularPrice,
-                salePrice: data.salePrice,
-                quantity: data.quantity,
+                category: categoryId,
+                regularPrice: parseFloat(data.regularPrice),
+                salePrice: parseFloat(data.salePrice),
+                quantity: parseInt(data.quantity),
                 size: data.size,
                 color: data.color,
             };
-    
-            // Add images to the update if any were uploaded
-            if (req.files && req.files.length > 0) {
-                updateFields.$push = { productImage: { $each: images } };
+
+            // Add new images if any were uploaded
+            if (images.length > 0) {
+                updateFields.$push = { 
+                    productImage: { $each: images.map(img => img.url) },
+                    cloudinaryIds: { $each: images.map(img => img.public_id) }
+                };
             }
-    
+
             // Update the product
-            await Product.findByIdAndUpdate(id, updateFields, { new: true });
-          //  console.log("Product updated successfully");
-           // res.redirect("/admin/products");
+            const updatedProduct = await Product.findByIdAndUpdate(
+                id,
+                updateFields,
+                { new: true, runValidators: true }
+            );
+
+            console.log("Updated Product:", updatedProduct);
+            res.redirect("/admin/products");
+
         } catch (error) {
-            console.error("Error updating product:", error.message, error.stack);
-            res.redirect("/pageerror");
+            console.error("Error updating product:", error);
+            res.status(500).json({ 
+                error: "Error updating product", 
+                details: error.message 
+            });
         }
     };
 
 
-
     
 
 
-    const deleteSingleImage = async (req, res)=>{
+    const deleteSingleImage = async (req, res) => {
         try {
-            const { imageNameToServer, productIdToServer } = req.body; // Corrected variable names
-            const product = await Product.findByIdAndUpdate(productIdToServer, { $pull: { productImage: imageNameToServer } });
-            const imagePath = path.join("public", "uploads", "re-image", imageNameToServer);
-    
-           // console.log(`imagePath: ${imagePath}`);
-            if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath); // Synchronously delete the file
-              //  console.log(`Image ${imageNameToServer} deleted successfully`);
-            } else {
-                console.log(`Image ${imageNameToServer} not found`);
+            const { imageUrl, productId } = req.body;
+            console.log("Delete request for:", { imageUrl, productId });
+
+            // Validate productId
+            if (!mongoose.Types.ObjectId.isValid(productId)) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: 'Invalid product ID' 
+                });
             }
-    
-            res.send({ status: true });
+
+            // Find the product
+            const product = await Product.findById(productId);
+            if (!product) {
+                return res.status(404).json({ 
+                    success: false, 
+                    message: 'Product not found' 
+                });
+            }
+
+            // Find the index of the image URL
+            const imageIndex = product.productImage.indexOf(imageUrl);
+            if (imageIndex === -1) {
+                return res.status(404).json({ 
+                    success: false, 
+                    message: 'Image not found in product' 
+                });
+            }
+
+            // Get the corresponding cloudinary public_id
+            const publicId = product.cloudinaryIds[imageIndex];
+            console.log("Attempting to delete Cloudinary image:", publicId);
+
+            // Delete from cloudinary if it's a cloudinary URL
+            if (publicId) {
+                try {
+                    await cloudinary.uploader.destroy(publicId);
+                    console.log("Successfully deleted from Cloudinary");
+                } catch (cloudinaryError) {
+                    console.error("Cloudinary deletion error:", cloudinaryError);
+                    // Continue with local deletion even if cloudinary fails
+                }
+            }
+
+            // Remove from product document
+            product.productImage.splice(imageIndex, 1);
+            product.cloudinaryIds.splice(imageIndex, 1);
+            await product.save();
+            console.log("Successfully updated product document");
+
+            return res.json({ 
+                success: true, 
+                message: 'Image deleted successfully' 
+            });
+
         } catch (error) {
-            console.error(error);
-            res.redirect("/pageerror");
+            console.error('Error in deleteSingleImage:', error);
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Error deleting image',
+                error: error.message 
+            });
         }
-    }
+    };
 
 module.exports ={
     getProductAddPage,

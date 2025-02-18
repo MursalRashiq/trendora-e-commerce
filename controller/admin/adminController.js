@@ -4,16 +4,66 @@ const bcrypt = require('bcrypt')
 const { session } = require("passport")
 const { pageNotFound } = require("../user/userController")
 const Category = require("../../models/categorySchema")
+const Order = require('../../models/orderSchema')
+const Product = require('../../models/productSchema')
 
 
 
-const loadLogin = async (req, res) =>{
-    if(req.session.admin){
-        return res.render("dashboard")
+
+const loadLogin = async (req, res) => {
+    try {
+        if (req.session.admin) {
+            // Debug log to check session
+            console.log("Admin session exists:", req.session.admin);
+
+            try {
+                // Fetch counts with 
+                const totalUsers = await User.countDocuments({ isAdmin: false }) || 0;
+                const totalOrders = await Order.countDocuments() || 0;
+                const totalProducts = await Product.countDocuments() || 0;
+
+                // Debug log for counts
+                console.log("Initial counts:", { totalUsers, totalOrders, totalProducts });
+
+                // Calculate revenue
+                const deliveredOrders = await Order.find({ status: 'delivered' });
+                console.log("Delivered orders found:", deliveredOrders.length);
+
+                const totalRevenue = deliveredOrders.reduce((sum, order) => {
+                    const amount = order.finalAmound || 0;
+                    console.log("Order amount:", amount);
+                    return sum + amount;
+                }, 0);
+
+                // Final debug log
+                const dashboardData = {
+                    totalUsers,
+                    totalOrders,
+                    totalProducts,
+                    totalRevenue
+                };
+                console.log("Final Dashboard Data:", dashboardData);
+
+                return res.render("dashboard", dashboardData);
+            } catch (error) {
+                console.error("Error fetching dashboard data:", error);
+                
+                return res.render("dashboard", {
+                    totalUsers: 0,
+                    totalOrders: 0,
+                    totalProducts: 0,
+                    totalRevenue: 0
+                });
+            }
+        }
+        
+        return res.render("admin-login", { message: null });
+        
+    } catch (error) {
+        console.error("Error in loadLogin:", error);
+        return res.redirect("/admin/error");
     }
-
-    res.render("admin-login",{message: null})
-}
+};
 
 
 const login = async (req, res) => {
@@ -28,7 +78,7 @@ const login = async (req, res) => {
             // Compare passwords
             const passwordMatch = await bcrypt.compare(password, admin.password);
             if (passwordMatch) {
-                req.session.admin = true; // Set admin session
+                req.session.admin = true; 
                 return res.redirect("/admin");
             } else {
                 console.log("Incorrect password");
@@ -49,16 +99,39 @@ const login = async (req, res) => {
 
 
 
-const loadDashboard = async (req, res)=>{
-   
-    if(req.session.admin){
-        try {
-            res.render("dashboard")
-        } catch (error) {
-            res.redirect("/", pageNotFound)
+const loadDashboard = async (req, res) => {
+    try {
+        if (req.session.admin) {
+            // Fetch counts with error checking
+            const totalUsers = await User.countDocuments({ isAdmin: false }) || 0;
+            const totalOrders = await Order.countDocuments() || 0;
+            const totalProducts = await Product.countDocuments() || 0;
+
+            // Calculate revenue
+            const deliveredOrders = await Order.find({ status: 'delivered' });
+            const totalRevenue = deliveredOrders.reduce((sum, order) => 
+                sum + (order.finalAmound || 0), 0);
+
+            console.log("Dashboard Data in loadDashboard:", {
+                totalUsers,
+                totalOrders,
+                totalProducts,
+                totalRevenue
+            });
+
+            return res.render("dashboard", {
+                totalUsers,
+                totalOrders,
+                totalProducts,
+                totalRevenue
+            });
         }
+        res.redirect("/admin/login");
+    } catch (error) {
+        console.error("Error in loadDashboard:", error);
+        res.redirect("/admin/error");
     }
-}
+};
 
 
 const pageerror = async (req, res)=>{

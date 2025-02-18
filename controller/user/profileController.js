@@ -204,14 +204,25 @@ const userProfile = async (req, res) => {
       const userId = req.session.user;
       const userData = await User.findById(userId).populate('orderHistory');
       const addressData = await Address.findOne({ userId: userId });
+
   
-      // Check if data is being fetched correctly
       console.log(userData, "user data");
+      console.log(userData.walletHistory, "Wallet History");
+
+      const walletHistory = userData.walletHistory.map(x => ({
+        status: x.type,  
+        date: x.timestamp,
+        amount: x.amount, 
+        
+    }))
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
   
-      // Pass both user data and address data correctly to the view
       res.render('profile', {
-        locals: userData, // Full user data (including orderHistory populated)
-        userAddress: addressData, // Address data
+        
+        locals: userData, 
+        userAddress: addressData, 
+        walletHistory
+
       });
     } catch (error) {
       console.error("Error retrieving profile data", error);
@@ -406,7 +417,12 @@ const addAddress = async (req, res)=>{
 
         const user = req.session.user
         const userData = await User.findById(user)
-        res.render("add-address",{locals: userData})
+        let cartQuantity = 0;
+        
+        res.render("add-address",{
+            userData: userData,
+            
+        })
         
     } catch (error) {
 
@@ -485,7 +501,9 @@ const editAddress = async (req, res) => {
         }
         const userData = await User.findOne({_id: user})
 
-        res.render("edit-address", { address: addressData, locals: userData });
+        
+
+        res.render("edit-address", { address: addressData, locals: userData, });
 
     } catch (error) {
         console.error("edit address error", error);
@@ -570,6 +588,168 @@ res.redirect("/profile")
 }
 
 
+const changeName = async (req, res) => {
+    try {
+        const userId = req.session.user;
+        
+        if (!userId) {
+            return res.redirect('/login');
+        }
+
+        const userData = await User.findById(userId);
+        
+        if (!userData) {
+            req.flash('error', 'User not found');
+            return res.redirect('/profile');
+        }
+
+        res.render("change-name", {
+            user: userData, 
+            message: req.flash()
+        });
+
+    } catch (error) {
+        console.error("Error in changeName:", error);
+        req.flash('error', 'Something went wrong');
+        return res.redirect('/profile');
+    }
+};
+
+const changeNamePost = async (req, res) => {
+    try {
+        const { newName, reNewName } = req.body;
+        const userId = req.session.user
+
+        if (!userId) {
+            return res.redirect('login');
+        }
+
+        
+        if (!newName || !reNewName) {
+            req.flash('error', 'Please fill all fields');
+            return res.redirect('change-name');
+        }
+
+        if (newName !== reNewName) {
+            req.flash('error', 'Names do not match');
+            return res.redirect('/change-name');
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $set: { name: newName } },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            req.flash('error', 'User not found');
+            return res.redirect('change-name');
+        }
+
+        
+        req.session.user.name = newName;
+        
+        req.flash('success', 'Name updated successfully');
+        return res.redirect('profile');
+
+    } catch (error) {
+        console.error("Error in changeNamePost:", error);
+        req.flash('error', 'Something went wrong');
+        return res.redirect('change-name');
+    }
+};
+
+
+
+const changePhone = async (req, res) => {
+    try {
+        const userId = req.session.user;
+        
+        if (!userId) {
+            return res.redirect('/login');
+        }
+
+        const userData = await User.findById(userId);
+        
+        if (!userData) {
+            req.flash('error', 'User not found');
+            return res.redirect('/profile');
+        }
+
+        res.render("change-phone", {
+            locals: userData,
+            message: req.flash(),
+            // cartQuantity,
+            // wishlistQuantity
+        });
+
+    } catch (error) {
+        console.error("Error in changePhone:", error);
+        req.flash('error', 'Something went wrong');
+        return res.redirect('/profile');
+    }
+};
+
+const changePhonePost = async (req, res) => {
+    try {
+        const { newPhone, reNewPhone } = req.body;
+        const userId = req.session.user
+
+        if (!userId) {
+            return res.redirect('/login');
+        }
+
+        // Basic validation
+        if (!newPhone || !reNewPhone) {
+            req.flash('error', 'Please fill all fields');
+            return res.redirect('/change-phone');
+        }
+
+        // Phone number validation
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(newPhone)) {
+            req.flash('error', 'Please enter a valid 10-digit phone number');
+            return res.redirect('/change-phone');
+        }
+
+        if (newPhone !== reNewPhone) {
+            req.flash('error', 'Phone numbers do not match');
+            return res.redirect('/change-phone');
+        }
+
+        // Check if phone number already exists
+        const existingUser = await User.findOne({ phone: newPhone });
+        if (existingUser && existingUser._id.toString() !== userId.toString()) {
+            req.flash('error', 'Phone number already in use');
+            return res.redirect('/change-phone');
+        }
+
+        // Update user phone
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $set: { phone: newPhone } },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            req.flash('error', 'User not found');
+            return res.redirect('/change-phone');
+        }
+
+        // Update session
+        req.session.user.phone = newPhone;
+        
+        req.flash('success', 'Phone number updated successfully');
+        return res.redirect('/profile');
+
+    } catch (error) {
+        console.error("Error in changePhonePost:", error);
+        req.flash('error', 'Something went wrong');
+        return res.redirect('/change-phone');
+    }
+};
+
+
 
 
 
@@ -591,5 +771,9 @@ module.exports = {
     postAddAddress,
     editAddress,
     postEditAddress,
-    deleteAddress
+    deleteAddress,
+    changeName,
+    changeNamePost,
+    changePhone,
+    changePhonePost
 }

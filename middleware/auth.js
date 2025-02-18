@@ -50,9 +50,43 @@ const adminAuth=(req,res,next)=>{
         })
     }
 
+
+    const updateCounts = async (req, res, next) => {
+        if (req.user) { 
+            try {
+                const findUser = await User.findById(req.user._id);
+                
+                let cartQuantity = findUser?.cart.reduce((total, item) => total + item.quantity, 0) || 0;
+                let wishlistQuantity = findUser?.wishlist.length || 0;
+    
+                res.locals.cartQuantity = cartQuantity;
+                res.locals.wishlistQuantity = wishlistQuantity;
+            } catch (error) {
+                console.error("Error fetching cart/wishlist count:", error);
+                res.locals.cartQuantity = 0;
+                res.locals.wishlistQuantity = 0;
+            }
+        } else {
+            res.locals.cartQuantity = 0;
+            res.locals.wishlistQuantity = 0;
+        }
+        
+        next();
+    };
+
+
+
+
+
+
+
+
+
+
 module.exports={
     userAuth,
     adminAuth,
-    alreadyLoggedIn
+    alreadyLoggedIn,
+    updateCounts
 
 }

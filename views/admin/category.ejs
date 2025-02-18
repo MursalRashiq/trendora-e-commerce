@@ -2,24 +2,17 @@
 
 <style>
 body {
-    display: flex;
-    height: 100vh;
+    background-color: #f4f7f6;
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #f4f7f6;
-    
 }
 
-
-
 .content {
-    padding: 80px;
-    flex-grow: 1;
-    
+    padding: 15px;
+    margin-top: 20px;
 }
 
 .content-header {
-    margin-top: 60px;
 }
 
 .content-title {
@@ -30,23 +23,24 @@ body {
 
 .card {
     background-color: #ffffff;
-    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .card-header {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.card-body {
+    padding: 15px;
 }
 
 .form-control {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
+    padding: 8px;
+    margin-bottom: 12px;
     border: 1px solid #ced4da;
     border-radius: 5px;
     transition: border-color 0.3s ease;
@@ -110,7 +104,7 @@ body {
 
 .table th,
 .table td {
-    padding: 1rem;
+    padding: 0.75rem;
     vertical-align: middle;
     border-top: 1px solid #dee2e6;
     text-align: left;
@@ -216,61 +210,88 @@ body {
     transform: scale(0.95);
 }
 
-@media (min-width: 768px) {
-    .row {
-        display: flex;
-        flex-wrap: wrap;
-    }
-
-    .col-md-4 {
-        width: 33.333%;
-    }
-
-    .col-md-8 {
-        width: 66.666%;
-    }
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -10px;
 }
 
+.col-md-4, .col-md-8 {
+    padding: 10px;
+}
+
+.col-md-4 {
+    flex: 0 0 25%;
+    max-width: 25%;
+}
+
+.col-md-8 {
+    flex: 0 0 75%;
+    max-width: 75%;
+}
+
+@media (max-width: 768px) {
+    .col-md-4, .col-md-8 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .content {
+        padding: 10px;
+    }
+
+    .card-header {
+        padding: 15px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+}
 </style>
 
 <body>
-        <section class="content">
-            <div class="content-header" style="margin-top: 130px;">
-                <h2 class="content-title">Category Management</h2>
+    <div class="content">
+        <div class="content-header">
+            <h2 class="content-title">Category Management</h2>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <form action="/admin/category" method="get" class="d-flex">
+                    <input type="text" class="form-control me-2" placeholder="Search categories" name="search">
+                    <button class="btn btn-primary">Search</button>
+                </form>
             </div>
-        
-            <div class="card">
-                <div class="card-header">
-                    <!-- Search Form -->
-                    <form action="/admin/category" method="get" class="d-flex">
-                        <input type="text" class="form-control me-2" placeholder="Search categories" name="search">
-                        <button class="btn btn-primary">Search</button>
-                    </form>
-                </div>
-        
-                <div class="card-body">
-                    <div class="row">
-                        <!-- Create Category Form -->
-                        <div class="col-md-4">
-                            <form method="post" action="/admin/addCategory" onsubmit="return handleFormSubmit(event)">
-                                <div class="mb-3">
-                                    <label for="categoryName" class="form-label">Category Name</label>
-                                    <input type="text" class="form-control" id="categoryName" name="name" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="categoryDescription" class="form-label">Description</label>
-                                    <textarea class="form-control" id="categoryDescription" name="description" rows="3" required></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="offerPrice" class="form-label">Offer Price</label>
-                                    <input type="number" class="form-control" id="offerPrice" name="offerPrice" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100" onclick="validateForm()">Create Category</button>
-                            </form>
+
+            <div class="card-body">
+                <div class="row">
+                    <!-- Create Category Form -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="post" action="/admin/addCategory" onsubmit="return handleFormSubmit(event)">
+                                    <div class="mb-3">
+                                        <label for="categoryName" class="form-label">Category Name</label>
+                                        <input type="text" class="form-control" id="categoryName" name="name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="categoryDescription" class="form-label">Description</label>
+                                        <textarea class="form-control" id="categoryDescription" name="description" rows="3" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="offerPrice" class="form-label">Offer Price</label>
+                                        <input type="number" class="form-control" id="offerPrice" name="offerPrice" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100" onclick="validateForm()">Create Category</button>
+                                </form>
+                            </div>
                         </div>
-        
-                        <!-- Category List Table -->
-                        <div class="table-responsive col-md-8">
+                    </div>
+
+                    <!-- Category List Table -->
+                    <div class="col-md-8">
+                        <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
@@ -323,7 +344,6 @@ body {
                                                 <% } %>
                                             </td>
                                             <!-- Edit button -->
-                                            <!-- Edit button -->
                                                 <td class="text-start">
                                                     <button  style="width: 70px; background-color: #17a2b8; padding: 10px;" class="border-0 rounded-pill">
                                                         <a href="/admin/editCategory/<%= category._id %>" class="text-white" style="text-decoration: none;">Edit</a>
@@ -336,33 +356,27 @@ body {
                         </div>
                     </div>
                 </div>
-
             </div>
+        </div>
 
-
-            <div class="pagination-container">
-                <% if (currentPage > 1) { %>
-                    <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
-                <% } %>
-            
-                <% for (let i = 1; i <= totalPages; i++) { %>
-                    <% if (i === currentPage) { %>
-                        <span class="current-page"><%= i %></span>
-                    <% } else { %>
-                        <a href="?page=<%= i %>"><%= i %></a>
-                    <% } %>
-                <% } %>
-            
-                <% if (currentPage < totalPages) { %>
-                    <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
-                <% } %>
-            </div>
-        </section>
+        <div class="pagination-container">
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+            <% } %>
         
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <% if (i === currentPage) { %>
+                    <span class="current-page"><%= i %></span>
+                <% } else { %>
+                    <a href="?page=<%= i %>"><%= i %></a>
+                <% } %>
+            <% } %>
+        
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
+            <% } %>
+        </div>
     </div>
-
-   
-    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>

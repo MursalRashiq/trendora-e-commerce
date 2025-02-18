@@ -2,62 +2,212 @@
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
 </head>
-<div class="content-header" style="margin: 10%;">
-    <h2 class="content-title card-title" style="margin-top: 70px;">Order List</h2>
-</div>
-<header class="card-header text-center mb-20">
-    <form action="" method="get" class="d-inline" style="margin-top: 150px;">
-        <div class="input-group input-group-sm border border-1 border-grey rounded-pill" style="width: 500px; margin-left: 230px;">
-            <input type="text" class="form-control border-0 rounded-pill" placeholder="Search orders or customers" name="search">
-            <button class="btn border-0" type="submit">Search</button>
-        </div>
-    </form>
-</header>
-<div class="right mt-5">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col"><b>Order ID</b></th>
-                <th scope="col"><b>Customer Name</b></th>
-                <th scope="col"><b>Total Price</b></th>
-                <th scope="col"><b>Status</b></th>
-                <th scope="col"><b>Payment Method</b></th>
-                <th scope="col"><b>Action</b></th>
-            </tr>
-        </thead>
-        <tbody>
-            <% for (let i = 0; i < orders.length; i++) { %>
-            <tr >
-              
-                <td><%= orders[i].orderId %></td>
-                <td><%= orders[i].user ? orders[i].user.name : 'N/A' %></td> 
-                <td>₹<%= orders[i].totalPrice.toFixed(2) %></td>
-                <td><%= orders[i].status %></td>
-                <td style="padding-left: 55px;"><%= orders[i].paymentMethod %></td>
+<style>
+    .content-main {
+        padding: 30px;
+        margin-top: 20px;
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
 
-                    <% if (orders[i].status === "pending") { %>
-                    <button class="btn btn-success" onclick="changeOrderStatus('<%= orders[i].orderId %>', 'processing')" style="width: 100px;">Start Processing</button>
-                    <% } else if (orders[i].status === "processing") { %>
-                    <button class="btn btn-warning" onclick="changeOrderStatus('<%= orders[i].orderId %>', 'shipped')" style="width: 100px;">Mark as Shipped</button>
-                    <% } else if (orders[i].status === "shipped") { %>
-                    <button class="btn btn-primary" onclick="changeOrderStatus('<%= orders[i].orderId %>', 'delivered')" style="width: 100px;">Mark as Delivered</button>
-                    <% } %>
+    .content-header {
+        margin-bottom: 25px;
+    }
 
-                </td>
-                <td>
-                    <button class="btn btn-info" style="width: 80px;">
+    .content-title {
+        font-size: 1.75rem;
+        color: #2c3e50;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #3498db;
+    }
 
-                        <a href="/admin/orderDetailsAdmin?id=<%= orders[i].orderId %>" class="text-white" style="text-decoration: none;">View</a>
-                    </button>
-                </td>
-            </tr>
-            <% } %>
-        </tbody>
-    </table>
-</div>
-<div class="container mt-3">
+    .search-container {
+        margin: 20px 0;
+        width: 100%;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .search-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .search-input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        margin-top: 20px;
+        overflow-x: auto;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 0;
+        border-collapse: collapse;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        color: #2c3e50;
+        padding: 15px 20px;
+        font-weight: 600;
+        text-align: left;
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .table td {
+        padding: 15px 20px;
+        vertical-align: middle;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .table-row.visible {
+        display: table-row;
+    }
+
+    .table-row {
+        display: none;
+    }
+
+    .btn-view {
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s;
+    }
+
+    .btn-view:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin-top: 30px;
+        padding: 0;
+        list-style: none;
+    }
+
+    .page-item {
+        margin: 0 4px;
+    }
+
+    .page-link {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .page-link:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+    .page-item.active .page-link {
+        background-color: #0056b3;
+    }
+
+    .page-item.disabled .page-link {
+        background-color: #6c757d;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+        .content-main {
+            padding: 15px;
+        }
+
+        .search-container {
+            width: 100%;
+            padding: 0 15px;
+        }
+
+        .table td, .table th {
+            padding: 12px 15px;
+        }
+
+        .pagination {
+            flex-wrap: wrap;
+        }
+    }
+</style>
+
+<div class="content-main">
+    <div class="content-header">
+        <h2 class="content-title">Order List</h2>
+    </div>
+
+    <div class="search-container">
+        <form action="" method="get" class="search-form">
+            <input type="text" 
+                   class="search-input" 
+                   placeholder="Search orders or customers" 
+                   name="search"
+                   value="">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Payment Method</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (let i = 0; i < orders.length; i++) { %>
+                <tr>
+                    <td><%= orders[i].orderId %></td>
+                    <td><%= orders[i].user ? orders[i].user.name : 'N/A' %></td>
+                    <td>₹<%= orders[i].totalPrice.toFixed(2) %></td>
+                    <td><%= orders[i].status %></td>
+                    <td><%= orders[i].payment %></td>
+                    <td>
+                        <a href="/admin/orderDetailsAdmin?id=<%= orders[i].orderId %>" 
+                           class="btn-view">View</a>
+                    </td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
     <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center mb-20" style="margin-right: 200px;">
+        <ul class="pagination justify-content-center">
             <% for (let i = 1; i <= totalPages; i++) { %>
             <li class="page-item <%= (i === currentPage) ? 'active' : '' %>">
                 <a class="page-link" href="?page=<%= i %>"><%= i %></a>
@@ -83,7 +233,7 @@
       }).then((result) => {
           if (result.isConfirmed) {
               $.ajax({
-                  url: "/admin/changeOrderStatus",
+                  url: "/admin/changeStatus",
                   method: "GET",
                   data: { orderId: orderId, status: newStatus },
                   success: (response) => {

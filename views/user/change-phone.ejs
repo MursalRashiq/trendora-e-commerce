@@ -1,0 +1,50 @@
+<%- include("../../views/partials/user/header") %>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Change Phone Number</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/change-phone" method="POST">
+                        <% if (messages.error) { %>
+                            <div class="alert alert-danger"><%= messages.error %></div>
+                        <% } %>
+                        <% if (messages.success) { %>
+                            <div class="alert alert-success"><%= messages.success %></div>
+                        <% } %>
+                        
+                        <div class="form-group mb-3">
+                            <label for="newPhone">New Phone Number</label>
+                            <input type="tel" 
+                                   class="form-control" 
+                                   id="newPhone" 
+                                   name="newPhone" 
+                                   pattern="[0-9]{10}"
+                                   title="Please enter a valid 10-digit phone number"
+                                   required>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="reNewPhone">Confirm Phone Number</label>
+                            <input type="tel" 
+                                   class="form-control" 
+                                   id="reNewPhone" 
+                                   name="reNewPhone" 
+                                   pattern="[0-9]{10}"
+                                   title="Please enter a valid 10-digit phone number"
+                                   required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Update Phone Number</button>
+                        <a href="/profile" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include("../../views/partials/user/footer") %>

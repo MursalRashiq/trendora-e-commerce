@@ -1,5 +1,5 @@
-<!doctype html>
-<html class="no-js" lang="zxx">
+<!DOCTYPE html>
+<html class="no-js" lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -26,45 +26,140 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
- #navigation {
+/* Header Base */
+/* Reset basic navigation styles */
+/* Main Navigation Styles */
+#navigation {
     list-style: none;
     display: flex;
     padding: 0;
     margin: 0;
     align-items: center;
+    justify-content: flex-start;
+    width: 100%;
 }
 
-#navigation li {
-    margin-right: 20px;
+/* Navigation Items */
+#navigation > li {
+    position: relative;
+    margin-right: 30px;
+}
+
+#navigation > li > a {
+    display: block;
+    padding: 10px 0;
+    color: black;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Auth Container Positioning */
+#navigation .sign-in-container {
+    margin-left: auto !important;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Dropdown Styles */
+.dropdown {
+    margin-left: auto !important;
+}
+
+/* Mobile Styles */
+@media (max-width: 991px) {
+    #navigation {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #navigation > li {
+        margin-right: 0;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    #navigation .sign-in-container {
+        margin: 10px 0 !important;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .dropdown {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+}
+
+/* Container Styles */
+.main-menu {
+    flex-grow: 1;
+}
+
+.menu-wrapper {
+    padding: 15px 0;
+}
+
+.header-left {
+    flex-grow: 1;
+    gap: 40px;
 }
 
 .sign-in-link {
     color: black;
     text-decoration: none;
-    padding: 5px 10px;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    display: inline-block;
+    white-space: nowrap; /* Prevent text wrapping */
 }
 
-.sign-in-link:hover {
-    color: #007bff; /* Optional hover effect */
+/* Mobile adjustments */
+@media (max-width: 991px) {
+    .sign-in-container {
+        margin: 10px 0 !important;
+        justify-content: center;
+        width: 100%;
+        gap: 15px; /* Reduce gap on smaller screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .sign-in-link {
+        padding: 8px 15px; /* Smaller padding for mobile */
+        font-size: 14px; /* Optional: Adjust font size */
+    }
+    .sign-in-container {
+        gap: 10px; /* Smaller gap for mobile */
+    }
 }
 
 .dropdown {
     position: relative;
+    margin-left: auto !important;
+    text-align: center;
+}
+
+.dropdown .sign-in-link {
+    padding: 8px 20px;
 }
 
 .dropdown-content {
-    display: none;
     position: absolute;
+    right: 0;
+    top: 100%;
     background-color: white;
-    min-width: 160px;
+    min-width: 180px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    display: none;
     z-index: 1000;
 }
 
 .dropdown-content a {
-    color: black;
     padding: 12px 16px;
-    text-decoration: none;
     display: block;
 }
 
@@ -76,10 +171,140 @@
     display: block;
 }
 
+.header-right1 {
+    display: flex;
+    align-items: center;
+    margin-left: 30px;
+}
 
+.search ul {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.wishlist-stor {
+    position: relative;
+    cursor: pointer;
+}
+
+.wishlist-stor a {
+    color: #000;
+    font-size: 24px;
+    transition: all 0.3s ease;
+}
+
+.wishlist-stor:hover a {
+    color: #ff4b6e;
+}
+
+.wishlist-stor i {
+    transition: transform 0.3s ease;
+}
+
+.wishlist-stor:hover i {
+    transform: scale(1.1);
+}
+
+.wishlist-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff4b6e;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 991px) {
+    #navigation {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #navigation > li {
+        margin-right: 0 !important;
+        padding: 10px 0;
+    }
+
+    .sign-in-container {
+        margin: 10px 0 !important;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .dropdown-content {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+    }
+}
+
+@media (max-width: 576px) {
+    .sign-in-container {
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .sign-in-link {
+        padding: 8px 15px;
+    }
+}
+
+/* Header Auth Section Styles */
+.sign-in-container {
+    margin-left: auto !important;
+    display: flex;
+    flex-direction: row;  /* Explicitly set horizontal layout */
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.sign-in-link {
+    color: black;
+    text-decoration: none;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+/* Ensure horizontal layout is maintained on mobile */
+@media (max-width: 991px) {
+    .sign-in-container {
+        margin: 10px 0 !important;
+        flex-direction: row;
+        width: 100%;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .sign-in-container {
+        flex-direction: row;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .sign-in-link {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+}
 
     </style>
-
 
 </head>
 <body class="full-wrapper">
@@ -96,84 +321,87 @@
     </div>
     <!-- Preloader Start-->
     <header>
-        <!-- Header Start -->
-        <div class="header-area ">
+        <div class="header-area">
             <div class="main-header header-sticky">
                 <div class="container-fluid">
                     <div class="menu-wrapper d-flex align-items-center justify-content-between">
+                        <!-- Left Section with Logo and Navigation -->
                         <div class="header-left d-flex align-items-center">
                             <!-- Logo -->
                             <div class="logo">
-                                <!-- <a href="index.html" style="font-style: Fantasy;"><h1>TRENDORA</h1></a> -->
-                                 <a href="index.html"><img src="/assets/img/logo/logo-removebg-preview.png" alt="" width="200px"></a>
+                                <a href="/">
+                                    <img src="/assets/img/logo/logo-removebg-preview.png" alt="" width="200px">
+                                </a>
                             </div>
-                            <!-- Main-menu -->
-                            <div class="main-menu  d-none d-lg-block">
+                            <!-- Main Menu -->
+                            <div class="main-menu d-none d-lg-block">
                                 <nav>
-                                    <ul id="navigation" style="display: flex; align-items: center;">
-                                        <!-- Main Navigation Links -->
+                                    <ul id="navigation">
                                         <li><a href="/">Home</a></li>
                                         <li><a href="/shop">Shop</a></li>
                                         <li><a href="contact.html">Contact</a></li>
-                                
-                                        <!-- User Account Section -->
+                                        
+                                        <!-- Auth Section -->
+                                        
                                         <% if (locals && locals.name) { %>
-                                            <li class="dropdown" style="margin-left: auto;">
-                                                <a href="#" class="sign-in-link" 
-                                                style="display: flex;
-                                                        margin-left: 500px;">
-                                                <%= locals.name %></a>
-                                                <div class="dropdown-content" style="margin-left: 500px;">
+                                            <li class="dropdown">
+                                                <a href="#" class="sign-in-link"><%= locals.name%></a>
+                                                <div class="dropdown-content">
                                                     <a href="/profile">Profile</a>
-                                                    <a  type="button" onclick="confirmLogout()" style="cursor:grab;">Logout</a>
+                                                    <a type="button" onclick="confirmLogout()">Logout</a>
                                                 </div>
                                             </li>
                                         <% } else { %>
-                                            <div class="sign-in-container" style="margin-left: 200px; display: flex; gap: 10px;">
+                                            <li class="sign-in-container">
                                                 <a href="/signup" class="sign-in-link">Sign Up</a>
                                                 <a href="/login" class="sign-in-link">Login</a>
-                                            </div>
+                                            </li>
                                         <% } %>
+                                        
                                     </ul>
                                 </nav>
-                                
-                            </div>   
+                            </div>
                         </div>
-                        <div class="header-right1 d-flex align-items-center">
-                            <!-- Social
-                            <div class="header-social d-none d-md-block">
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#"><i class="fab fa-pinterest-p"></i></a>
-                            </div> -->
-                            <!-- Search Box -->
+    
+                        <!-- Right Section with Search and Cart -->
+                        <div class="header-right1">
                             <div class="search d-none d-md-block">
                                 <ul class="d-flex align-items-center">
-                                    <li class="mr-15">
+                                    <li>
                                         <div class="nav-search search-switch">
+                                            <form action="/search" method="POST" class="search-form">
                                             <i class="ti-search"></i>
+                                            </form>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="wishlist-stor">
+                                            <a href="/wishlist">
+                                                <i class="ti-heart"></i>
+                                                <span id="wishlistCount" class="wishlist-count">0</span>
+                                            </a>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="card-stor">
                                             <a href="/cart">
-                                            <img src="assets/img/gallery/card.svg" alt="">
-                                            <span></span>
-                                        </a>
+                                                <img src="/assets/img/gallery/card.svg" alt="">
+                                                <span id="cartCount">0</span>
+                                            </a>
                                         </div>
                                     </li>
                                 </ul>
                             </div>
                         </div>
+    
                         <!-- Mobile Menu -->
                         <div class="col-12">
-                            <div class="mobile_menu d-block d-lg-none" style="top: -38px"></div>
+                            <div class="mobile_menu d-block d-lg-none"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Header End -->
     </header>
     <!-- header end -->
 
@@ -227,5 +455,31 @@
           }
         });
       }
+
+      function updateWishlistCount(count) {
+        const wishlistCount = document.getElementById('wishlistCount');
+        if (wishlistCount) {
+            wishlistCount.textContent = count;
+            wishlistCount.style.display = count > 0 ? 'flex' : 'none';
+        }
+      }
+
+      async function updateCounts() {
+          try {
+              const response = await fetch('/getCountOfCartWish'); 
+              const data = await response.json();
+
+              // Update count in the UI
+              document.getElementById('wishlistCount').innerText = data.wishlistQuantity;
+              document.getElementById('cartCount').innerText = data.cartQuantity;
+          } catch (error) {
+              console.error("Error updating counts:", error);
+          }
+      }
+
+      // Fetch updated counts every 5 seconds
+      setInterval(updateCounts, 5000);
+
+      // Call once when the page loads
+      updateCounts();
     </script>
-    

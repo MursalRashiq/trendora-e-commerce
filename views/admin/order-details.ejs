@@ -11,7 +11,7 @@
         
         <p><strong>Customer Name:</strong> <%= orders.user.name %></p>
         <p><strong>Address:</strong> <%= orders.address.type %>, <%= orders.address.city %>, <%= orders.address.state %>, <%= orders.address.pincode %></p>
-        <p><strong>Payment Method:</strong> <%= orders.paymentMethod %></p>
+        <p><strong>Payment Method:</strong> <%= orders.payment %></p>
         <p><strong>Status:</strong> <%= orders.status %></p>
         <p><strong>Total Price:</strong> $<%= orders.totalPrice.toFixed(2) %></p>
         <p><strong>Discount Applied:</strong> $<%= discount.toFixed(2) %></p>
@@ -48,13 +48,17 @@
             <div>
                 <h5>Order Status</h5>
                 <p><strong>Status:</strong> <%= orders.status %></p>
-                <pre><%= orders.orderId%></pre>
+                <% if (orders.status === "Confirmed") { %>
                 <button class="btn btn-primary" onclick="changeOrderStatus('<%= orders.orderId %>', 'processing')" style="width: 150px;">Start Processing</button>
+                <% } %>
                 <% if (orders.status === "processing") { %>
                 <button class="btn btn-warning" onclick="changeOrderStatus('<%= orders.orderId %>', 'shipped')" style="width: 150px;">Mark as Shipped</button>
                 <% } %>
                 <% if (orders.status === "shipped") { %>
                 <button class="btn btn-success" onclick="changeOrderStatus('<%= orders.orderId %>', 'delivered')" style="width: 150px;">Mark as Delivered</button>
+                <% } %>
+                <% if (orders.status === "Return Request") { %>
+                    <button class="btn btn-success" onclick="handleReturnApproval('<%= orders._id %>')" style="width: 150px;">Approve Return</button>
                 <% } %>
             </div>
             <div>
@@ -69,36 +73,78 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <script>
-  function changeOrderStatus(orderId, newStatus) {
-      Swal.fire({
-          title: `Change Status to ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}?`,
-          text: `Are you sure you want to change the status of this order to ${newStatus}?`,
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3885d6",
-          cancelButtonColor: "d33",
-          confirmButtonText: "Yes, change it!"
-      }).then((result) => {
-          if (result.isConfirmed) {
-              $.ajax({
-                  url: "/changeStatus",
-                  method: "GET",
-                  data: { orderId: orderId, status: newStatus },
-                  success: (response) => {
-                      if (response.status) {
-                          Swal.fire("Status Updated", `Order status has been changed to ${newStatus}.`, "success");
-                          location.reload();
-                      } else {
-                          Swal.fire("Error", "Failed to update order status", "error");
-                      }
-                  },
-                  error: (error) => {
-                      Swal.fire("Error", "An error occurred", "error");
-                  }
-              });
-          }
-      });
-  }
+function changeOrderStatus(orderId, newStatus) {
+    Swal.fire({
+        title: `Change Status to ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}?`,
+        text: `Are you sure you want to change the status of this order to ${newStatus}?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3885d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, change it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/admin/changeStatus",
+                method: "GET",
+                data: { orderId: orderId, status: newStatus },
+                success: (response) => {
+                    if (response.status) {
+                        Swal.fire({
+                            title: "Status Updated",
+                            text: `Order status has been changed to ${newStatus}.`,
+                            icon: "success"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire("Error", response.message || "Failed to update order status", "error");
+                    }
+                },
+                error: (xhr, status, error) => {
+                    Swal.fire("Error", "An error occurred while updating the status", "error");
+                }
+            });
+        }
+    });
+}
+
+
+function handleReturnApproval(orderId) {
+        Swal.fire({
+            title: "Approve Return Request?",
+            text: "Are you sure you want to approve the return request for this order?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3885d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, approve it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/admin/approveReturn",
+                    method: "GET",
+                    data: { orderId: orderId },
+                    success: (response) => {
+                        if (response.status) {
+                            Swal.fire({
+                                title: "Return Approved",
+                                text: "The return request has been approved successfully.",
+                                icon: "success"
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire("Error", response.message || "Failed to approve return request", "error");
+                        }
+                    },
+                    error: (xhr, status, error) => {
+                        Swal.fire("Error", "An error occurred while approving the return request", "error");
+                    }
+                });
+            }
+        });
+    }
 </script>
 
 <%- include("../../views/partials/admin/footer") %>

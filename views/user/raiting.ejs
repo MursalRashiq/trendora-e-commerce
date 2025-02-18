@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Rating</title>
+    <style>
+        .rating-container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        .product-info {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .product-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            color: #ddd;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .star-rating label:before {
+            content: '★';
+        }
+
+        .star-rating input:checked ~ label {
+            color: #088178;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #066661;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            background-color: #088178;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #066661;
+        }
+
+        .error-msg {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="rating-container">
+        <div class="product-info">
+            <img src="/product-image.jpg" alt="Product" class="product-image">
+            <div>
+                <h2>Product Name</h2>
+                <p>Product Description</p>
+            </div>
+        </div>
+
+        <form id="ratingForm" onsubmit="return submitRating(event)">
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5">
+                <label for="star5"></label>
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star4"></label>
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star3"></label>
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star2"></label>
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star1"></label>
+            </div>
+            <div id="rating-error" class="error-msg"></div>
+
+            <textarea name="review" placeholder="Write your review here..." maxlength="500"></textarea>
+            <div id="review-error" class="error-msg"></div>
+
+            <button type="submit" class="submit-btn">Submit Review</button>
+        </form>
+    </div>
+
+    <script>
+        function submitRating(event) {
+            event.preventDefault();
+            const form = event.target;
+            const rating = form.rating.value;
+            const review = form.review.value.trim();
+            let isValid = true;
+
+            // Reset errors
+            document.getElementById('rating-error').textContent = '';
+            document.getElementById('review-error').textContent = '';
+
+            // Validate rating
+            if (!rating) {
+                document.getElementById('rating-error').textContent = 'Please select a rating';
+                isValid = false;
+            }
+
+            // Validate review
+            if (!review) {
+                document.getElementById('review-error').textContent = 'Please write a review';
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Submit form
+                const formData = {
+                    rating: rating,
+                    review: review,
+                    productId: 'YOUR_PRODUCT_ID' // Replace with actual product ID
+                };
+
+                fetch('/submit-rating', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Thank You!',
+                            text: 'Your review has been submitted successfully',
+                            icon: 'success',
+                            confirmButtonColor: '#088178'
+                        }).then(() => {
+                            window.location.href = '/product-page'; // Replace with actual URL
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Failed to submit review. Please try again.',
+                        icon: 'error',
+                        confirmButtonColor: '#088178'
+                    });
+                });
+            }
+        }
+    </script>
+</body>
+</html>

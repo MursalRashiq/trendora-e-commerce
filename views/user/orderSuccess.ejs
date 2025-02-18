@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Success</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
     <style>
         * {
             margin: 0;
@@ -144,6 +146,7 @@
         
         <h1 class="title">Order Successful!</h1>
         <p class="subtitle">Your order has been confirmed and will be shipped soon.</p>
+        
 
         <div class="order-details">
             <div class="detail-row">
@@ -166,4 +169,31 @@
         </div>
     </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+setTimeout(() => {
+    const productId = document.getElementById('productId')?.value; // Safe check
+
+    if (!productId) {
+        console.warn("Product ID not found! Review popup skipped.");
+        return;
+    }
+
+    Swal.fire({
+        title: 'Would you like to review your purchase?',
+        text: 'Your feedback helps other shoppers make better decisions',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#4ade80',
+        cancelButtonColor: '#666',
+        confirmButtonText: 'Write Review',
+        cancelButtonText: 'Maybe Later'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/rate-product?productId=${productId}`;
+        }
+    });
+}, 2000);
+
+</script>
 </html>

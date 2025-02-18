@@ -1,6 +1,8 @@
 <%- include("../../views/partials/user/header") %>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./user-assets/css/maind134.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
 
 <style>
   
@@ -318,6 +320,153 @@ address {
     text-align: center;
     padding: 2rem;
 }
+
+/* Profile Dropdown Styles */
+.profile-dropdown {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+}
+
+.profile-dropdown .dropdown-toggle {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.profile-dropdown .dropdown-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-dropdown .bi-pen {
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.profile-dropdown .dropdown-menu {
+  min-width: 200px;
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+  background: white;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.profile-dropdown .dropdown-item {
+  padding: 0.75rem 1.25rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.profile-dropdown .dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #046963;
+}
+
+.profile-dropdown .dropdown-item i {
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+/* Add divider between items */
+.profile-dropdown .dropdown-divider {
+  margin: 0.5rem 0;
+  border-top: 1px solid #eee;
+}
+
+.wallet-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 15px 0;
+}
+
+.balance-box {
+  padding: 30px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.balance-label {
+  display: block;
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.balance-amount {
+  font-size: 36px;
+  font-weight: 600;
+  margin: 0;
+  color: #666;
+}
+
+.amount-highlight {
+  color: #2ecc71;  /* Green color for the amount */
+  font-weight: 700;
+}
+
+.form-control {
+  height: 50px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.form-control:focus {
+  border-color: #2ecc71;
+  box-shadow: none;
+}
+
+.quick-amount-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.amount-btn {
+  padding: 10px 20px;
+  border: 1px solid #e0e0e0;
+  background: #046963;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.amount-btn:hover {
+  background: #f8f9fa;
+  border-color: #2ecc71;
+  color: #2ecc71;
+}
+
+.btn-add-money {
+  width: 100%;
+  padding: 15px;
+  background: #046963;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-add-money:hover {
+  background: #ffffff;
+  color: #2ecc71;
+  border-color: #2ecc71;
+}
+
+
+
 </style>
 
 
@@ -383,7 +532,42 @@ address {
                <div class="tab-pane fade show active" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
                  <div class="card card-green">
                    <div class="card-header">
-                     <h5 class="mb-0 text-center" style="color: #f4f7f6;">User Profile</h5>
+                    <div class="card-header">
+                      <div class="profile-dropdown">
+                        <button class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                          <i class="bi bi-pen"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li>
+                            <a class="dropdown-item" href="/changeName">
+                              <i class="bi bi-person"></i>
+                              Change Name
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="/change-phone">
+                              <i class="bi bi-phone"></i>
+                              Change Phone
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="/change-email">
+                              <i class="bi bi-envelope"></i>
+                              Change Email
+                            </a>
+                          </li>
+                          <li class="dropdown-divider"></li>
+                          <li>
+                            <a class="dropdown-item" href="/change-password">
+                              <i class="bi bi-lock"></i>
+                              Change Password
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                      <h5 class="mb-0 text-center" style="color: #f4f7f6;">User Profile</h5>
+                    </div>
+                    
                    </div>
                    <div class="card-body text-center">
                      <h5 class="card-title"><%=locals.name%></h5>
@@ -393,8 +577,7 @@ address {
                      <p class="card-text">
                        <strong>Email:</strong><%=locals.email%>
                      </p>
-                     <a href="/change-email" class="btn btn-sm btn-success ml-2" style="margin-top: 5px;">Change Email</a>
-                     <a href="/change-password" class="btn btn-sm btn-success" style="margin-top: 5px;">Change Password</a>
+                     
                    </div>
                  </div>
                </div>
@@ -481,6 +664,7 @@ address {
                         <tbody>
                           <% if (locals && locals.orderHistory && locals.orderHistory.length > 0) { %>
                             <% locals.orderHistory.forEach(order => { %>
+                              
                               <tr>
                                 <td><%= order.orderId %></td>
                                 <td><%= order.status %></td>
@@ -504,26 +688,51 @@ address {
               
 
 
-               <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
-                 <div class="card">
-                   <div class="card-header">
-                     <h5 class="mb-0">Wallet</h5>
-                   </div>
-                   <div class="card-body contact-from-area">
-                     <div class="row">
-                       <div class="col-lg-8 mx-auto text-center mt-90">
-                         <form>
-                           <div class="form-group">
-                             <label for="walletAmount" class="h4">Amount</label>
-                             <div class="h3"></div>
-                           </div>
-                           <button type="button" class="btn btn-success" onclick="">Add Money</button>
-                         </form>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
+              <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
+                <div class="card">
+                  <div class="card-header bg-white border-bottom">
+                    <h3 class="text-center wallet-title">My Wallet</h3>
+                  </div>
+                  <div class="card-body py-5">
+                    <div class="row justify-content-center">
+                      <div class="col-lg-6">
+                        <!-- Wallet Balance Display -->
+                        <div class="balance-box text-center mb-5">
+                          <span class="balance-label">Available Balance</span>
+                          <h2 class="balance-amount">₹<span class="amount-highlight"><%= locals.wallet %></span></h2>
+                        </div>
+              
+                        <!-- Add Money Form -->
+                        <div class="add-money-form">
+                          <form>
+                            <div class="form-group mb-4">
+                              <input 
+                                type="number" 
+                                id="walletAmount" 
+                                class="form-control form-control-lg" 
+                                placeholder="Enter amount to add" 
+                                required
+                                min="1"
+                              >
+                            </div>
+              
+                            <!-- Quick Amount Buttons -->
+                            <div class="quick-amount-buttons mb-4">
+                              <button type="button" class="amount-btn" onclick="document.getElementById('walletAmount').value='100'">₹100</button>
+                              <button type="button" class="amount-btn" onclick="document.getElementById('walletAmount').value='500'">₹500</button>
+                              <button type="button" class="amount-btn" onclick="document.getElementById('walletAmount').value='1000'">₹1000</button>
+                            </div>
+              
+                            <button type="button" class="btn-add-money" onclick="addMoney()">
+                              Add Money
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
 
                <div class="tab-pane fade" id="wallet-history" role="tabpanel" aria-labelledby="orders-tab">
@@ -542,11 +751,13 @@ address {
                            </tr>
                          </thead>
                          <tbody>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
+                          <% walletHistory.forEach(history => { %>
+                            <tr>
+                                <td><%= history.status %></td>
+                                <td><%= new Date(history.date).toLocaleString() %></td>
+                                <td>₹<%= history.amount %></td>
+                            </tr>
+                            <% }); %>
                          </tbody>
                        </table>
                      </div>
@@ -572,6 +783,108 @@ address {
    </div>
  </section>
 </main>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  function addMoney() {
+    console.log("hitted");
+    let amount = document.getElementById("walletAmount").value;
+    
+    if (!amount || amount <= 0) {
+        Swal.fire({
+            icon: "error",
+            title: "Invalid Amount!",
+            text: "Enter a valid amount.",
+        });
+        return;
+    }
+
+    // Send amount to backend
+    fetch("/addMoney", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ total: amount })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.razorpay) {
+            let options = {
+                "key": "rzp_test_9eLxjQq9SaHWHf", // Replace with your Razorpay key
+                "amount": data.order.amount,
+                "currency": "INR",
+                "order_id": data.order.id,
+                "handler": function (response) {
+                    verifyPayment(response, data.order);
+                }
+            };
+            let rzp = new Razorpay(options);
+            rzp.open();
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Payment Failed!",
+                text: "Payment initiation failed.",
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Something went wrong. Please try again.",
+        });
+    });
+}
+
+
+
+  function verifyPayment(payment, order) {
+    fetch("/verify-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        payment_id: payment.razorpay_payment_id,
+        order_id: order.id,
+        signature: payment.razorpay_signature,
+        amount: order.amount
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        Swal.fire({
+          title: 'Success!',
+          text: 'Money added successfully!',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            location.reload();
+          }
+        });
+      } else {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Payment verification failed!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Something went wrong while processing your payment.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    });
+}
+</script>
 <%- include("../../views/partials/user/footer") %>
 
 

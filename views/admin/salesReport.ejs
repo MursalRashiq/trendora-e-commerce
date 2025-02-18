@@ -1,0 +1,409 @@
+<%- include("../../views/partials/admin/header") %>
+
+<%
+// Define the function at the top of the template
+function getStatusBadgeClass(status) {
+  switch(status.toLowerCase()) {
+    case 'confirmed':
+      return 'bg-success';
+    case 'pending':
+      return 'bg-warning text-dark';
+    case 'cancelled':
+      return 'bg-danger';
+    case 'delivered':
+      return 'bg-info';
+    case 'shipped':
+      return 'bg-primary';
+    case 'processing':
+      return 'bg-secondary';
+    default:
+      return 'bg-secondary';
+  }
+}
+%>
+
+<style>
+  :root {
+    --primary-color: #2c3e50;
+    --secondary-color: #34495e;
+    --accent-color: #3498db;
+    --success-color: #27ae60;
+    --danger-color: #e74c3c;
+    --background-color: #f8f9fa;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .container {
+    max-width: 1400px;
+    padding: 2rem;
+    background-color: var(--background-color);
+  }
+
+  .page-title {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 3px solid var(--accent-color);
+    padding-bottom: 0.5rem;
+  }
+
+  .filters-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 2rem;
+  }
+
+  .form-control {
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+  }
+
+  .form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary {
+    background-color: var(--accent-color);
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+  }
+
+  .btn-danger {
+    background-color: var(--danger-color);
+  }
+
+  .btn-success {
+    background-color: var(--success-color);
+  }
+
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .summary-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+  }
+
+  .summary-card h3 {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .summary-card .value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent-color);
+  }
+
+  .table {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+  }
+
+  .table thead {
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  .table th {
+    padding: 1rem;
+    font-weight: 600;
+  }
+
+  .table td {
+    padding: 1rem;
+    vertical-align: middle;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+  }
+
+  .badge {
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    border-radius: 6px;
+  }
+
+  .pagination {
+    margin-top: 2rem;
+    gap: 0.5rem;
+  }
+
+  .pagination a {
+    padding: 0.75rem 1.25rem;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .pagination .active {
+    background-color: var(--accent-color);
+    color: white;
+  }
+
+  .pagination a:hover {
+    background-color: var(--accent-color);
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  .download-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+</style>
+
+<div class="container">
+  <h1 class="page-title">Sales Report</h1>
+
+  <div class="filters-section">
+    <form id="salesReportForm" action="/admin/salesReport" method="GET">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">Filter By:</label>
+          <select id="filter" name="filter" class="form-control">
+            <option value="daily" <%= locals.filter === 'daily' ? 'selected' : '' %>>Daily</option>
+            <option value="weekly" <%= locals.filter === 'weekly' ? 'selected' : '' %>>Weekly</option>
+            <option value="monthly" <%= locals.filter === 'monthly' ? 'selected' : '' %>>Monthly</option>
+            <option value="yearly" <%= locals.filter === 'yearly' ? 'selected' : '' %>>Yearly</option>
+            <option value="custom" <%= locals.filter === 'custom' ? 'selected' : '' %>>Custom Date Range</option>
+          </select>
+        </div>
+        <div class="col-md-3 custom-date <%= locals.filter === 'custom' ? '' : 'd-none' %>">
+          <label class="form-label">Start Date:</label>
+          <input type="date" id="startDate" name="startDate" value="<%= startDate || '' %>" class="form-control">
+        </div>
+        <div class="col-md-3 custom-date <%= locals.filter === 'custom' ? '' : 'd-none' %>">
+          <label class="form-label">End Date:</label>
+          <input type="date" id="endDate" name="endDate" value="<%= endDate || '' %>" class="form-control">
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <button type="submit" class="btn btn-primary">Generate Report</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="download-buttons">
+    <button id="downloadPdf" class="btn btn-danger" onclick="downloadPDF()">Download PDF</button>
+    <button id="downloadExcel" class="btn btn-success">Download Excel</button>
+  </div>
+
+  <div class="summary-cards">
+    <div class="summary-card">
+      <h3>Total Sales</h3>
+      <div class="value">₹<%= totalSales.toFixed(2) %></div>
+    </div>
+    <div class="summary-card">
+      <h3>Total Orders</h3>
+      <div class="value"><%= totalOrders %></div>
+    </div>
+    <div class="summary-card">
+      <h3>Total Discount</h3>
+      <div class="value">₹<%= totalDiscount.toFixed(2) %></div>
+    </div>
+    <!-- <div class="summary-card">
+      <h3>Total Coupon Discount</h3>
+      <div class="value">₹<%= totalCouponDiscount.toFixed(2) %></div>
+    </div> -->
+    <div class="summary-card">
+      <h3>Total Final Amount</h3>
+      <div class="value">₹<%= totalFinalAmount.toFixed(2) %></div>
+    </div>
+  </div>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>User</th>
+        <th>Email</th>
+        <th>Total Price</th>
+        <th>Final Amount</th>
+        <th>Payment Method</th>
+        <th>Order Status</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (orders && orders.length > 0) { %>
+        <% orders.forEach(order => { %>
+          <tr>
+            <td><%= order.orderId %></td>
+            <td><%= order.user ? order.user.name : (order.address ? order.address.name : 'Guest') %></td>
+            <td><%= order.user ? order.user.email : 'N/A' %></td>
+            <td>₹<%= order.totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 }) %></td>
+            <td>₹<%= order.finalAmound.toLocaleString('en-IN', { maximumFractionDigits: 2 }) %></td>
+            <td>
+                <% if (order.payment && order.payment.toLowerCase) { %>
+                    <span class="badge 
+                        <%= order.payment.toLowerCase() === 'cod' ? 'bg-warning text-dark' : 
+                            order.payment.toLowerCase() === 'razorpay' ? 'bg-success' : 
+                            order.payment.toLowerCase() === 'wallet' ? 'bg-info' : 'bg-secondary' %>">
+                        <%= order.paymentMethod.toUpperCase() %>
+                    </span>
+                <% } else { %>
+                    <span class="badge bg-secondary">N/A</span>
+                <% } %>
+            </td>
+            <td>
+              <span class="badge <%= getStatusBadgeClass(order.status) %>">
+                <%= order.status %>
+              </span>
+            </td>
+            <td>
+              <%= new Date(order.createdAt).toLocaleDateString('en-IN', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              }) %>
+            </td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="8" class="text-center">No Orders Found</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+
+  <nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <% if (currentPage > 1) { %>
+        <li class="page-item">
+          <a class="page-link" href="?page=<%= currentPage - 1 %>&filter=<%= filter %>&startDate=<%= startDate %>&endDate=<%= endDate %>">
+            <i class="fas fa-chevron-left"></i>
+          </a>
+        </li>
+      <% } %>
+
+      <% 
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + 4);
+        if (endPage - startPage < 4) {
+          startPage = Math.max(1, endPage - 4);
+        }
+      %>
+
+      <% if (startPage > 1) { %>
+        <li class="page-item">
+          <a class="page-link" href="?page=1&filter=<%= filter %>&startDate=<%= startDate %>&endDate=<%= endDate %>">1</a>
+        </li>
+        <% if (startPage > 2) { %>
+          <li class="page-item disabled"><span class="page-link">...</span></li>
+        <% } %>
+      <% } %>
+
+      <% for (let i = startPage; i <= endPage; i++) { %>
+        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+          <a class="page-link" href="?page=<%= i %>&filter=<%= filter %>&startDate=<%= startDate %>&endDate=<%= endDate %>">
+            <%= i %>
+          </a>
+        </li>
+      <% } %>
+
+      <% if (endPage < totalPages) { %>
+        <% if (endPage < totalPages - 1) { %>
+          <li class="page-item disabled"><span class="page-link">...</span></li>
+        <% } %>
+        <li class="page-item">
+          <a class="page-link" href="?page=<%= totalPages %>&filter=<%= filter %>&startDate=<%= startDate %>&endDate=<%= endDate %>">
+            <%= totalPages %>
+          </a>
+        </li>
+      <% } %>
+
+      <% if (currentPage < totalPages) { %>
+        <li class="page-item">
+          <a class="page-link" href="?page=<%= currentPage + 1 %>&filter=<%= filter %>&startDate=<%= startDate %>&endDate=<%= endDate %>">
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        </li>
+      <% } %>
+    </ul>
+  </nav>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Restrict future dates
+  let today = new Date().toISOString().split('T')[0];
+  document.getElementById('startDate').max = today;
+  document.getElementById('endDate').max = today;
+
+  // Disable end date before start date
+  document.getElementById('startDate').addEventListener('change', function () {
+    document.getElementById('endDate').min = this.value;
+  });
+
+  // Show custom date fields only if custom filter is selected
+  document.getElementById('filter').addEventListener('change', function () {
+    if (this.value === 'custom') {
+      document.querySelectorAll('.custom-date').forEach(el => el.classList.remove('d-none'));
+    } else {
+      document.querySelectorAll('.custom-date').forEach(el => el.classList.add('d-none'));
+    }
+  });
+
+  // Auto-set "Daily" filter when both dates are the same
+  document.getElementById('endDate').addEventListener('change', function () {
+    if (this.value === document.getElementById('startDate').value) {
+      document.getElementById('filter').value = 'daily';
+    }
+  });
+
+  // Add Excel download event listener
+  document.getElementById('downloadExcel').addEventListener('click', function() {
+    let filter = document.getElementById('filter').value;
+    let startDate = document.getElementById('startDate').value;
+    let endDate = document.getElementById('endDate').value;
+    
+    let url = `/admin/downloadExcel?filter=${filter}&startDate=${startDate}&endDate=${endDate}`;
+    
+    window.location.href = url;
+  });
+});
+
+function downloadPDF() {
+  let filter = document.getElementById('filter').value;
+  let startDate = document.getElementById('startDate').value;
+  let endDate = document.getElementById('endDate').value;
+  
+  let url = `/admin/generatePdf?filter=${filter}&startDate=${startDate}&endDate=${endDate}`;
+  
+  window.open(url, '_blank');
+}
+</script>
+
+<%- include("../../views/partials/admin/footer") %>

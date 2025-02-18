@@ -1,155 +1,347 @@
-<%- include("../../views/partials/admin/header") %>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trendora Admin Dashboard</title>
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/logo/logo-removebg-preview.png">
+    <%- include("../../views/partials/admin/header")%>
     <style>
-        .container-fluid {
-  padding: 20px;
-}
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+        }
 
-.dashboard-main {
-  background-color: #f7f7f7;
-  padding: 20px;
-  border-radius: 10px;
-}
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            padding: 0 20px;
+        }
 
-.card {
-  background-color: white;
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
+        .logo img {
+            height: 50px;
+        }
 
-.stat-box {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  text-align: center;
-}
+        /* Main Content */
+        .main-content {
+            flex: 1;
+        }
 
-h2 {
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
 
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            color: #088178;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-change i {
+            font-size: 10px;
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            .main-content {
+                margin-left: 70px;
+            }
+            .main-header {
+                left: 70px;
+            }
+            .menu-link span {
+                display: none;
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 10px;
+            }
+            .stat-card {
+                padding: 15px;
+            }
+            .stat-value {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
-<div class="container-fluid" style="padding-top: 150px; display: flex; justify-content: center;">
-    <div class="row" style="width: 100%; padding-left: 50px;">
-     
-      <div class="col-md-9">
-        <!-- Main Content -->
-        <div class="dashboard-main">
-          <h1 class="mb-4">Admin Dashboard</h1>
-          
-          <!-- Welcome/Overview Section -->
-          <div class="overview">
-            <h2>Overview</h2>
-            <div class="row">
-              <div class="col-md-4">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Total Sales</h5>
-                    <p>$50,000</p>
-                  </div>
+<body>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+       
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-container">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-shopping-cart stat-icon"></i>
+                    <div class="stat-label">Total Orders</div>
+                    <div class="stat-value">
+                        <%= typeof totalOrders !== 'undefined' ? totalOrders.toLocaleString() : '0' %>
+                    </div>
+                    <div class="stat-change">
+                        <i class="fas fa-arrow-up text-success"></i>
+                        <span>From last month</span>
+                    </div>
                 </div>
-              </div>
-              <div class="col-md-4">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>New Users</h5>
-                    <p>150</p>
-                  </div>
+                <div class="stat-card">
+                    <i class="fas fa-users stat-icon"></i>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value">
+                        <%= typeof totalUsers !== 'undefined' ? totalUsers.toLocaleString() : '0' %>
+                    </div>
+                    <div class="stat-change">
+                        <i class="fas fa-arrow-up text-success"></i>
+                        <span>Active users</span>
+                    </div>
                 </div>
-              </div>
-              <div class="col-md-4">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Total Orders</h5>
-                    <p>500</p>
-                  </div>
+                <div class="stat-card">
+                    <i class="fas fa-indian-rupee-sign stat-icon"></i>
+                    <div class="stat-label">Total Revenue</div>
+                    <div class="stat-value">
+                        ₹<%= typeof totalRevenue !== 'undefined' ? totalRevenue.toLocaleString('en-IN', {
+                            maximumFractionDigits: 2,
+                            minimumFractionDigits: 2
+                        }) : '0.00' %>
+                    </div>
+                    <div class="stat-change">
+                        <i class="fas fa-arrow-up text-success"></i>
+                        <span>Total earnings</span>
+                    </div>
                 </div>
-              </div>
+                <div class="stat-card">
+                    <i class="fas fa-box stat-icon"></i>
+                    <div class="stat-label">Total Products</div>
+                    <div class="stat-value">
+                        <%= typeof totalProducts !== 'undefined' ? totalProducts.toLocaleString() : '0' %>
+                    </div>
+                    <div class="stat-change">
+                        <i class="fas fa-arrow-up text-success"></i>
+                        <span>In stock</span>
+                    </div>
+                </div>
             </div>
-          </div>
-  
-          <!-- Recent Activity Section -->
-          <div class="recent-activity">
-            <h2>Recent Activity</h2>
-            <ul>
-              <li>User1 logged in</li>
-              <li>User2 placed an order</li>
-              <li>Product3 updated</li>
-            </ul>
-          </div>
-  
-          <!-- Quick Stats Section -->
-          <div class="quick-stats">
-            <h2>Quick Stats</h2>
-            <div class="row">
-              <div class="col-md-3">
-                <div class="stat-box">
-                  <h5>Total Revenue</h5>
-                  <p>$100,000</p>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h5>Revenue Overview</h5>
+                    <canvas id="revenueChart"></canvas>
                 </div>
-              </div>
-              <div class="col-md-3">
-                <div class="stat-box">
-                  <h5>Active Users</h5>
-                  <p>1,000</p>
+                <div class="chart-card">
+                    <h5>Orders Analytics</h5>
+                    <canvas id="ordersChart"></canvas>
                 </div>
-              </div>
-              <div class="col-md-3">
-                <div class="stat-box">
-                  <h5>Open Tickets</h5>
-                  <p>10</p>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="stat-box">
-                  <h5>New Signups</h5>
-                  <p>50</p>
-                </div>
-              </div>
             </div>
-          </div>
-  
-          <!-- Sales/Order Statistics Section -->
-          <div class="sales-stats">
-            <h2>Sales/Order Statistics</h2>
-            <canvas id="salesChart"></canvas>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  var ctx = document.getElementById('salesChart').getContext('2d');
-  var salesChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [{
-        label: 'Sales',
-        data: [12000, 15000, 10000, 17000, 14000, 19000, 22000],
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)'
-      }]
-    },
-//     options: {
-//       responsive: true,
-//       maintainAspectRatio: false
-//     }
-  });
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        function confirmLogout() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You will be logged out of your session.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, logout'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/admin/logout';
+                }
+            });
+        }
 
-  
+        // Revenue and Orders Chart Configuration
+        document.addEventListener('DOMContentLoaded', function() {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            const revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Monthly Revenue',
+                        data: [], // You'll populate this with your revenue data
+                        borderColor: '#088178',
+                        backgroundColor: 'rgba(8, 129, 120, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString('en-IN');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
 
+            // Orders Chart
+            const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+            const ordersChart = new Chart(ordersCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Monthly Orders',
+                        data: [], // You'll populate this with your orders data
+                        backgroundColor: 'rgba(8, 129, 120, 0.7)',
+                        borderColor: '#088178',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
 
-   
-    <%- include("../../views/partials/admin/footer") %>
+            // Function to update charts with new data
+            function updateCharts(revenueData, ordersData) {
+                revenueChart.data.datasets[0].data = revenueData;
+                ordersChart.data.datasets[0].data = ordersData;
+                
+                revenueChart.update();
+                ordersChart.update();
+            }
+
+            // Fetch data from your backend
+            async function fetchChartData() {
+                try {
+                    const response = await fetch('/admin/dashboard-data'); // Replace with your actual endpoint
+                    const data = await response.json();
+                    
+                    updateCharts(data.revenueData, data.ordersData);
+                } catch (error) {
+                    console.error('Error fetching chart data:', error);
+                }
+            }
+
+            // Initial data fetch
+            fetchChartData();
+
+            // Optional: Refresh data periodically
+            setInterval(fetchChartData, 300000); // Update every 5 minutes
+        });
+    </script>
+</body>
+</html>
+<%- include("../../views/partials/admin/footer")%>
