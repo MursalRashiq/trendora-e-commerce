@@ -44,7 +44,7 @@ const userSchema = new Schema({
   walletHistory: [
     {
       amount: Number,
-      type: { type: String, enum: ["credit", "debit","refund"] }, // Credit for adding, debit for spending
+      type: { type: String, enum: ["credit", "debit", "refund"] }, 
       timestamp: { type: Date, default: () => new Date() },
     },
   ],

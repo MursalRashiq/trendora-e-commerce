@@ -663,8 +663,16 @@ address {
                         </thead>
                         <tbody>
                           <% if (locals && locals.orderHistory && locals.orderHistory.length > 0) { %>
-                            <% locals.orderHistory.forEach(order => { %>
-                              
+                            <% 
+                              const itemsPerPage = 10;
+                              const currentPage = parseInt(query.page) || 1;
+                              const startIndex = (currentPage - 1) * itemsPerPage;
+                              const endIndex = startIndex + itemsPerPage;
+                              const totalPages = Math.ceil(locals.orderHistory.length / itemsPerPage);
+                              const paginatedOrders = locals.orderHistory.slice(startIndex, endIndex);
+                            %>
+                            
+                            <% paginatedOrders.forEach(order => { %>
                               <tr>
                                 <td><%= order.orderId %></td>
                                 <td><%= order.status %></td>
@@ -674,6 +682,36 @@ address {
                                 </td>
                               </tr>
                             <% }); %>
+
+                            <!-- Pagination -->
+                            <% if (totalPages > 1) { %>
+                              <tr>
+                                <td colspan="4">
+                                  <nav aria-label="Orders pagination">
+                                    <ul class="pagination justify-content-center mb-0">
+                                      <% if (currentPage > 1) { %>
+                                        <li class="page-item">
+                                          <a class="page-link" href="?page=<%= currentPage - 1 %>#orders">Previous</a>
+                                        </li>
+                                      <% } %>
+                                      
+                                      <% for(let i = 1; i <= totalPages; i++) { %>
+                                        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                          <a class="page-link" href="?page=<%= i %>#orders"><%= i %></a>
+                                        </li>
+                                      <% } %>
+                                      
+                                      <% if (currentPage < totalPages) { %>
+                                        <li class="page-item">
+                                          <a class="page-link" href="?page=<%= currentPage + 1 %>#orders">Next</a>
+                                        </li>
+                                      <% } %>
+                                    </ul>
+                                  </nav>
+                                </td>
+                              </tr>
+                            <% } %>
+
                           <% } else { %>
                             <tr>
                               <td colspan="4">No orders found.</td>
@@ -685,7 +723,6 @@ address {
                   </div>
                 </div>
               </div>
-              
 
 
               <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
@@ -751,15 +788,43 @@ address {
                            </tr>
                          </thead>
                          <tbody>
-                          <% walletHistory.forEach(history => { %>
+                          <% const itemsPerPage = 10; %>
+                          <% const currentPage = parseInt(query.page) || 1; %>
+                          <% const startIndex = (currentPage - 1) * itemsPerPage; %>
+                          <% const endIndex = startIndex + itemsPerPage; %>
+                          <% const paginatedHistory = walletHistory.slice(startIndex, endIndex); %>
+                          
+                          <% paginatedHistory.forEach(history => { %>
                             <tr>
                                 <td><%= history.status %></td>
                                 <td><%= new Date(history.date).toLocaleString() %></td>
                                 <td>₹<%= history.amount %></td>
                             </tr>
-                            <% }); %>
+                          <% }); %>
                          </tbody>
                        </table>
+
+                       <% if (walletHistory.length > 0) { %>
+                         <nav aria-label="Page navigation">
+                           <ul class="pagination justify-content-center">
+                             <% const totalPages = Math.ceil(walletHistory.length / itemsPerPage); %>
+                             
+                             <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                               <a class="page-link" href="?page=<%= currentPage-1 %>" tabindex="-1">Previous</a>
+                             </li>
+
+                             <% for(let i = 1; i <= totalPages; i++) { %>
+                               <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                 <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                               </li>
+                             <% } %>
+
+                             <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                               <a class="page-link" href="?page=<%= currentPage+1 %>">Next</a>
+                             </li>
+                           </ul>
+                         </nav>
+                       <% } %>
                      </div>
                    </div>
                  </div>
@@ -884,6 +949,46 @@ address {
       });
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  function activateTabFromHash() {
+    let hash = window.location.hash.replace('#', '');
+    
+    if (!hash) return;
+    
+    let tabElement = document.querySelector(`#${hash}-tab`);
+    let tabContent = document.querySelector(`#${hash}`);
+    
+    if (tabElement && tabContent) {
+      document.querySelectorAll('.nav-link').forEach(tab => {
+        tab.classList.remove('active');
+        tab.setAttribute('aria-selected', 'false');
+      });
+      
+      document.querySelectorAll('.tab-pane').forEach(content => {
+        content.classList.remove('show', 'active');
+      });
+      
+      tabElement.classList.add('active');
+      tabElement.setAttribute('aria-selected', 'true');
+      tabContent.classList.add('show', 'active');
+    }
+  }
+  
+  activateTabFromHash();
+  
+  document.querySelectorAll('.nav-link').forEach(tab => {
+    tab.addEventListener('click', function(e) {
+      if (this.getAttribute('href')) {
+        let targetId = this.getAttribute('href').replace('#', '');
+        window.location.hash = targetId;
+      }
+    });
+  });
+  
+  window.addEventListener('hashchange', activateTabFromHash);
+});
+
 </script>
 <%- include("../../views/partials/user/footer") %>
 

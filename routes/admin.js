@@ -60,16 +60,19 @@ router.get("/edit-product/:id", adminAuth, productController.getEditProduct);
 router.post("/editProduct/:id",adminAuth,uploads.array("images",4),productController.editProduct)
 router.post("/deleteImage", adminAuth, productController.deleteSingleImage)
 //order Management
-router.get("/orderList", adminAuth, orderController.getOrderListPageAdmin)
-router.get("/orderDetailsAdmin", adminAuth, orderController.getOrderDetailsPageAdmin)
-router.get("/changeStatus", adminAuth, orderController.changeOrderStatus);
-router.get("/approveReturn",adminAuth,orderController.approveReturn)
+router.get("/orderList",  orderController.getOrderListPageAdmin)
+router.get("/orderDetailsAdmin",  orderController.getOrderDetailsPageAdmin)
+router.post("/changeItemStatus",orderController.changeItemStatus)
+router.put("/changeStatus", orderController.changeOrderStatus);
+router.get("/approveReturn",orderController.approveReturn)
+router.post("/rejectReturnOrder",orderController.rejectReturnRequest)
 //coupon management
 router.get("/coupon", adminAuth, couponController.loadCoupon)
 router.post("/createCoupon",adminAuth,couponController.createCoupon)
 router.get("/editCoupon",adminAuth,couponController.editCoupon)
 router.post("/updateCoupon",adminAuth,couponController.updateCoupon)
 router.get("/deleteCoupon",adminAuth,couponController.deleteCoupon)
+router.post("/updateCouponStatus",adminAuth,couponController.couponStatusUpdate)
 //sales management
 router.get('/salesReport', adminAuth, salesController.getSalesReport);
 // router.get('/dateWiseFilter', adminAuth, salesController.dateWiseFilter);

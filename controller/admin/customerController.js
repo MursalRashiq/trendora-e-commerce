@@ -1,11 +1,12 @@
 const User = require("../../models/userSchema")
+const asyncHandler = require('express-async-handler');
 
 
 
 
 
-const customerInfo = async (req, res) =>{
-    try {
+const customerInfo = asyncHandler(async (req, res) =>{
+    
         
         let search=""
         if(req.query.search){
@@ -38,35 +39,26 @@ const customerInfo = async (req, res) =>{
 
         res.render('customers', { data, currentPage: page, totalPages: Math.ceil(count / limit), search });
 
-    } catch (error) {
-        console.log("wrong", error)
+})
 
-    }
-}
-
-const customerBlocked = async (req, res)=>{
-    try {
+const customerBlocked = asyncHandler(async (req, res)=>{
+   
         
         let id=req.query.id;
         await User.updateOne({_id:id},{$set:{isBlocked:true}})
         res.redirect("/admin/users")
-    } catch (error) {
-        res.redirect("/pageerror")
-    }
-}
+
+})
 
 
-const customerunBlocked = async(req, res)=>{
-    try {
+const customerunBlocked = asyncHandler(async(req, res)=>{
+    
         
         let id = req.query.id;
         await User.updateOne({_id:id},{$set:{isBlocked: false}})
         res.redirect("/admin/users")
 
-    } catch (error) {
-        res.redirect("/pageerror")
-    }
-}
+})
 
 
 

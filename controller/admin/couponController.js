@@ -1,33 +1,49 @@
+const expressAsyncHandler = require('express-async-handler');
 const Coupon = require('../../models/couponSchema');
 const mongoose = require("mongoose")
+const asyncHandler = require('express-async-handler');
 
 
-const loadCoupon = async (req, res)=>{
+const loadCoupon = asyncHandler(async (req, res) => {
     try {
+        // Pagination parameters
+        const page = parseInt(req.query.page) || 1;
+        const limit = 10; // Items per page
+        const skip = (page - 1) * limit;
 
-        const findCoupons = await Coupon.find({})
-        
-        return res.render("coupon",{coupons: findCoupons})
+        // Get total count of coupons
+        const totalCoupons = await Coupon.countDocuments({});
+        const totalPages = Math.ceil(totalCoupons / limit);
 
+        // Get paginated coupons
+        const coupons = await Coupon.find({})
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdOn: -1 }); // Sort by creation date, newest first
 
-
+        return res.render("coupon", {
+            coupons,
+            currentPage: page,
+            totalPages,
+            totalCoupons
+        });
     } catch (error) {
-        res.redirect("/pageerror")
-        
+        console.error('Error in loadCoupon:', error);
+        res.status(500).send('Internal Server Error');
     }
-}
+});
 
 
-const createCoupon = async (req, res) =>{
-    try {
-
+const createCoupon = asyncHandler(async (req, res) =>{
+    
+    
         const data = {
             couponName : req.body.couponName,
             startDate: new Date(req.body.startDate + "T00:00:00"),
             endDate: new Date(req.body.endDate + "T00:00:00"),
             offerPrice: parseInt(req.body.offerPrice),
             minimumPrice: parseInt(req.body.minimumPrice),
-
+            maximumPrice: parseInt(req.body.maximumPrice)
         }
 
         const newCoupon = new Coupon ({
@@ -35,18 +51,12 @@ const createCoupon = async (req, res) =>{
             createdOn: data.startDate,
             expireOn:data.endDate,
             offerPrice: data.offerPrice,
-            minimumPrice: data.minimumPrice
+            minimumPrice: data.minimumPrice,
+            maximumPrice: data.maximumPrice
         });
         await newCoupon.save()
         return res.redirect("/admin/coupon");
-        
-    } catch (error) {
-
-        console.error("error found in add create coupon",error)
-        res.redirect("/pageerror")
-        
-    }
-}
+})
 
 
 const editCoupon = async (req, res)=>{
@@ -65,9 +75,9 @@ const editCoupon = async (req, res)=>{
     }
 }
 
-const updateCoupon = async (req, res)=>{
-    try {
-
+const updateCoupon = asyncHandler(async (req, res)=>{
+   
+        console.log(req.body)
         couponId = req.body.couponId;
         const oid = new mongoose.Types.ObjectId(couponId)
         const selectCoupon = await Coupon.findOne({_id:oid})
@@ -82,7 +92,8 @@ const updateCoupon = async (req, res)=>{
                     createdOn: startDate,
                     expireOn: endDate,
                     offerPrice: parseInt(req.body.offerPrice),
-                    minimumPrice: parseInt(req.body.minimumPrice)
+                    minimumPrice: parseInt(req.body.minimumPrice),
+                    maximumPrice: parseInt(req.body.maximumPrice)
                 },
             },{new: true}
             );
@@ -95,30 +106,24 @@ const updateCoupon = async (req, res)=>{
             }
 
         }
-
-    } catch (error) {
-
-        console.error("error found in update coupon",error)
-        res.redirect("/pageerror")
-        
-    }
-}
+})
 
 
-const deleteCoupon = async (req, res)=>{
-    try {
+const deleteCoupon = asyncHandler(async (req, res)=>{
+    
 
         const id = req.query.id;
         await Coupon.deleteOne({_id:id})
         res.status(200).send({success: true, message: "Coupon deleted successfully"})
         
-    } catch (error) {
+})
 
-        console.error("error found in deleteCoupon",error)
-        res.redirect("pageerror")
-        
-    }
-}
+
+const couponStatusUpdate = asyncHandler(async (req, res)=>{
+    const { id, isList } = req.body;
+        await Coupon.updateOne({ _id: id }, { isList });
+        res.status(200).json({ message: "Updated successfully" });
+})
 
 
 module.exports = {
@@ -126,5 +131,6 @@ module.exports = {
     createCoupon,
     editCoupon,
     updateCoupon,
-    deleteCoupon
+    deleteCoupon,
+    couponStatusUpdate
 }

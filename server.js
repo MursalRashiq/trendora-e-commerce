@@ -78,6 +78,38 @@ app.use((req, res, next) => {
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
 
+
+
+// Admin Error Handler 
+app.use((err, req, res, next) => {
+  if (req.session.admin) {
+      console.error("Admin Error:", err.message); 
+
+     
+      return res.status(500).render("admin-error", {
+          message: err.message || "Something went wrong with the admin action. Please try again later."
+      });
+  }
+  next(err); 
+});
+
+
+
+// User Error Handler (for User Routes)
+app.use((err, req, res, next) => {
+  if (!req.session.admin) {
+      console.error("User Error:", err.message);  
+
+      return res.status(500).render("404", {
+          message: err.message || "Something went wrong for the user. Please try again later."
+      });
+  }
+  next(err);  
+});
+
+
+
+
 const PORT = process.env.PORT || 4001;
 app.listen(PORT, () => {
   console.log(`Server running on PORT ${PORT}`);

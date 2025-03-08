@@ -4,11 +4,12 @@ const Order = require("../../models/orderSchema")
 const moment = require('moment-timezone');
 const path = require('path');
 const fs = require('fs');
+const asyncHandler = require('express-async-handler');
 
 
 
-const getSalesReport = async (req, res) => {
-  try {
+const getSalesReport = asyncHandler(async (req, res) => {
+  
     let { filter = 'daily', startDate, endDate, page = 1 } = req.query;
     page = Number(page) || 1;
     let query = {};
@@ -104,13 +105,10 @@ const getSalesReport = async (req, res) => {
       startDate,
       endDate,
     });
-  } catch (error) {
-    console.error('Sales Report Error:', error);
-    res.status(500).send("Server Error");
-  }
-};
-const downloadSalesReportPDF = async (req, res) => {
-  try {
+  
+});
+const downloadSalesReportPDF = asyncHandler(async (req, res) => {
+ 
     // Create directory if it doesn't exist
     const pdfDir = path.join(__dirname, "../../public/mail");
     if (!fs.existsSync(pdfDir)) {
@@ -454,20 +452,11 @@ const downloadSalesReportPDF = async (req, res) => {
       throw err;
   }
 
-
-  } catch (error) {
-    console.error("PDF Generation Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error generating PDF",
-      error: error.message
-    });
-  }
-};
+});
 
 // Generate Excel Report
-const downloadSalesReportExcel = async (req, res) => {
-  try {
+const downloadSalesReportExcel = asyncHandler(async (req, res) => {
+ 
       const { filter, startDate, endDate } = req.query;
       let query = {};
       
@@ -637,17 +626,9 @@ const downloadSalesReportExcel = async (req, res) => {
           });
       });
 
-  } catch (error) {
-      console.error("Excel Generation Error:", error.message);
-      res.status(500).json({ 
-          success: false, 
-          message: "Error generating Excel",
-          error: error.message 
-      });
-  }
-};
-const changeOrderStatus = async (req, res) => {
-  try {
+});
+const changeOrderStatus = asyncHandler(async (req, res) => {
+ 
     const { orderId, status, itemId } = req.query;
 
 
@@ -690,11 +671,8 @@ const changeOrderStatus = async (req, res) => {
     await order.save();
 
     return res.status(200).json({ status: true, message: "Status updated successfully" });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ status: false, message: "An error occurred" });
-  }
-};
+ 
+});
   
 
 module.exports = {

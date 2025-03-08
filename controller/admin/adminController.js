@@ -6,64 +6,50 @@ const { pageNotFound } = require("../user/userController")
 const Category = require("../../models/categorySchema")
 const Order = require('../../models/orderSchema')
 const Product = require('../../models/productSchema')
+const asyncHandler = require("express-async-handler");
 
 
 
+const loadLogin = asyncHandler(async (req, res) => {
+    if (req.session.admin) {
+        // Debug log to check session
+        console.log("Admin session exists:", req.session.admin);
 
-const loadLogin = async (req, res) => {
-    try {
-        if (req.session.admin) {
-            // Debug log to check session
-            console.log("Admin session exists:", req.session.admin);
+        // Fetch counts with error handling
+        const totalUsers = await User.countDocuments({ isAdmin: false }) || 0;
+        const totalOrders = await Order.countDocuments() || 0;
+        const totalProducts = await Product.countDocuments() || 0;
 
-            try {
-                // Fetch counts with 
-                const totalUsers = await User.countDocuments({ isAdmin: false }) || 0;
-                const totalOrders = await Order.countDocuments() || 0;
-                const totalProducts = await Product.countDocuments() || 0;
+        // Debug log for counts
+        console.log("Initial counts:", { totalUsers, totalOrders, totalProducts });
 
-                // Debug log for counts
-                console.log("Initial counts:", { totalUsers, totalOrders, totalProducts });
+        // Calculate revenue
+        const deliveredOrders = await Order.find({ status: 'delivered' });
+        console.log("Delivered orders found:", deliveredOrders.length);
 
-                // Calculate revenue
-                const deliveredOrders = await Order.find({ status: 'delivered' });
-                console.log("Delivered orders found:", deliveredOrders.length);
+        const totalRevenue = deliveredOrders.reduce((sum, order) => {
+            const amount = order.finalAmount || 0;  // Corrected 'finalAmound' to 'finalAmount'
+            console.log("Order amount:", amount);
+            return sum + amount;
+        }, 0);
 
-                const totalRevenue = deliveredOrders.reduce((sum, order) => {
-                    const amount = order.finalAmound || 0;
-                    console.log("Order amount:", amount);
-                    return sum + amount;
-                }, 0);
+        // Final debug log
+        const dashboardData = {
+            totalUsers,
+            totalOrders,
+            totalProducts,
+            totalRevenue
+        };
+        console.log("Final Dashboard Data:", dashboardData);
 
-                // Final debug log
-                const dashboardData = {
-                    totalUsers,
-                    totalOrders,
-                    totalProducts,
-                    totalRevenue
-                };
-                console.log("Final Dashboard Data:", dashboardData);
-
-                return res.render("dashboard", dashboardData);
-            } catch (error) {
-                console.error("Error fetching dashboard data:", error);
-                
-                return res.render("dashboard", {
-                    totalUsers: 0,
-                    totalOrders: 0,
-                    totalProducts: 0,
-                    totalRevenue: 0
-                });
-            }
-        }
-        
-        return res.render("admin-login", { message: null });
-        
-    } catch (error) {
-        console.error("Error in loadLogin:", error);
-        return res.redirect("/admin/error");
+        // Render the dashboard with the fetched data
+        return res.render("dashboard", dashboardData);
     }
-};
+
+    // If no admin session, render login page with no message
+    return res.render("admin-login", { message: null });
+});
+
 
 
 const login = async (req, res) => {
@@ -99,39 +85,34 @@ const login = async (req, res) => {
 
 
 
-const loadDashboard = async (req, res) => {
-    try {
-        if (req.session.admin) {
-            // Fetch counts with error checking
-            const totalUsers = await User.countDocuments({ isAdmin: false }) || 0;
-            const totalOrders = await Order.countDocuments() || 0;
-            const totalProducts = await Product.countDocuments() || 0;
+const loadDashboard = asyncHandler(async (req, res) => {
+    if (req.session.admin) {
+        // Fetch counts with error checking
+        const totalUsers = await User.countDocuments({ isAdmin: false }) || 0;
+        const totalOrders = await Order.countDocuments() || 0;
+        const totalProducts = await Product.countDocuments() || 0;
 
-            // Calculate revenue
-            const deliveredOrders = await Order.find({ status: 'delivered' });
-            const totalRevenue = deliveredOrders.reduce((sum, order) => 
-                sum + (order.finalAmound || 0), 0);
+        const deliveredOrders = await Order.find({ status: 'delivered' });
+        const totalRevenue = deliveredOrders.reduce((sum, order) => 
+            sum + (order.finalAmount || 0), 0);  
 
-            console.log("Dashboard Data in loadDashboard:", {
-                totalUsers,
-                totalOrders,
-                totalProducts,
-                totalRevenue
-            });
+        console.log("Dashboard Data in loadDashboard:", {
+            totalUsers,
+            totalOrders,
+            totalProducts,
+            totalRevenue
+        });
 
-            return res.render("dashboard", {
-                totalUsers,
-                totalOrders,
-                totalProducts,
-                totalRevenue
-            });
-        }
-        res.redirect("/admin/login");
-    } catch (error) {
-        console.error("Error in loadDashboard:", error);
-        res.redirect("/admin/error");
+        return res.render("dashboard", {
+            totalUsers,
+            totalOrders,
+            totalProducts,
+            totalRevenue
+        });
     }
-};
+
+    res.redirect("/admin/login");
+});
 
 
 const pageerror = async (req, res)=>{
@@ -139,23 +120,16 @@ const pageerror = async (req, res)=>{
 }
 
 
-const logout = async (req, res) =>{
-    try {
+const logout = asyncHandler(async (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.log("Session destruction error:", err.message);
+            return res.status(500).redirect("/pageerror");
+        }
         
-        req.session.destroy((err)=>{
-            if(err){
-                console.log("session destructure error", err.message)
-                res.redirect("/pageerror")
-            }
-            return res.redirect("/admin/login")
-        })
-
-    } catch (error) {
-        console.log("somethng went wrong", error)
-        res.status(500).redirect("/pageerror")
-    }
-}
-
+        return res.redirect("/admin/login");
+    });
+});
 
 
 

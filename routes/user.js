@@ -92,7 +92,7 @@ router.post("/cancelOrder", userAuth, orderController.cancelOrder);
 router.post("/applyCoupon",userAuth,userController.applyCoupon);
 router.post('/paymentConfirm',userAuth,orderController.paymentConfirm);
 router.post("/verifyPayment", userAuth, orderController.verify);
-
+router.post("/cancel-item", userAuth, orderController.cancelProductItem);
 router.post("/returnrequestOrder",userAuth,orderController.returnorder);
 router.get("/downloadInvoice/:orderId", userAuth, (req, res, next) => {
   console.log("Route hit - downloadInvoice");

@@ -75,6 +75,7 @@
 .table {
     width: 100%;
     margin-bottom: 0;
+    table-layout: fixed;
 }
 
 .table th {
@@ -86,6 +87,8 @@
 .table td {
     padding: 1rem;
     vertical-align: middle;
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .action-buttons {
@@ -98,10 +101,106 @@
         padding: 1rem;
     }
     
-    .table-responsive {
-        overflow-x: auto;
+    .table th, .table td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
     }
 }
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #007bff;
+}
+
+input:checked + .slider:before {
+    transform: translateX(14px);
+}
+
+/* Column widths */
+.table th:nth-child(1), .table td:nth-child(1) { width: 15%; } /* Name */
+.table th:nth-child(2), .table td:nth-child(2) { width: 15%; } /* Created On */
+.table th:nth-child(3), .table td:nth-child(3) { width: 15%; } /* Expire On */
+.table th:nth-child(4), .table td:nth-child(4) { width: 12%; } /* Offer */
+.table th:nth-child(5), .table td:nth-child(5) { width: 12%; } /* Min Price */
+.table th:nth-child(6), .table td:nth-child(6) { width: 15%; } /* Status */
+.table th:nth-child(7), .table td:nth-child(7) { width: 16%; } /* Actions */
+
+/* Pagination styles */
+.pagination-container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.pagination {
+    gap: 5px;
+}
+
+.pagination .page-link {
+    color: #007bff;
+    border-radius: 4px;
+    padding: 8px 16px;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    color: #046963;
+    border-color: #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #fff;
+}
+
 </style>
 
 <section class="content-main" style="padding: 5%; margin-top: 49px;">
@@ -143,6 +242,11 @@
                             <input type="text" name="minimumPrice" placeholder="Enter minimum price" class="form-control" />
                             <div id="error-minimum-price" class="error-message"></div>
                         </div>
+                        <div class="mb-3">
+                            <label for="minimum-price" class="form-label">Maximum Price</label>
+                            <input type="text" name="maximumPrice" placeholder="Enter maximum price" class="form-control" />
+                            <div id="error-maxium-price" class="error-message"></div>
+                        </div>
 
                         <div class="d-grid">
                             <button class="btn btn-primary" onclick="return validateForm(event)" type="submit">
@@ -160,8 +264,8 @@
                                     <th>Name</th>
                                     <th>Created On</th>
                                     <th>Expire On</th>
-                                    <th>Offer Price</th>
-                                    <th>Minimum Price</th>
+                                    <th>Offer</th>
+                                    <th>Min Price</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -169,22 +273,58 @@
                             <tbody>
                                 <% for(let i = 0; i < coupons.length; i++) { %>
                                 <tr>
-                                    <td><%=coupons[i].name%></td>
-                                    <td><%=new Date(coupons[i].createdOn).toLocaleDateString('en-US')%></td>
-                                    <td><%=new Date(coupons[i].expireOn).toLocaleDateString('en-US')%></td>
-                                    <td><%=coupons[i].offerPrice%></td>
-                                    <td><%=coupons[i].minimumPrice%></td>
-                                    <td><%=coupons[i].isList%></td>
+                                    <td><%= coupons[i].name %></td>
+                                    <td><%= new Date(coupons[i].createdOn).toLocaleDateString('en-US') %></td>
+                                    <td><%= new Date(coupons[i].expireOn).toLocaleDateString('en-US') %></td>
+                                    <td>₹<%= coupons[i].offerPrice %></td>
+                                    <td>₹<%= coupons[i].minimumPrice %></td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" onchange="toggleCouponStatus('<%= coupons[i]._id %>', this)" 
+                                                <%= coupons[i].isList ? 'checked' : '' %>>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <a href="/admin/editCoupon?id=<%=coupons[i]._id%>" class="btn btn-primary btn-sm">Edit</a>
-                                            <!-- <button onclick="confirmDelete('<%=coupons[i]._id%>')" class="btn btn-danger btn-sm">Delete</button> -->
+                                            <a href="/admin/editCoupon?id=<%= coupons[i]._id %>" 
+                                               class="btn btn-primary btn-sm">Edit</a>
                                         </div>
                                     </td>
                                 </tr>
                                 <% } %>
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Add pagination -->
+                    <div class="pagination-container mt-4">
+                        <% if (totalPages > 0) { %>
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-center">
+                                    <!-- Previous Button -->
+                                    <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                                        <a class="page-link" href="/admin/coupon?page=<%= currentPage - 1 %>" tabindex="-1">
+                                            Previous
+                                        </a>
+                                    </li>
+
+                                    <!-- Page Numbers -->
+                                    <% for(let i = 1; i <= totalPages; i++) { %>
+                                        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                            <a class="page-link" href="/admin/coupon?page=<%= i %>"><%= i %></a>
+                                        </li>
+                                    <% } %>
+
+                                    <!-- Next Button -->
+                                    <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                                        <a class="page-link" href="/admin/coupon?page=<%= currentPage + 1 %>">
+                                            Next
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -203,6 +343,7 @@ function validateForm(event) {
     const todayDateObj = new Date();
     todayDateObj.setHours(0, 0, 0, 0);
 
+    // Date validations
     if (sDateObj > eDateObj) {
         document.getElementById("error-end-date").innerHTML = "End date should be after the start date";
         return false;
@@ -213,6 +354,7 @@ function validateForm(event) {
         return false;
     }
 
+    // Coupon name validation
     let name = document.getElementsByName("couponName")[0].value;
     const nameRegex = /^[A-Za-z0-9]{1,50}$/;
 
@@ -221,24 +363,95 @@ function validateForm(event) {
         return false;
     }
 
+    // Price validations
     const offerPriceInput = document.getElementsByName("offerPrice")[0];
     const minimumPriceInput = document.getElementsByName("minimumPrice")[0];
+    const maximumPriceInput = document.getElementsByName("maximumPrice")[0];
     
-    const offerPrice = offerPriceInput.value.trim() !== "" ? parseInt(offerPriceInput.value) : NaN;
-    const minimumPrice = minimumPriceInput.value.trim() !== "" ? parseInt(minimumPriceInput.value) : NaN;
+    const offerPrice = offerPriceInput.value.trim() !== "" ? parseFloat(offerPriceInput.value) : NaN;
+    const minimumPrice = minimumPriceInput.value.trim() !== "" ? parseFloat(minimumPriceInput.value) : NaN;
+    const maximumPrice = maximumPriceInput.value.trim() !== "" ? parseFloat(maximumPriceInput.value) : NaN;
 
-    if (isNaN(offerPrice) || isNaN(minimumPrice)) {
-        document.getElementById("error-offer-price").innerHTML = "Please enter valid numeric values for prices";
+    // Check if all price fields are valid numbers
+    if (isNaN(offerPrice) || isNaN(minimumPrice) || isNaN(maximumPrice)) {
+        document.getElementById("error-offer-price").innerHTML = "Please enter valid numeric values for all prices";
         return false;
     }
 
+    // Check if prices are positive
+    if (offerPrice <= 0 || minimumPrice <= 0 || maximumPrice <= 0) {
+        document.getElementById("error-offer-price").innerHTML = "All prices must be greater than 0";
+        return false;
+    }
+
+    // Check if offer price is less than minimum price
     if (offerPrice >= minimumPrice) {
         document.getElementById("error-offer-price").innerHTML = "Offer price must be less than minimum price";
         return false;
     }
 
+    // Check if maximum price is less than minimum price
+    if (maximumPrice <= minimumPrice) {
+        document.getElementById("error-maxium-price").innerHTML = "Maximum price must be greater than minimum price";
+        return false;
+    }
+
+    // Check if offer price is greater than maximum price
+    if (offerPrice >= maximumPrice) {
+        document.getElementById("error-offer-price").innerHTML = "Offer price must be less than maximum price";
+        return false;
+    }
+
+    // Add reasonable maximum limit for prices
+    const MAX_PRICE_LIMIT = 1000000; // 10 Lakh rupees as an example
+    if (maximumPrice > MAX_PRICE_LIMIT) {
+        document.getElementById("error-maxium-price").innerHTML = `Maximum price cannot exceed ₹${MAX_PRICE_LIMIT.toLocaleString()}`;
+        return false;
+    }
+
     return true;
 }
+
+// Add real-time validation for price fields
+document.addEventListener('DOMContentLoaded', function() {
+    const priceInputs = [
+        document.getElementsByName("offerPrice")[0],
+        document.getElementsByName("minimumPrice")[0],
+        document.getElementsByName("maximumPrice")[0]
+    ];
+
+    priceInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            // Clear previous error messages
+            document.querySelectorAll(".error-message").forEach(el => el.innerHTML = "");
+
+            // Validate numeric input
+            if (this.value && !/^\d*\.?\d*$/.test(this.value)) {
+                this.value = this.value.replace(/[^\d.]/g, '');
+            }
+
+            // Real-time price validation
+            const offerPrice = parseFloat(priceInputs[0].value) || 0;
+            const minimumPrice = parseFloat(priceInputs[1].value) || 0;
+            const maximumPrice = parseFloat(priceInputs[2].value) || 0;
+
+            if (minimumPrice && maximumPrice && maximumPrice <= minimumPrice) {
+                document.getElementById("error-maxium-price").innerHTML = 
+                    "Maximum price must be greater than minimum price";
+            }
+
+            if (offerPrice && minimumPrice && offerPrice >= minimumPrice) {
+                document.getElementById("error-offer-price").innerHTML = 
+                    "Offer price must be less than minimum price";
+            }
+
+            if (offerPrice && maximumPrice && offerPrice >= maximumPrice) {
+                document.getElementById("error-offer-price").innerHTML = 
+                    "Offer price must be less than maximum price";
+            }
+        });
+    });
+});
 
 function confirmDelete(couponId) {
     Swal.fire({
@@ -291,6 +504,35 @@ function setDefaultStartDate() {
 
 // Set default date when page loads
 document.addEventListener('DOMContentLoaded', setDefaultStartDate);
+
+
+function toggleCouponStatus(couponId, checkbox) {
+    const status = checkbox.checked;
+
+    $.ajax({
+        url: "/admin/updateCouponStatus",
+        method: "POST",
+        data: { id: couponId, isList: status },
+        success: function () {
+            Swal.fire({
+                icon: "success",
+                title: "Updated!",
+                text: "Coupon status updated successfully",
+                timer: 1500,
+                showConfirmButton: false
+            });
+        },
+        error: function () {
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Failed to update coupon status",
+            });
+            checkbox.checked = !status; 
+        }
+    });
+}
+
 </script>
 
 <%- include("../../views/partials/admin/footer") %>

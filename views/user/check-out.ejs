@@ -769,7 +769,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Handle specific error responses from the backend
         if (!response.success && response.message) {
             Swal.fire({
                 title: 'Order Error',
@@ -782,7 +781,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const orderId = response.order?._id;
 
-        // Handle different payment methods
         switch(response.method) {
             case "cod":
                 try {
@@ -859,7 +857,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         }
     } catch (error) {
-        // Handle different types of errors
         const errorResponse = error.responseJSON;
         
         if (errorResponse?.error === "User not found") {

@@ -205,28 +205,27 @@ const userProfile = async (req, res) => {
       const userData = await User.findById(userId).populate('orderHistory');
       const addressData = await Address.findOne({ userId: userId });
 
-  
       console.log(userData, "user data");
       console.log(userData.walletHistory, "Wallet History");
 
       const walletHistory = userData.walletHistory.map(x => ({
         status: x.type,  
         date: x.timestamp,
-        amount: x.amount, 
-        
+        amount: x.amount,
     }))
     .sort((a, b) => new Date(b.date) - new Date(a.date));
-  
-      res.render('profile', {
-        
-        locals: userData, 
-        userAddress: addressData, 
-        walletHistory
 
+      // Remove pagination logic from controller
+      res.render('profile', {
+        locals: userData,
+        userAddress: addressData,
+        walletHistory,
+        query: req.query // Pass query params to view for pagination
       });
+
     } catch (error) {
       console.error("Error retrieving profile data", error);
-      res.redirect("/pageNotFound");
+      res.redirect("/pageNotFound"); 
     }
   };
   

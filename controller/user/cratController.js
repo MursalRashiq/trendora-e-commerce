@@ -1,12 +1,13 @@
 const User = require("../../models/userSchema")
 const Product = require("../../models/productSchema");
 const mongodb = require("mongodb");
+const asyncHandler = require("express-async-handler");
 
 
 
 
-const getCartPage = async (req, res) => {
-    try {
+const getCartPage = asyncHandler(async (req, res) => {
+   
       const id = req.session.user 
       console.log("User ID from session:", id);
   
@@ -70,15 +71,12 @@ const getCartPage = async (req, res) => {
         findUser,
         
       });
-    } catch (error) {
-      console.error("get cart error:", error);
-      res.redirect("/pageNotFound");
-    }
-  };
+    
+  });
   
 
-  const addToCart = async (req, res) => {
-    try {
+  const addToCart = asyncHandler(async (req, res) => {
+    
         const id = req.body.productId;
         const userId = req.session.user;
         const findUser = await User.findById(userId);
@@ -143,16 +141,13 @@ const getCartPage = async (req, res) => {
                 return res.json({ status: "Out of stock" });
             }
         }
-    } catch (error) {
-        console.error(error);
-        return res.redirect("/pageNotFound");
-    }
-};
+    
+});
   
 
 
-  const changeQuantity = async (req, res) => {
-    try {
+  const changeQuantity = asyncHandler(async (req, res) => {
+    
       const productId = req.body.productId;
       const userId = req.session.user;
       const count = parseInt(req.body.count);
@@ -247,14 +242,11 @@ const getCartPage = async (req, res) => {
         grandTotal: grandTotal[0].totalPrice
       });
   
-    } catch (error) {
-      console.error('Cart quantity update error:', error);
-      return res.status(500).json({ status: false, error: "Server error" });
-    }
-  };
+   
+  });
 
-  const deleteProduct = async (req, res) => {
-    try {
+  const deleteProduct = asyncHandler(async (req, res) => {
+    
       const id = req.query.id;
       const userId = req.session.user;
       const user = await User.findById(userId);
@@ -262,10 +254,8 @@ const getCartPage = async (req, res) => {
       user.cart.splice(cartIndex, 1);
       await user.save();
       res.redirect("/cart");
-    } catch (error) {
-      res.redirect("/pageNotFound");
-    }
-  };
+    
+  });
   
 
 

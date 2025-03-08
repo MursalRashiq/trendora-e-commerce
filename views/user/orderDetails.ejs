@@ -1,523 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <!-- <link rel="stylesheet" href="./user-assets/css/maind134.css"> -->
-
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #2563eb;
-            --success: #16a34a;
-            --warning: #ca8a04;
-            --error: #dc2626;
-            --background: #f1f5f9;
-            --card-bg: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border-radius: 16px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: var(--background);
-            color: var(--text-primary);
-            line-height: 1.5;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-right: 1px solid #e2e8f0;
-        }
-
-        .main-content {
-            padding: 2rem;
-        }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .order-status-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            font-weight: 500;
-            font-size: 0.875rem;
-            background: #ecfdf5;
-            color: var(--success);
-        }
-
-        .order-timeline {
-            margin: 2rem 0;
-            padding: 1.5rem;
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .timeline-item {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem 0;
-            border-left: 2px solid #e2e8f0;
-            margin-left: 1rem;
-            padding-left: 2rem;
-            position: relative;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -0.5rem;
-            width: 1rem;
-            height: 1rem;
-            border-radius: 50%;
-            background: var(--primary);
-        }
-
-        .order-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .info-card {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: var(--border-radius);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .info-card-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .info-card-header i {
-            padding: 0.75rem;
-            border-radius: 12px;
-            background: #eff6ff;
-            color: var(--primary);
-        }
-
-        .products-list {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .product-item {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 1.5rem;
-            padding: 1.5rem;
-            border-bottom: 1px solid #e2e8f0;
-            align-items: center;
-        }
-
-        .product-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 12px;
-            object-fit: cover;
-        }
-
-        .product-details {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .product-name {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .product-price {
-            color: var(--text-secondary);
-        }
-
-        .product-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            border: none;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-outline {
-            border: 1px solid #e2e8f0;
-            background: transparent;
-        }
-
-        .summary-section {
-            margin-top: 2rem;
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-
-        .summary-item {
-            padding: 1rem;
-            border-radius: 12px;
-            background: #f8fafc;
-        }
-
-        .summary-label {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .summary-value {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        @media (max-width: 1024px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                display: none;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .product-item {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .product-image {
-                margin: 0 auto;
-            }
-
-            .product-actions {
-                justify-content: center;
-            }
-
-            .summary-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .order-details {
-    padding: 1rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    margin: 1rem 0;
-}
-
-.invoice-section {
-    margin-bottom: 1rem;
-}
-
-.download-invoice {
-    background-color: #4CAF50;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.3s;
-}
-
-.download-invoice:hover {
-    background-color: #45a049;
-    text-decoration: none;
-    color: white;
-}
-
-.order-info {
-    margin-top: 1rem;
-}
-    </style>
-</head>
-<body>
-    <div class="dashboard">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <h2>Order Details</h2>
-            <div class="order-timeline">
-                <div class="timeline-item">
-                    <div>
-                        <h4>Order Placed</h4>
-                        <p><%= new Date(orders.createdAt).toLocaleDateString() %></p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div>
-                        <h4>Payment Confirmed</h4>
-                        <p>Via <%= orders.paymentMethod %></p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div>
-                        <h4>Current Status</h4>
-                        <p><%= orders.status %></p>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Order Header -->
-            <div class="order-header">
-                <div>
-                    <h1>Order #<%= orders.orderId %></h1>
-                    <p class="text-secondary">Placed on <%= new Date(orders.createdAt).toLocaleDateString() %></p>
-                </div>
-                <span class="order-status-badge"><%= orders.status %></span>
-            </div>
-
-            <!-- Info Cards Grid -->
-            <div class="order-grid">
-                <!-- Customer Info Card -->
-                <div class="info-card">
-                    <div class="info-card-header">
-                        <i class="material-icons">person</i>
-                        <h3>Customer Information</h3>
-                    </div>
-                    <div>
-                        <p><strong>Name:</strong> <%= user && user.name ? user.name : 'N/A' %></p>
-                        <p><strong>Email:</strong> <%= user && user.email ? user.email : 'N/A' %></p>
-                        <p><strong>Phone:</strong> <%= user && user.phone ? user.phone : 'N/A' %></p>
-                    </div>
-                </div>
-
-                <!-- Payment Info Card -->
-                <div class="info-card">
-                    <div class="info-card-header">
-                        <i class="material-icons">payment</i>
-                        <h3>Payment Details</h3>
-                    </div>
-                    <div class="order-details" style="display: contents; justify-content: end;">
-                        <% if(orders.status === "delivered") { %>
-                            <div class="invoice-section">
-                                <a href="/downloadInvoice/<%= orders._id %>" class="btn btn-primary btn-sm download-invoice">
-                                    <i class="fas fa-download"></i> Download Invoice
-                                </a>
-                            </div>
-                        <% } %>
-                        <div class="order-info">
-                            <p><strong>Payment Method:</strong> <%= orders.payment %></p>
-                            <p><strong>Order Status:</strong> 
-                                <span class="status-badge <%= orders.status.toLowerCase() %>">
-                                    <%= orders.status %>
-                                </span>
-                            </p>
-                            <p><strong>Total Amount:</strong> ₹<%= finalAmount %></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Products List -->
-            <div class="products-list">
-                <% orders.orderItems.forEach(item => { %>
-                    <div class="product-item">
-                        <img src="<%= item.product.productImage[0]%>" alt="Product" class="product-image">
-                        <div class="product-details">
-                            <span class="product-name"><%= item.product?.productName || 'N/A'  %></span>
-                            <span class="product-price">
-                                ₹<%= item.product.salePrice ? item.product.salePrice.toLocaleString() : item.product.regularPrice.toLocaleString() %>
-                                × <%= item.quantity %>
-                            </span>
-                        </div>
-                        <div class="product-actions">
-                            <% if (orders.status === 'Cancelled') { %>
-                                <span class="text-muted">Order Cancelled</span>
-                            <% } else if (orders.status === 'Return Request') { %>
-                                <span class="text-muted">Return Request Pending</span>
-                            <% } else if (orders.status === 'Returned') { %>
-                                <span class="text-muted">Order Returned</span>
-                            <% } else { %>
-                                <select class="btn btn-outline" onchange="handleDropdownChange(this)">
-                                    <option value="" disabled selected>Actions</option>
-                                    <% if (orders.status !== 'delivered') { %>
-                                        <option value="cancel">Cancel Order</option>
-                                    <% } %>
-                                    <% if (orders.status === 'delivered') { %>
-                                        <option value="returnrequest">Return Request</option>
-                                    <% } %>
-                                    <% if (orders.status === 'failed') { %>
-                                        <option value="retry">Retry Payment</option>
-                                    <% } %>
-                                </select>
-                            <% } %>
-                        </div>
-                    </div>
-                <% }); %>
-            </div>
-
-            <!-- Order Summary -->
-            <div class="summary-section">
-                <h3>Order Summary</h3>
-                <div class="summary-grid">
-                    <div class="summary-item">
-                        <div class="summary-label">Subtotal</div>
-                        <div class="summary-value">₹<%= totalGrant.toLocaleString() %></div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">Discount</div>
-                        <div class="summary-value">₹<%= discount.toLocaleString() %></div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">Final Amount</div>
-                        <div class="summary-value">₹<%= finalAmount.toLocaleString() %></div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <input type="hidden" id="orderId" value="<%= orders._id %>">
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script>
-        function handleDropdownChange(selectElement) {
-    const selectedValue = selectElement.value;
-    const orderId = document.getElementById("orderId").value;
-
-    if (selectedValue === "cancel") {
-        confirmCancelOrder(orderId);
-    } else if (selectedValue === "returnrequest") {
-        returnRequestOrder(orderId);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #046963;
+      --primary-light: #e6f3f2;
+      --primary-dark: #035048;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --warning: #f59e0b;
+      --warning-light: #fffbeb;
+      --error: #ef4444;
+      --error-light: #fee2e2;
+      --neutral: #6b7280;
+      --neutral-light: #f3f4f6;
+      --background: #f9fafb;
+      --card-bg: #ffffff;
+      --text-primary: #111827;
+      --text-secondary: #6b7280;
+      --border-color: #e5e7eb;
+      --border-radius: 8px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
 
-    // Reset dropdown after selection
-    selectElement.selectedIndex = 0;
-}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-function confirmCancelOrder(orderId) {
-    Swal.fire({
-        title: 'Confirm Cancel Order',
-        text: 'Are you sure you want to cancel this order?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, cancel it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            cancelOrder(orderId);
-        }
-    });
-}
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f2f5;
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
 
-function cancelOrder(orderId) {
-    $.ajax({
-        url: '/cancelOrder',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ orderId: orderId }),
-        success: (response) => {
-            if (response.message === "Order cancelled successfully") {
-                Swal.fire({
-                    title: 'Success!',
-                    text: response.message,
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.reload();
-                    }
-                });
-            } else {
-                Swal.fire({
-                    title: 'Error!',
-                    text: response.message || 'Failed to cancel order',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        },
-        error: (xhr, status, error) => {
-            let errorMessage = 'An error occurred while canceling the order';
+    .container {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 1.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.75rem;
+    }
+
+    .logo i {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.5rem;
+      border-radius: var(--border-radius);
+      font-size: 1.75rem;
+    }
+
+    .order-id-header {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius);
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(10px);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+      gap: 2rem;
+      margin: 2.5rem auto;
+    }
+
+    .order-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .order-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--primary-light);
+    }
+
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .card-title i {
+      background: var(--primary);
+      color: white;
+      padding: 0.6rem;
+      border-radius: 50%;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .status-badge {
+      padding: 0.6rem 1.25rem;
+      border-radius: 9999px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: var(--shadow-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .success {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .processing {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .shipped {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .cancelled {
+      background: var(--error-light);
+      color: var(--error);
+    }
+
+    .returned {
+      background: var(--neutral-light);
+      color: var(--neutral);
+    }
+
+    .delivered {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .order-summary {
+      margin-bottom: 1.5rem;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 0;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+      font-weight: 600;
+      padding-top: 1.25rem;
+      font-size: 1.25rem;
+      color: var(--primary-dark);
+    }
+
+    .timeline-container {
+      position: relative;
+      padding-left: 2rem;
+      margin-left: 1rem;
+    }
+
+    .timeline-track {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 3px;
+      background: var(--primary-light);
+      border-radius: 3px;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding: 1.5rem 0;
+    }
+
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-marker {
+      position: absolute;
+      left: -2rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      background: var(--primary);
+      transform: translateX(-50%);
+      z-index: 1;
+      box-shadow: 0 0 0 4px var(--primary-light);
+    }
+
+    .timeline-marker::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: white;
+    }
+
+    .timeline-content {
+      padding-left: 1.5rem;
+    }
+
+    .timeline-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      color: var(--primary-dark);
+    }
+
+    .timeline-info {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem 2rem;
+    }
+
+    .info-label {
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .info-value {
+      color: var(--text-primary);
+    }
+
+    .delivery-address {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background: var(--primary-light);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .delivery-address::before {
+      content: '\e55f';
+      font-family: 'Material Icons';
+      position: absolute;
+      top: -15px;
+      left: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 0.5rem;
+      border-radius: 50%;
+      font-size: 1.25rem;
+    }
+
+    .download-invoice {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 1.5rem;
+      border-radius: var(--border-radius);
+      background: var(--primary);
+      color: white;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      font-size: 1rem;
+    }
+
+    .download-invoice:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .products-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+
+    .product-item {
+      display: flex;
+      flex-direction: column;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-item:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+
+    .product-image-container {
+      position: relative;
+      padding-top: 75%;
+      overflow: hidden;
+      background: var(--primary-light);
+    }
+
+    .product-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .product-item:hover .product-image {
+      transform: scale(1.1);
+    }
+
+    .product-details {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex-grow: 1;
+    }
+
+    .product-name {
+      font-weight: 600;
+      color: var(--primary-dark);
+      font-size: 1.1rem;
+    }
+
+    .product-price {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .product-price span {
+      padding: 0.25rem 0.75rem;
+      background: var(--primary-light);
+      border-radius: 99px;
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .product-meta {
+      font-size: 0.85rem;
+      color: var(--neutral);
+      padding-top: 0.5rem;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    .product-footer {
+      padding: 1rem;
+      border-top: 1px solid var(--border-color);
+      background: var(--background);
+    }
+
+    .action-select {
+      padding: 0.75rem 1rem;
+      border-radius: var(--border-radius);
+      background: white;
+      border: 1px solid var(--border-color);
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      width: 100%;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem;
+      padding-right: 2.5rem;
+      transition: all 0.2s;
+    }
+
+    .action-select:hover {
+      border-color: var(--primary);
+    }
+
+    .return-form {
+      margin-top: 1rem;
+      padding: 1.25rem;
+      background: var(--background);
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
+      width: 100%;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .btn {
+      padding: 0.75rem 1rem;
+      border-radius: var(--border-radius);
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      width: 100%;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-top: 3rem;
+      border-top: 1px solid var(--border-color);
+      background: var(--primary-light);
+    }
+
+    .floating-back {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--primary);
+      color: white;
+      width: 4rem;
+      height: 4rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s;
+    }
+
+    .floating-back:hover {
+      background: var(--primary-dark);
+      transform: translateY(-5px);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+
+    .primary-tag {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    @media (max-width: 1200px) {
+      .main-grid {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .order-sidebar {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .products-list {
+        grid-template-columns: 1fr;
+      }
+
+      .order-id-header {
+        display: none;
+      }
+
+      .container {
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <div class="logo">
+        <i class="material-icons">shopping_bag</i>
+        <span>ShopEase</span>
+      </div>
+      <div class="order-id-header">
+        Order #<%= orders.orderId %>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="main-grid">
+      <!-- Left Column -->
+      <div class="order-content">
+        <!-- Status Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="material-icons">receipt_long</i>
+              Order Status
+            </h2>
+            <span class="status-badge <%= orders.status.toLowerCase() %>">
+              <i class="material-icons">circle</i>
+              <%= orders.status %>
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="timeline-container">
+              <div class="timeline-track"></div>
+              
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <h4 class="timeline-title">Order Placed</h4>
+                  <p class="timeline-info"><%= new Date(orders.createdAt).toLocaleDateString() %></p>
+                  <p class="timeline-info">Your order has been successfully placed</p>
+                </div>
+              </div>
+              
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <h4 class="timeline-title">Payment Confirmed</h4>
+                  <p class="timeline-info">Via <%= orders.paymentMethod %></p>
+                  <p class="timeline-info">Transaction ID: #<%= orders.orderId.substring(0, 8) %></p>
+                </div>
+              </div>
+              
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <h4 class="timeline-title">Current Status</h4>
+                  <p class="timeline-info"><%= orders.status %></p>
+                  <p class="timeline-info">Updated: <%= new Date().toLocaleDateString() %></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="material-icons">inventory_2</i>
+              Ordered Products
+            </h2>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="products-list">
+              <% orders.orderItems.forEach((item, index) => { %>
+              <div class="product-item">
+                <div class="product-image-container">
+                  <img src="<%= item.product.productImage[0] %>" alt="<%= item.product?.productName || 'Product' %>" class="product-image" />
+                </div>
+                
+                <div class="product-details">
+                  <span class="product-name"><%= item.product?.productName || 'N/A' %></span>
+                  <div class="product-price">
+                    ₹<%= item.product.salePrice ? item.product.salePrice.toLocaleString() : item.product.regularPrice.toLocaleString() %> 
+                    <span>× <%= item.quantity %></span>
+                  </div>
+                  <div class="product-meta">
+                    <span class="tag primary-tag">SKU: <%= item.product._id.toString().substring(0, 8).toUpperCase() %></span>
+                  </div>
+                </div>
+                
+                <div class="product-footer">
+                  <select class="action-select" onchange="handleDropdownChange(this, '<%= orders._id %>')">
+                    <option value="" disabled selected>Actions</option>
+                    <div class="product-item" data-product-id="<%= item.product._id %>">
+                      <option value="cancel">Cancel Order</option>
+                    </div>
+                    <option value="return">Return Order</option>
+                  </select>
+                  
+                  <!-- Return Form (Hidden by default) -->
+                  <div class="return-form" id="returnForm_<%= orders._id %>_<%= index %>" style="display: none;">
+                    <select id="returnReason_<%= orders._id %>_<%= index %>" class="form-control">
+                      <option value="">Select a reason</option>
+                      <option value="Wrong item">Wrong item</option>
+                      <option value="Defective">Defective</option>
+                      <option value="Not as described">Not as described</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="submitReturn('<%= orders._id %>', '<%= index %>')">
+                      <i class="material-icons">replay</i> Return This Item
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <% }); %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Sidebar -->
+      <div class="order-sidebar">
+        <!-- Order Summary Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="material-icons">summarize</i>
+              Order Summary
+            </h2>
+          </div>
+          <div class="card-body">
+            <div class="order-summary">
+              <div class="summary-row">
+                <span>Subtotal</span>
+                <span>₹<%= totalGrant.toLocaleString() %></span>
+              </div>
+              <div class="summary-row">
+                <span>Discount</span>
+                <span>- ₹<%= discount.toLocaleString() %></span>
+              </div>
+              <div class="summary-row">
+                <span>Shipping</span>
+                <span>₹0</span>
+              </div>
+              <div class="summary-row">
+                <span>Total</span>
+                <span>₹<%= finalAmount.toLocaleString() %></span>
+              </div>
+            </div>
+
+            <div>
+              <p class="info-label">Estimated Delivery:</p>
+              <p class="info-value"><%= new Date(new Date(orders.createdAt).setDate(new Date(orders.createdAt).getDate() + 7)).toLocaleDateString() %></p>
+            </div>
+
+            <% if(orders.orderItems[0].status === "delivered") { %>
+            <div style="margin-top: 1.5rem; text-align: center;">
+              <a href="/downloadInvoice/<%= orders._id %>" class="download-invoice">
+                <i class="material-icons">download</i> 
+                Download Invoice
+              </a>
+            </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Customer Info Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="material-icons">person</i>
+              Customer Information
+            </h2>
+          </div>
+          <div class="card-body">
+            <div class="info-grid">
+              <div class="info-label">Name:</div>
+              <div class="info-value"><%= user && user.name ? user.name : 'N/A' %></div>
+              
+              <div class="info-label">Email:</div>
+              <div class="info-value"><%= user && user.email ? user.email : 'N/A' %></div>
+              
+              <div class="info-label">Phone:</div>
+              <div class="info-value"><%= user && user.phone ? user.phone : 'N/A' %></div>
+            </div>
             
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMessage = xhr.responseJSON.message;
-            }
+            <div class="delivery-address">
+              <h4 class="info-label" style="margin-bottom: 0.5rem;">Delivery Address</h4>
+              <p>123 Main Street</p>
+              <p>Apartment 4B</p>
+              <p>New York, NY 10001</p>
+            </div>
+          </div>
+        </div>
 
-            Swal.fire({
-                title: 'Error!',
-                text: errorMessage,
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        }
+        <!-- Payment Info Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="material-icons">payment</i>
+              Payment Details
+            </h2>
+          </div>
+          <div class="card-body">
+            <div class="info-grid">
+              <div class="info-label">Method:</div>
+              <div class="info-value"><%= orders.payment %></div>
+              
+              <div class="info-label">Status:</div>
+              <div class="info-value" style="color: var(--success); font-weight: 600;">Paid</div>
+              
+              <div class="info-label">Date:</div>
+              <div class="info-value"><%= new Date(orders.createdAt).toLocaleDateString() %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Back Button -->
+  <a href="/orders" class="floating-back">
+    <i class="material-icons">arrow_back</i>
+  </a>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2025 ShopEase. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <input type="hidden" id="orderId" value="<%= orders._id %>" />
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    function handleDropdownChange(selectElement, orderId) {
+  const selectedValue = selectElement.value;
+  const productItem = selectElement.closest('.product-item');
+  const productId = productItem.getAttribute('data-product-id');
+  const returnForms = productItem.querySelectorAll(".return-form");
+
+  if (selectedValue === "cancel") {
+    confirmCancelOrder(orderId,productId); 
+    selectElement.selectedIndex = 0;
+  } else if (selectedValue === "return") {
+    // Show return forms for this order
+    returnForms.forEach(form => {
+      form.style.display = "block";
     });
+    selectElement.style.display = "none";
+  }
 }
-function returnRequestOrder(orderId) {
-    $.ajax({
-        url: '/returnrequestOrder',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ orderId: orderId }),
+
+    function submitReturn(orderId, itemIndex) {
+  const reasonSelect = document.getElementById(`returnReason_${orderId}_${itemIndex}`);
+  const reason = reasonSelect.value;
+
+  if (!reason) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Please select a return reason",
+      confirmButtonColor: "#046963",
+    });
+    return;
+  }
+
+  Swal.fire({
+    title: "Confirm Return Request",
+    text: "Are you sure you want to return this item?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#046963",
+    cancelButtonColor: "#ef4444",
+    confirmButtonText: "Yes, return it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      returnRequestOrder(orderId, itemIndex, reason);
+    }
+  });
+}
+
+function returnRequestOrder(orderId, itemIndex, reason) {
+  $.ajax({
+    url: "/returnrequestOrder",
+    method: "POST",
+    contentType: "application/json",
+    data: JSON.stringify({
+      orderId: orderId,
+      itemIndex: itemIndex,
+      returnReason: reason,
+    }),
+    success: (response) => {
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: response.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#046963",
+      }).then(() => {
+        window.location.reload();
+      });
+    },
+    error: (error) => {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.responseJSON?.message || "Something went wrong",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#046963",
+      });
+    },
+  });
+}
+    function confirmCancelOrder(orderId,productId) {
+      Swal.fire({
+        title: "Confirm Cancel Order",
+        text: "Are you sure you want to cancel this order?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#046963",
+        cancelButtonColor: "#ef4444",
+        confirmButtonText: "Yes, cancel it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          cancelOrder(orderId, productId);
+        }
+      });
+    }
+
+    function cancelOrder(orderId, productId) {
+      $.ajax({
+        url: "/cancelOrder",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ orderId: orderId, productId: productId}),
         success: (response) => {
-            Swal.fire({
-                icon: "success",
-                title: "Success",
-                text: response.message,
-                confirmButtonText: "OK",
-            }).then(() => {
-                window.location.reload();
-            });
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: response.message,
+            confirmButtonText: "OK",
+            confirmButtonColor: "#046963",
+          }).then(() => {
+            window.location.reload();
+          });
         },
         error: (error) => {
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: error.responseJSON?.message || "Something went wrong",
-                confirmButtonText: "OK",
-            });
-        }
-    });
-}
-
-    </script>
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.responseJSON?.message || "Something went wrong",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#046963",
+          });
+        },
+      });
+    }
+  </script>
 </body>
-
+</html>

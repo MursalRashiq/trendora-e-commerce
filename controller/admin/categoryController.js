@@ -1,12 +1,13 @@
 const Category = require("../../models/categorySchema")
 const { findOne } = require("../../models/userSchema")
 const Product = require("../../models/productSchema")
+const asyncHandler = require('express-async-handler');
 
 
 
 
-const categoryInfo = async (req, res)=>{
-    try {
+const categoryInfo = asyncHandler(async (req, res)=>{
+    
         
         const page = parseInt(req.query.page) || 1
         const limit = 4
@@ -29,24 +30,14 @@ const categoryInfo = async (req, res)=>{
             totalCategories: totalCategories
         })
 
+})
 
 
-    } catch (error) {
-
-
-        console.error("category", error);
-        res.redirect("/pageerror")
-        
-        
-    }
-}
-
-
-const addCategory = async(req, res) =>{
+const addCategory = asyncHandler(async(req, res) =>{
     const {name, description} = req.body
 
    // console.log(req.body)
-    try {
+    
         
         const existingCategory = await Category.findOne({name: { $regex: new RegExp(`^${name}$`, 'i') } })
         if(existingCategory){
@@ -59,16 +50,12 @@ const addCategory = async(req, res) =>{
         await newCategory.save()
         return res.json({message: "Category added successfully"})
 
-    } catch (error) {
-
-        return res.status(500).json({error:"Internal server error"})
-        
-    }
-}
+    
+})
 
 
-const addCategoryOffer = async (req, res) => {
-    try {
+const addCategoryOffer = asyncHandler(async (req, res) => {
+    
         const { categoryId, percentage } = req.body;
 
         // Validate input
@@ -120,18 +107,10 @@ const addCategoryOffer = async (req, res) => {
             status: true, 
             message: "Category offer added successfully" 
         });
+})
 
-    } catch (error) {
-        console.error("Error in addCategoryOffer:", error);
-        res.status(500).json({ 
-            status: false, 
-            message: "Internal Server Error" 
-        });
-    }
-};
-
-const removeCategoryOffer = async (req, res) => {
-    try {
+const removeCategoryOffer = asyncHandler(async (req, res) => {
+   
         const { categoryId } = req.body;
 
         // Validate input
@@ -188,74 +167,45 @@ const removeCategoryOffer = async (req, res) => {
             status: true, 
             message: "Category offer removed successfully" 
         });
+});
 
-    } catch (error) {
-        console.error("Error in removeCategoryOffer:", error);
-        return res.status(500).json({ 
-            status: false, 
-            message: "Internal Server Error" 
-        });
-    }
-};
-
-const getListCategory = async (req, res) =>{
-    try {
+const getListCategory = asyncHandler(async (req, res) =>{
+    
 
         let id = req.query.id
         await Category.updateOne({_id:id},{$set:{isListed: false}})
         res.redirect("/admin/category")
-    } catch (error) {
-       
-        res.redirect("/pageerror")
+})
 
-
-    }
-}
-
-const getUnlistCategory = async (req, res) =>{
-    try {
+const getUnlistCategory = asyncHandler(async (req, res) =>{
+    
         let id = req.query.id
         await Category.updateOne({_id:id},{$set:{isListed: true}})
         res.redirect("/admin/category")
-    } catch (error) {
-        
-        res.redirect("/pageerror")
+})
 
-
-    }
-}
-
-const getEditCatagory = async (req, res) =>{
-    try {
+const getEditCatagory = asyncHandler(async (req, res) =>{
+    
         
         const id = req.params.id
         const category = await Category.findOne({_id:id})
 
         res.render("edit-category", {category:category})
+})
 
 
-    } catch (error) {
-
-        res.redirect("/pageerror")
-        
-    }
-}
-
-
-const editCategory = async (req, res) => {
-    try {
+const editCategory = asyncHandler(async (req, res) => {
+    
         const id = req.params.id;
-        const { name, description } = req.body; // Access name instead of categoryName
-
-        // Check if the form fields are being passed correctly
-       // console.log(req.body);  // Log the request body to debug
+        const { name, description } = req.body; 
+       
 
         // Validate inputs
         if (!name || !description) {
             return res.status(400).json({ error: "Name and description are required" });
         }
 
-        // Check if the new category name already exists (except for the current one being updated)
+
         const existingCategory = await Category.findOne({
             name: { $regex: new RegExp(`^${name}$`, 'i') } ,
             _id: { $ne: id }
@@ -265,7 +215,6 @@ const editCategory = async (req, res) => {
             return res.status(400).json({ error: "Category exists, Please choose another name" });
         }
 
-        // Update the category
         const updatecategory = await Category.findByIdAndUpdate(
             id,
             { name: name, description: description },
@@ -277,11 +226,7 @@ const editCategory = async (req, res) => {
         } else {
             return res.status(500).json({ error: "Failed to update category" });
         }
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Server error" });
-    }
-};
+});
 
 module.exports = {
     categoryInfo,

@@ -1,150 +1,542 @@
 <%- include("../../views/partials/admin/header") %>
 <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css"
+  />
+  <style>
+    .product-card {
+      border: none;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: #fff;
+      overflow: hidden;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .product-details {
+      display: flex;
+      flex-direction: row;
+      gap: 25px;
+    }
+    
+    .product-image-container {
+      flex-shrink: 0;
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .product-image {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+    
+    .product-card:hover .product-image {
+      transform: scale(1.05);
+    }
+    
+    .product-info {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .product-info h5 {
+      margin-top: 0;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 6px;
+    }
+    
+    .product-meta {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+    
+    .meta-item {
+      font-size: 13px;
+      color: #666;
+      background-color: #f5f7fa;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    
+    .product-price-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-top: 10px;
+    }
+    
+    .price-box {
+      line-height: 1.4;
+    }
+    
+    .price-box p {
+      margin: 4px 0;
+    }
+    
+    .status-box {
+      text-align: right;
+    }
+    
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .status-confirmed {
+      background-color: #e3f2fd;
+      color: #1565c0;
+    }
+    
+    .status-processing {
+      background-color: #fff8e1;
+      color: #ff8f00;
+    }
+    
+    .status-shipped {
+      background-color: #e0f7fa;
+      color: #00838f;
+    }
+    
+    .status-delivered {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    .status-returned {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      justify-content: flex-end;
+    }
+    
+    .action-buttons .btn {
+      border-radius: 6px;
+      text-transform: uppercase;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 8px 16px;
+      transition: all 0.2s ease;
+    }
+    
+    .return-reason {
+      margin-top: 15px;
+      background-color: #f5f7fa;
+      border-radius: 8px;
+      padding: 12px;
+    }
+    
+    .return-reason pre {
+      background: transparent;
+      padding: 0;
+      margin: 8px 0 0;
+      font-family: inherit;
+      white-space: pre-wrap;
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .return-reason strong {
+      color: #333;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <div class="content-header">
-    <h2 class="content-title card-title">Order Details</h2>
+  <h2 class="content-title card-title">Order Details</h2>
 </div>
-<div class="card" style="margin-top: 10%;">
-    <div class="card-body" >
-        <h5 class="card-title">Order ID: <%= orders.orderId %></h5>
-        
+<div class="card" style="margin-top: 10%">
+  <div class="card-body">
+    <h5 class="card-title">Order ID: <%= orders.orderId %></h5>
+
+    <div class="row mb-4">
+      <div class="col-md-6">
         <p><strong>Customer Name:</strong> <%= orders.user.name %></p>
-        <p><strong>Address:</strong> <%= orders.address.type %>, <%= orders.address.city %>, <%= orders.address.state %>, <%= orders.address.pincode %></p>
+        <p>
+          <strong>Address:</strong> <%= orders.address.type %>, <%=
+          orders.address.city %>, <%= orders.address.state %>, <%=
+          orders.address.pincode %>
+        </p>
         <p><strong>Payment Method:</strong> <%= orders.payment %></p>
-        <p><strong>Status:</strong> <%= orders.status %></p>
-        <p><strong>Total Price:</strong> $<%= orders.totalPrice.toFixed(2) %></p>
+        <p>
+          <strong>Status:</strong>
+          <span class="status-badge status-<%= orders.status.toLowerCase() %>"
+            ><%= orders.status %></span
+          >
+        </p>
+      </div>
+      <div class="col-md-6">
+        <p>
+          <strong>Order Date:</strong> <%= orders.createdAt ? new
+          Date(orders.createdAt).toLocaleDateString() : "Not available" %>
+        </p>
+        <p>
+          <strong>Invoice Date:</strong> <%= orders.invoiceDate ?
+          orders.invoiceDate.toDateString() : "Not available" %>
+        </p>
+        <p>
+          <strong>Total Price:</strong> $<%= orders.totalPrice.toFixed(2) %>
+        </p>
         <p><strong>Discount Applied:</strong> $<%= discount.toFixed(2) %></p>
         <p><strong>Final Amount:</strong> $<%= finalAmount.toFixed(2) %></p>
-        <hr>
-        <h5>Products:</h5>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col"><b>Product Name</b></th>
-                    <th scope="col"><b>Quantity</b></th>
-                    <th scope="col"><b>Price</b></th>
-                    <th scope="col"><b>Total</b></th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (orders.orderItems && Array.isArray(orders.orderItems)) { %>
-                    <% orders.orderItems.forEach((item) => { %>
-                        <tr>
-                            <td><%= item.product?.productName || "No Product" %></td>
-                            <td><%= item.quantity %></td>
-                            <td>$<%= item.price.toFixed(2) %></td>
-                            <td>$<%= (item.price * item.quantity).toFixed(2) %></td>
-                        </tr>
-                    <% }) %>
-                <% } else { %>
-                    <tr><td colspan="4">No Orders Found</td></tr>
-                <% } %>
-                
-            </tbody>
-        </table>
-        <hr>
-        <div class="d-flex justify-content-between">
-            <div>
-                <h5>Order Status</h5>
-                <p><strong>Status:</strong> <%= orders.status %></p>
-                <% if (orders.status === "Confirmed") { %>
-                <button class="btn btn-primary" onclick="changeOrderStatus('<%= orders.orderId %>', 'processing')" style="width: 150px;">Start Processing</button>
-                <% } %>
-                <% if (orders.status === "processing") { %>
-                <button class="btn btn-warning" onclick="changeOrderStatus('<%= orders.orderId %>', 'shipped')" style="width: 150px;">Mark as Shipped</button>
-                <% } %>
-                <% if (orders.status === "shipped") { %>
-                <button class="btn btn-success" onclick="changeOrderStatus('<%= orders.orderId %>', 'delivered')" style="width: 150px;">Mark as Delivered</button>
-                <% } %>
-                <% if (orders.status === "Return Request") { %>
-                    <button class="btn btn-success" onclick="handleReturnApproval('<%= orders._id %>')" style="width: 150px;">Approve Return</button>
-                <% } %>
-            </div>
-            <div>
-                <h5>Invoice Date</h5>
-                <p><%= orders.invoiceDate ? orders.invoiceDate.toDateString() : "Not available" %></p>
-            </div>
-        </div>
+      </div>
     </div>
+
+    <hr />
+    <h5>Products:</h5>
+
+    <div class="product-list">
+      <% if (orders.orderItems && Array.isArray(orders.orderItems)) { %> <%
+      orders.orderItems.forEach((item, index) => { %>
+      <div class="product-card">
+        <div class="product-details">
+          <div class="product-image-container">
+            <img
+              src="<%= item.product.productImage[0] %>"
+              alt="<%= item.product.productName %>"
+              class="product-image"
+            />
+          </div>
+          <div class="product-info">
+            <h5><%= item.product?.productName || "No Product" %></h5>
+            <div class="product-meta">
+              <% if (item.product?.brand) { %>
+              <span class="meta-item"><i class="fas fa-tag"></i> <%= item.product.brand %></span>
+              <% } %> 
+              <% if (item.product?.category) { %>
+              <span class="meta-item"><i class="fas fa-layer-group"></i> <%= item.product.category %></span>
+              <% } %>
+            </div>
+            
+            <div class="product-price-section">
+              <div class="price-box">
+                <p><strong>Quantity:</strong> <%= item.quantity %></p>
+                <p>
+                  <strong>Price:</strong> $<%= item.price.toFixed(2) %> / unit
+                </p>
+                <p>
+                  <strong>Total:</strong> <span style="color: #1976D2; font-weight: 600;">$<%= (item.price * item.quantity).toFixed(2) %></span>
+                </p>
+              </div>
+              <div class="status-box">
+                <p>
+                  <strong>Status:</strong><br>
+                  <span
+                    class="status-badge status-<%= item.status.toLowerCase().replace(/\s+/g, '-') %>"
+                    ><%= item.status %></span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <% if (item.status === "Return Request" && item.returnReason) { %>
+        <div class="return-reason">
+          <strong>Return Reason:</strong>
+          <pre><%= item.returnReason || orders.returnReason %></pre>
+        </div>
+        <% } %>
+
+        <div class="action-buttons">
+          <% if (item.status === "Confirmed") { %>
+         
+            <i class="fas fa-cogs"></i> Start Processing
+          </button>
+          <% } %> <% if (item.status === "Processing") { %>
+           
+              <i class="fas fa-shipping-fast"></i> Mark as Shipped
+            </button>
+            <% } %> <% if (item.status === "Shipped") { %>
+               
+                  <i class="fas fa-check-circle"></i> Mark as Delivered
+                </button>
+                <% } %> <% if (item.status === "Return Request") { %>
+          <button
+            class="btn btn-sm btn-success"
+            onclick="handleItemReturnApproval('<%= orders._id %>', '<%= item._id %>')"
+          >
+            <i class="fas fa-thumbs-up"></i> Approve Return
+          </button>
+          <button
+            class="btn btn-sm btn-danger"
+            onclick="handleItemReturnRejection('<%= orders._id %>', '<%= index %>')"
+          >
+            <i class="fas fa-thumbs-down"></i> Reject Return
+          </button>
+          <% } %>
+        </div>
+      </div>
+      <% }) %> <% } else { %>
+      <div class="alert alert-info">No Orders Found</div>
+      <% } %>
+    </div>
+
+    <hr />
+    <div class="d-flex justify-content-between">
+      <div>
+        <h5>Overall Order Status</h5>
+        <p>
+          <strong>Status:</strong>
+          <span class="status-badge status-<%= orders.status.toLowerCase() %>"
+            ><%= orders.status %></span
+          >
+        </p>
+        <% if (orders.status === "Confirmed") { %>
+        <button
+          class="btn btn-primary"
+          onclick="changeOrderStatus('<%= orders.orderId %>', 'Processing')"
+        >
+          <i class="fas fa-cogs"></i> Start Processing All
+        </button>
+        <% } %> <% if (orders.status === "Processing") { %>
+        <button
+          class="btn btn-warning"
+          onclick="changeOrderStatus('<%= orders.orderId %>', 'Shipped')"
+        >
+          <i class="fas fa-shipping-fast"></i> Mark All as Shipped
+        </button>
+        <% } %> <% if (orders.status === "Shipped") { %>
+        <button
+          class="btn btn-success"
+          onclick="changeOrderStatus('<%= orders.orderId %>', 'Delivered')"
+        >
+          <i class="fas fa-check-circle"></i> Mark All as Delivered
+        </button>
+        <% } %>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 
 <script>
-function changeOrderStatus(orderId, newStatus) {
-    Swal.fire({
-        title: `Change Status to ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}?`,
-        text: `Are you sure you want to change the status of this order to ${newStatus}?`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3885d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, change it!"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: "/admin/changeStatus",
-                method: "GET",
-                data: { orderId: orderId, status: newStatus },
-                success: (response) => {
-                    if (response.status) {
-                        Swal.fire({
-                            title: "Status Updated",
-                            text: `Order status has been changed to ${newStatus}.`,
-                            icon: "success"
-                        }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire("Error", response.message || "Failed to update order status", "error");
-                    }
-                },
-                error: (xhr, status, error) => {
-                    Swal.fire("Error", "An error occurred while updating the status", "error");
-                }
+ function changeOrderStatus(orderId, newStatus) {
+  console.log(newStatus);
+  
+  Swal.fire({
+    title: `Change Status to ${newStatus}?`,
+    text: `Are you sure you want to change the status of all items in this order to ${newStatus}?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3885d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, change all!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: "/admin/changeStatus",
+        method: "PUT",
+        data: { orderId: orderId, status: newStatus }, // Use the status as is
+        success: (response) => {
+          // Rest of your code remains the same
+          if (response.status) {
+            Swal.fire({
+              title: "Status Updated",
+              text: `All items status has been changed to ${newStatus}.`,
+              icon: "success",
+            }).then(() => {
+              location.reload();
             });
-        }
-    });
+          } else {
+            Swal.fire(
+              "Error",
+              response.message || "Failed to update order status",
+              "error"
+            );
+          }
+        },
+        error: (xhr, status, error) => {
+          Swal.fire(
+            "Error",
+            "An error occurred while updating the status",
+            "error"
+          );
+        },
+      });
+    }
+  });
+}
+  function changeItemStatus(orderId, itemIndex, newStatus) {
+  // Capitalize the first letter of the status
+  const capitalizedStatus = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+  
+  Swal.fire({
+    title: `Change Item Status to ${capitalizedStatus}?`,
+    text: `Are you sure you want to change the status of this item to ${capitalizedStatus}?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3885d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, change it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      console.log("Confirmed, sending request");
+
+      $.ajax({
+        url: "/admin/changeItemStatus",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          orderId: orderId,
+          itemIndex: itemIndex,
+          status: capitalizedStatus, // Use the capitalized status
+        }),
+        success: (response) => {
+          if (response.status) {
+            Swal.fire({
+              title: "Status Updated",
+              text: `Item status has been changed to ${capitalizedStatus}.`,
+              icon: "success",
+            }).then(() => {
+              location.reload();
+            });
+          } else {
+            Swal.fire(
+              "Error",
+              response.message || "Failed to update item status",
+              "error"
+            );
+          }
+        },
+        error: (xhr, status, error) => {
+          console.error("AJAX error:", error);
+          Swal.fire(
+            "Error",
+            "An error occurred while updating the status",
+            "error"
+          );
+        },
+      });
+    }
+  });
 }
 
-
-function handleReturnApproval(orderId) {
-        Swal.fire({
-            title: "Approve Return Request?",
-            text: "Are you sure you want to approve the return request for this order?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3885d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, approve it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "/admin/approveReturn",
-                    method: "GET",
-                    data: { orderId: orderId },
-                    success: (response) => {
-                        if (response.status) {
-                            Swal.fire({
-                                title: "Return Approved",
-                                text: "The return request has been approved successfully.",
-                                icon: "success"
-                            }).then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire("Error", response.message || "Failed to approve return request", "error");
-                        }
-                    },
-                    error: (xhr, status, error) => {
-                        Swal.fire("Error", "An error occurred while approving the return request", "error");
-                    }
-                });
-            }
-        });
+function handleItemReturnApproval(orderId, itemId) {
+  Swal.fire({
+    title: "Approve Return Request?",
+    text: "Are you sure you want to approve the return request for this item?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3885d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, approve it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Show loading state
+      Swal.fire({
+        title: "Processing",
+        text: "Processing the return approval...",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      
+      $.ajax({
+  url: `/admin/approveReturn?orderId=${orderId}&itemId=${itemId}`, // ✅ Send in URL
+  method: "GET",
+  success: (response) => {
+    if (response.status) {
+      Swal.fire({
+        title: "Return Approved",
+        text: "The return request for this item has been approved successfully.",
+        icon: "success",
+      }).then(() => {
+        location.reload();
+      });
+    } else {
+      Swal.fire("Error", response.message || "Failed to approve return request", "error");
     }
+  },
+  error: (xhr, status, error) => {
+    let errorMessage = "An error occurred while approving the return request";
+    if (xhr.responseJSON && xhr.responseJSON.message) {
+      errorMessage = xhr.responseJSON.message;
+    }
+    Swal.fire("Error", errorMessage, "error");
+  }
+});
+
+
+    }
+  });
+}
+  function handleItemReturnRejection(orderId, itemIndex) {
+    Swal.fire({
+      title: "Reject Return Request?",
+      text: "Are you sure you want to reject the return request for this item?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3885d6",
+      confirmButtonText: "Yes, reject it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: "/admin/rejectItemReturn",
+          method: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+            orderId: orderId,
+            itemIndex: itemIndex,
+          }),
+          success: (response) => {
+            if (response.status) {
+              Swal.fire({
+                title: "Return Rejected",
+                text: "The return request for this item has been rejected.",
+                icon: "success",
+              }).then(() => {
+                location.reload();
+              });
+            } else {
+              Swal.fire(
+                "Error",
+                response.message || "Failed to reject return request",
+                "error"
+              );
+            }
+          },
+          error: (xhr, status, error) => {
+            Swal.fire(
+              "Error",
+              "An error occurred while rejecting the return request",
+              "error"
+            );
+          },
+        });
+      }
+    });
+  }
 </script>
 
 <%- include("../../views/partials/admin/footer") %>

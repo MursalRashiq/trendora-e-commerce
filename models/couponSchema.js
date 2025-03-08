@@ -24,6 +24,10 @@ const couponSchema = new Schema({
         type:Number,
         required: true
     },
+    maximumPrice:{
+        type:Number,
+        required: true
+    },
     isList:{
         type: Boolean,
         default: true
@@ -31,7 +35,8 @@ const couponSchema = new Schema({
     userId:[{
         type:mongoose.Schema.Types.ObjectId,
         ref: "User",
-    }]
+    }],
+
 })
 
 const Coupon = mongoose.model('Coupon',couponSchema)
