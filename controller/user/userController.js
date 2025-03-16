@@ -235,6 +235,10 @@ const loadShoppingPage = asyncHandler(async (req, res) => {
   const brand = await Brand.find({});
   const sortOption = req.query.sort || "latest";
 
+  if (!req.session.flashMessage) {
+    req.session.flashMessage = null; // Ensure it's initialized
+  }
+
   let sortCriteria = {};
   switch (sortOption) {
     case "lowToHigh":
@@ -287,24 +291,76 @@ const loadShoppingPage = asyncHandler(async (req, res) => {
     currentPage: page,
     sortOption: sortOption,
     count: totalProducts,
+    query: "",
+    session: req.session,
   });
 });
 
-const filterProduct = asyncHandler(async (req, res) => {
+const filterProducts = asyncHandler(async (req, res) => {
   const user = req.session.user;
-  const category = req.query.category;
-  const brand = req.query.brand;
-  const sortOption = req.query.sort || "latest";
-
-  const findCategory = category
-    ? await Category.findOne({ _id: category })
-    : null;
-  const findBrand = brand ? await Brand.findOne({ _id: brand }) : null;
+  const categories = await Category.find({ isListed: true }).lean();
   const brands = await Brand.find({}).lean();
 
-  let sortCriteria = {};
+  const query = req.query.query || "";
+  const selectedCategories = req.query.category
+    ? Array.isArray(req.query.category)
+      ? req.query.category
+      : [req.query.category]
+    : [];
+  const selectedBrands = req.query.brand
+    ? Array.isArray(req.query.brand)
+      ? req.query.brand
+      : [req.query.brand]
+    : [];
+  const selectedPrices = req.query.price
+    ? Array.isArray(req.query.price)
+      ? req.query.price
+      : [req.query.price]
+    : [];
+  const sortOption = req.query.sort || "latest";
 
-  // Add sorting logic
+  let searchFilter = {};
+  if (query) {
+    searchFilter = {
+      $or: [
+        { productName: { $regex: query, $options: "i" } }, // Search in product name
+        { brand: { $regex: query, $options: "i" } }, // Search in brand
+      ],
+    };
+  }
+
+  if (!req.session.flashMessage) {
+    req.session.flashMessage = null; // Ensure it's initialized
+  }
+
+  let queryFilters = {
+    isBlocked: false,
+    quantity: { $gt: 0 },
+    ...searchFilter,
+  };
+
+  if (selectedCategories.length > 0) {
+    queryFilters.category = { $in: selectedCategories };
+  }
+
+  if (selectedBrands.length > 0) {
+    const brandNames = await Brand.find({
+      _id: { $in: selectedBrands },
+    }).distinct("brandName");
+    queryFilters.brand = { $in: brandNames };
+  }
+
+  if (selectedPrices.length > 0) {
+    let priceConditions = [];
+    selectedPrices.forEach((range) => {
+      const [min, max] = range.split("-").map(Number);
+      priceConditions.push({ salePrice: { $gte: min, $lte: max } });
+    });
+
+    queryFilters.$or = priceConditions;
+  }
+
+  let sortCriteria = {};
   switch (sortOption) {
     case "lowToHigh":
       sortCriteria = { salePrice: 1 };
@@ -318,108 +374,43 @@ const filterProduct = asyncHandler(async (req, res) => {
     case "zToA":
       sortCriteria = { productName: -1 };
       break;
-    default: // 'latest'
+    default:
       sortCriteria = { createdAt: -1 };
-  }
-
-  const query = {
-    isBlocked: false,
-    quantity: { $gt: 0 },
-  };
-
-  if (findCategory) {
-    query.category = findCategory._id;
-  }
-
-  if (findBrand) {
-    query.brand = findBrand.brandName;
   }
 
   const page = parseInt(req.query.page) || 1;
   const limit = 6;
   const skip = (page - 1) * limit;
 
-  const products = await Product.find(query)
+  const products = await Product.find(queryFilters)
     .sort(sortCriteria)
     .skip(skip)
     .limit(limit)
     .lean();
 
-  const totalProducts = await Product.countDocuments(query);
+  const totalProducts = await Product.countDocuments(queryFilters);
   const totalPages = Math.ceil(totalProducts / limit);
 
-  const categories = await Category.find({ isListed: true });
   let userData = null;
-
   if (user) {
     userData = await User.findOne({ _id: user });
   }
 
   res.render("shop", {
     locals: userData,
-    products: products,
+    products,
     category: categories,
     brand: brands,
     totalPages,
     currentPage: page,
-    sortOption: sortOption,
-  });
-});
-
-const filterByPrice = asyncHandler(async (req, res) => {
-  const user = req.session.user;
-  const userData = await User.findOne({ _id: user });
-  const brand = await Brand.find({}).lean();
-  const categories = await Category.find({ isListed: true }).lean();
-  const sortOption = req.query.sort || "latest";
-
-  let sortCriteria = {};
-
-  // sorting logic
-  switch (sortOption) {
-    case "lowToHigh":
-      sortCriteria = { salePrice: 1 };
-      break;
-    case "highToLow":
-      sortCriteria = { salePrice: -1 };
-      break;
-    case "aToZ":
-      sortCriteria = { productName: 1 };
-      break;
-    case "zToA":
-      sortCriteria = { productName: -1 };
-      break;
-    default: 
-      sortCriteria = { createdAt: -1 };
-  }
-
-  const query = {
-    salePrice: { $gt: req.query.gt, $lt: req.query.lt },
-    isBlocked: false,
-    quantity: { $gt: 0 },
-  };
-
-  const page = parseInt(req.query.page) || 1;
-  const limit = 6;
-  const skip = (page - 1) * limit;
-
-  const products = await Product.find(query)
-    .sort(sortCriteria)
-    .skip(skip)
-    .limit(limit)
-    .lean();
-
-  const totalProducts = await Product.countDocuments(query);
-  const totalPages = Math.ceil(totalProducts / limit);
-
-  res.render("shop", {
-    locals: userData,
-    products: products,
-    category: categories,
-    brand: brand,
-    totalPages,
-    currentPage: page,
-    sortOption: sortOption,
+    sortOption,
+    query,
+    activeFilters: {
+      category: selectedCategories,
+      brand: selectedBrands,
+      price: selectedPrices,
+    },
+    session: req.session,
   });
 });
 
@@ -430,6 +421,7 @@ const transition = asyncHandler(async (req, res) => {
 const applyCoupon = asyncHandler(async (req, res) => {
   const userId = req.session.user;
   const selectedCoupon = await Coupon.findOne({ name: req.body.coupon });
+  console.log(req.body);
 
   if (!selectedCoupon) {
     return res.json({ success: false, message: "Coupon not found" });
@@ -457,7 +449,7 @@ const searchProducts = asyncHandler(async (req, res) => {
   const userData = await User.findOne({ _id: user });
   const sortOption = req.query.sort || "latest";
 
-  let search = req.body.query;
+  let search = req.query.query || "";
   let brands = await Brand.find({}).lean();
   const categories = await Category.find({ isListed: true }).lean();
   const categoryIds = categories.map((category) => category._id.toString());
@@ -480,6 +472,10 @@ const searchProducts = asyncHandler(async (req, res) => {
       break;
     default: // 'latest'
       sortCriteria = { createdAt: -1 };
+  }
+
+  if (!req.session.flashMessage) {
+    req.session.flashMessage = null; // Ensure it's initialized
   }
 
   const query = {
@@ -510,7 +506,9 @@ const searchProducts = asyncHandler(async (req, res) => {
     totalPages,
     currentPage: page,
     sortOption: sortOption,
+    query: search, // Send search term to frontend
     count: totalProducts,
+    session: req.session,
   });
 });
 
@@ -549,10 +547,9 @@ module.exports = {
   loginPage,
   logout,
   loadShoppingPage,
-  filterProduct,
+  filterProducts,
   transition,
   applyCoupon,
-  filterByPrice,
   searchProducts,
   getCount,
 };

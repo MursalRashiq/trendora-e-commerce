@@ -1,375 +1,427 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Signup Page</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
- 
- <style>
-/* Container Layout */
-.container {
-  display: flex;
-  min-height: 80vh;
-  max-width: 900px;
-  margin: 2rem auto;
-  background-color: #ffffff;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Male-Fashion | Sign Up</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #eef2f7 0%, #d1dce5 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-.image-section {
-  flex: 0.6;
-  background-color: #f8f9fa;
-  overflow: hidden;
-  max-width: 350px;
-}
+        .container {
+            display: flex;
+            min-height: 90vh;
+            max-width: 1100px;
+            margin: 3rem auto;
+            background: #ffffff;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 25px;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-in;
+        }
 
-.image-section img {
-  width: 100%;
-  height: 90%;
-  object-fit: cover;
-  margin-top: 35px;
-}
+        .image-section {
+            flex: 1;
+            background: #f8f9fa;
+            overflow: hidden;
+            position: relative;
+            max-width: 500px;
+        }
 
-.form-section {
-  flex: 1;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 400px;
-  margin-left: 100px
-}
+        .image-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
 
-/* Typography */
-h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 0.25rem;
-}
+        .image-section:hover img {
+            transform: scale(1.1);
+        }
 
-.form-section p {
-  color: #6b7280;
-  margin-bottom: 1.25rem;
-  font-size: 0.875rem;
-}
+        .form-section {
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 600px;
+            margin-left: 0;
+        }
 
-/* Form Elements */
-.form-group {
-  margin-bottom: 1rem;
-  position: relative;
-}
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a3c63;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            letter-spacing: 1px;
+        }
 
-input {
-  width: 100%;
-  padding: 0.625rem 0.875rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  transition: all 0.2s ease;
-  background-color: #f9fafb;
-}
+        .form-section p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            text-align: center;
+        }
 
-input:focus {
-  outline: none;
-  border-color: #4f46e5;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
-}
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
 
-.error-message {
-  color: #dc2626;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-  min-height: 1rem;
-}
+        input {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #fafafa;
+            transition: all 0.3s ease;
+        }
 
-/* Button Styles */
-.submit-btn {
-  width: 100%;
-  padding: 0.625rem;
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin-bottom: 1rem;
-}
+        input:focus {
+            border-color: #088178;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(8, 129, 120, 0.2);
+            outline: none;
+        }
 
-.submit-btn:hover {
-  background-color: #4338ca;
-}
+        .error-message {
+            color: #e53e3e;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            font-weight: 500;
+            display: none;
+        }
 
-/* Social Login Button */
-.social-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
+        .submit-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(90deg, #088178, #056b63);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
 
-.btn-google {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.625rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  background-color: #ffffff;
-  color: #1a1a1a;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.875rem;
-}
+        .submit-btn:hover {
+            background: linear-gradient(90deg, #056b63, #044e47);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(8, 129, 120, 0.3);
+        }
 
-.social-logo {
-  width: 20px;
-  height: 20px;
-}
+        .social-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
 
-/* Footer */
-.footer {
-  margin-top: 1.5rem;
-  text-align: center;
-}
+        .btn-google {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: #fff;
+            color: #1a3c63;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+        }
 
-.footer p {
-  color: #6b7280;
-  margin: 0;
-  font-size: 0.875rem;
-}
+        .btn-google:hover {
+            background: #f8f9fa;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
 
-/* Alert Message */
-.alert-danger {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 6px;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
-}
+        .social-logo {
+            width: 24px;
+            height: 24px;
+        }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    margin: 0;
-    min-height: 100vh;
-    border-radius: 0;
-  }
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+        }
 
-  .image-section {
-    max-width: 100%;
-    height: 200px;
-  }
+        .footer p {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin: 0;
+        }
 
-  .form-section {
-    padding: 1.5rem;
-    max-width: 100%;
-  }
-}
+        .footer a {
+            color: #088178;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
 
-@media (max-width: 480px) {
-  .image-section {
-    height: 150px;
-  }
+        .footer a:hover {
+            color: #056b63;
+        }
 
-  .form-section {
-    padding: 1.25rem;
-  }
+        .alert-danger {
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: #c53030;
+            text-align: center;
+        }
 
-  h2 {
-    font-size: 1.25rem;
-  }
-}
-  </style>
-  
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                margin: 0;
+                min-height: 100vh;
+                border-radius: 0;
+            }
+
+            .image-section {
+                max-width: 100%;
+                height: 300px;
+            }
+
+            .form-section {
+                padding: 2rem;
+                max-width: 100%;
+            }
+
+            h2 {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .image-section {
+                height: 200px;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .submit-btn, .btn-google {
+                padding: 0.75rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
-
 <body>
-  <div class="container">
-    <div class="image-section">
-      <img src="/assets/img/man-wearing-coat-posing.jpg" alt="Fashion" >
+    <div class="container">
+        <div class="image-section">
+            <img src="/assets/img/man-wearing-coat-posing.jpg" alt="Fashion">
+        </div>
+        <div class="form-section">
+            <h2>Create Your Account</h2>
+            <p>Join us and start your fashion journey</p>
+            <% if (locals.message && message.length > 0) { %>
+                <div class="alert-danger"><%= message %></div>
+            <% } %>
+            <form action="/signup" method="POST" id="sign-from">
+                <div class="form-group">
+                    <input type="text" name="fullname" placeholder="Full Name" required>
+                    <div id="error1" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Email Address" required>
+                    <div id="error2" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="phone" placeholder="Phone Number" required>
+                    <div id="error3" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <div id="error4" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                    <div id="error5" class="error-message"></div>
+                </div>
+                <button type="submit" class="submit-btn">Sign Up</button>
+            </form>
+            <div class="social-buttons">
+                <a href="/auth/google" class="btn-google">
+                    <img src="/assets/img/googlesignup.png" alt="Google Logo" class="social-logo">
+                    Sign Up with Google
+                </a>
+                <div class="footer">
+                    <p>Already have an account? <a href="/login">Log In</a></p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-section">
-      <h2>Create an account</h2>
-      <p>Enter your details below</p>
-      <form action="/signup" method="POST" id="sign-from">
-        <div class="form-group">
-          <input type="text" name="fullname" placeholder="Full Name" required>
-          <div id="error1" class="error-message"></div>
-        </div>
-        <div class="form-group">
-          <input type="email" name="email" placeholder="Email Address" required>
-          <div id="error2" class="error-message"></div>
-        </div>
-        <div class="form-group">
-          <input type="text" name="phone" placeholder="Phone Number" required>
-          <div id="error3" class="error-message"></div>
-        </div>
-        <div class="form-group">
-          <input type="password" name="password" placeholder="Password" required>
-          <div id="error4" class="error-message"></div>
-        </div>
-        <div class="form-group">
-          <input type="password" name="confirm_password" placeholder="Confirm Password" required>
-          <div id="error5" class="error-message"></div>
-        </div>
-        <%if(locals.message && message.length>0){%>
-          <div class="alter alert-danger text-center" style="color: #e63e28;">
-            <%= message %>
-          </div>
-          <%}%>
-            <button type="submit" class="submit-btn">Sign Up</button>
-      </form>
-      <div class="social-buttons">
-        <a href="/auth/google" class="btn btn-google"> <img src="/assets/img/googlesignup.png" alt="Google Logo"
-            class="social-logo"> Sign up with Google </a> 
-        <div class="footer">
-          <p>Already have an account? <a href="/login">Log in</a></p>
-        </div>
-      </div>
-    </div>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const nameInput = document.querySelector("input[name='fullname']");
-        const emailInput = document.querySelector("input[name='email']");
-        const phoneInput = document.querySelector("input[name='phone']");
-        const passwordInput = document.querySelector("input[name='password']");
-        const confirmPasswordInput = document.querySelector("input[name='confirm_password']");
-        const signForm = document.getElementById("sign-from");
-
-        const error1 = document.getElementById("error1");
-        const error2 = document.getElementById("error2");
-        const error3 = document.getElementById("error3");
-        const error4 = document.getElementById("error4");
-        const error5 = document.getElementById("error5");
-
-        function validateName() {
-          const nameVal = nameInput.value.trim();
-          const namePattern = /^[A-Za-z\s]+$/;
-
-          if (!nameVal) {
-            error1.style.display = "block";
-            error1.textContent = "Please enter a valid name";
-            return false;
-          } else if (!namePattern.test(nameVal)) {
-            error1.style.display = "block";
-            error1.textContent = "Name can only contain alphabets and spaces";
-            return false;
-          } else {
-            error1.style.display = "none";
-            return true;
-          }
-        }
-
-        function validateEmail() {
-          const emailVal = emailInput.value.trim();
-          const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-
-          if (!emailPattern.test(emailVal)) {
-            error2.style.display = "block";
-            error2.textContent = "Invalid email format";
-            return false;
-          } else {
-            error2.style.display = "none";
-            return true;
-          }
-        }
-
-        function validatePhone() {
-          const phoneVal = phoneInput.value.trim();
-
-          if (!phoneVal) {
-            error3.style.display = "block";
-            error3.textContent = "Enter a valid phone number";
-            return false;
-        } else if (phoneVal.length !== 10) {
-            error3.style.display = "block";
-            error3.textContent = "Phone number must be 10 digits";
-            return false;
-        } else if (/^(\d)\1{9}$/.test(phoneVal)) {
-            // This checks if all digits are the same
-            error3.style.display = "block";
-            error3.textContent = "Invalid phone number: Cannot use same digit repeatedly";
-            return false;
-        } else {
-            error3.style.display = "none";
-            return true;
-        }
-      }
-
-        function validatePassword() {
-          const passVal = passwordInput.value.trim();
-          const alpha = /[a-zA-Z]/;
-          const digit = /\d/;
-
-          if (passVal.length < 8) {
-            error4.style.display = "block";
-            error4.textContent = "Password should contain at least 8 characters";
-            return false;
-          } else if (!alpha.test(passVal) || !digit.test(passVal)) {
-            error4.style.display = "block";
-            error4.textContent = "Password should contain numbers and alphabets";
-            return false;
-          } else {
-            error4.style.display = "none";
-            return true;
-          }
-        }
-
-        function validateConfirmPassword() {
-          const passVal = passwordInput.value.trim();
-          const confirmPassVal = confirmPasswordInput.value.trim();
-
-          if (passVal !== confirmPassVal) {
-            error5.style.display = "block";
-            error5.textContent = "Passwords do not match";
-            return false;
-          } else {
-            error5.style.display = "none";
-            return true;
-          }
-        }
-
-        signForm.addEventListener("submit", (e) => {
-          const isNameValid = validateName();
-          const isEmailValid = validateEmail();
-          const isPhoneValid = validatePhone();
-          const isPasswordValid = validatePassword();
-          const isConfirmPasswordValid = validateConfirmPassword();
-
-          if (
-            !isNameValid ||
-            !isEmailValid ||
-            !isPhoneValid ||
-            !isPasswordValid ||
-            !isConfirmPasswordValid
-          ) {
-            e.preventDefault();
-          }
-        });
-
-        nameInput.addEventListener("input", validateName);
-        emailInput.addEventListener("input", validateEmail);
-        phoneInput.addEventListener("input", validatePhone);
-        passwordInput.addEventListener("input", validatePassword);
-        confirmPasswordInput.addEventListener("input", validateConfirmPassword);
-      });
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const nameInput = document.querySelector("input[name='fullname']");
+            const emailInput = document.querySelector("input[name='email']");
+            const phoneInput = document.querySelector("input[name='phone']");
+            const passwordInput = document.querySelector("input[name='password']");
+            const confirmPasswordInput = document.querySelector("input[name='confirm_password']");
+            const signForm = document.getElementById("sign-from");
 
+            const error1 = document.getElementById("error1");
+            const error2 = document.getElementById("error2");
+            const error3 = document.getElementById("error3");
+            const error4 = document.getElementById("error4");
+            const error5 = document.getElementById("error5");
+
+            function validateName() {
+                const nameVal = nameInput.value.trim();
+                const namePattern = /^[A-Za-z\s]+$/;
+
+                if (!nameVal) {
+                    error1.style.display = "block";
+                    error1.textContent = "Please enter your full name";
+                    return false;
+                } else if (!namePattern.test(nameVal)) {
+                    error1.style.display = "block";
+                    error1.textContent = "Name can only contain letters and spaces";
+                    return false;
+                } else {
+                    error1.style.display = "none";
+                    return true;
+                }
+            }
+
+            function validateEmail() {
+                const emailVal = emailInput.value.trim();
+                const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+                if (!emailVal) {
+                    error2.style.display = "block";
+                    error2.textContent = "Email is required";
+                    return false;
+                } else if (!emailPattern.test(emailVal)) {
+                    error2.style.display = "block";
+                    error2.textContent = "Invalid email format";
+                    return false;
+                } else {
+                    error2.style.display = "none";
+                    return true;
+                }
+            }
+
+            function validatePhone() {
+                const phoneVal = phoneInput.value.trim();
+                const phonePattern = /^\d{10}$/;
+
+                if (!phoneVal) {
+                    error3.style.display = "block";
+                    error3.textContent = "Phone number is required";
+                    return false;
+                } else if (!phonePattern.test(phoneVal)) {
+                    error3.style.display = "block";
+                    error3.textContent = "Phone number must be 10 digits";
+                    return false;
+                } else if (/^(\d)\1{9}$/.test(phoneVal)) {
+                    error3.style.display = "block";
+                    error3.textContent = "Invalid: All digits cannot be the same";
+                    return false;
+                } else {
+                    error3.style.display = "none";
+                    return true;
+                }
+            }
+
+            function validatePassword() {
+                const passVal = passwordInput.value.trim();
+                const alpha = /[a-zA-Z]/;
+                const digit = /\d/;
+
+                if (!passVal) {
+                    error4.style.display = "block";
+                    error4.textContent = "Password is required";
+                    return false;
+                } else if (passVal.length < 8) {
+                    error4.style.display = "block";
+                    error4.textContent = "Password must be at least 8 characters";
+                    return false;
+                } else if (!alpha.test(passVal) || !digit.test(passVal)) {
+                    error4.style.display = "block";
+                    error4.textContent = "Password must include letters and numbers";
+                    return false;
+                } else {
+                    error4.style.display = "none";
+                    return true;
+                }
+            }
+
+            function validateConfirmPassword() {
+                const passVal = passwordInput.value.trim();
+                const confirmPassVal = confirmPasswordInput.value.trim();
+
+                if (!confirmPassVal) {
+                    error5.style.display = "block";
+                    error5.textContent = "Confirm password is required";
+                    return false;
+                } else if (passVal !== confirmPassVal) {
+                    error5.style.display = "block";
+                    error5.textContent = "Passwords do not match";
+                    return false;
+                } else {
+                    error5.style.display = "none";
+                    return true;
+                }
+            }
+
+            signForm.addEventListener("submit", (e) => {
+                const isNameValid = validateName();
+                const isEmailValid = validateEmail();
+                const isPhoneValid = validatePhone();
+                const isPasswordValid = validatePassword();
+                const isConfirmPasswordValid = validateConfirmPassword();
+
+                if (!isNameValid || !isEmailValid || !isPhoneValid || !isPasswordValid || !isConfirmPasswordValid) {
+                    e.preventDefault();
+                    Swal.fire('Error', 'Please fix the errors in the form', 'error');
+                }
+            });
+
+            nameInput.addEventListener("input", validateName);
+            emailInput.addEventListener("input", validateEmail);
+            phoneInput.addEventListener("input", validatePhone);
+            passwordInput.addEventListener("input", validatePassword);
+            confirmPasswordInput.addEventListener("input", validateConfirmPassword);
+        });
+    </script>
 </body>
-
-
 </html>

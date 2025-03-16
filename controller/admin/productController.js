@@ -126,12 +126,10 @@ const addProductOffer = asyncHandler(async (req, res) => {
 
   // Validate input
   if (!productId || !percentage) {
-    return res
-      .status(400)
-      .json({
-        status: false,
-        message: "Product ID and percentage are required",
-      });
+    return res.status(400).json({
+      status: false,
+      message: "Product ID and percentage are required",
+    });
   }
 
   // Find product by ID
@@ -230,7 +228,6 @@ const unBlockProduct = asyncHandler(async (req, res) => {
 
 const getEditProduct = asyncHandler(async (req, res) => {
   const productId = req.params.id;
-  console.log("1. Requested Product ID:", productId);
 
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     console.log("Invalid Product ID format");
@@ -251,13 +248,7 @@ const getEditProduct = asyncHandler(async (req, res) => {
     Brand.find({}),
   ]);
 
-  // Debug logs
-  console.log("2. Product Data:", {
-    id: product._id,
-    name: product.productName,
-    images: product.productImage,
-    imageCount: product.productImage.length,
-  });
+ 
 
   // Render the page with all necessary data
   res.render("edit-product", {
@@ -272,12 +263,10 @@ const getEditProduct = asyncHandler(async (req, res) => {
 const editProduct = asyncHandler(async (req, res) => {
   let id = req.params.id?.trim();
 
-  // Validate product ID
   if (!id || !mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: "Invalid or missing Product ID" });
   }
 
-  // Fetch the product
   const product = await Product.findById(id);
   if (!product) {
     return res.status(404).json({ error: "Product not found" });
@@ -285,7 +274,6 @@ const editProduct = asyncHandler(async (req, res) => {
 
   const data = req.body;
 
-  // Check for existing product with same name
   const existingProduct = await Product.findOne({
     productName: data.productName,
     _id: { $ne: id },
@@ -339,7 +327,6 @@ const editProduct = asyncHandler(async (req, res) => {
     color: data.color,
   };
 
-  // Add new images if any were uploaded
   if (images.length > 0) {
     updateFields.$push = {
       productImage: { $each: images.map((img) => img.url) },
@@ -347,7 +334,6 @@ const editProduct = asyncHandler(async (req, res) => {
     };
   }
 
-  // Update the product
   const updatedProduct = await Product.findByIdAndUpdate(id, updateFields, {
     new: true,
     runValidators: true,
@@ -361,7 +347,6 @@ const deleteSingleImage = asyncHandler(async (req, res) => {
   const { imageUrl, productId } = req.body;
   console.log("Delete request for:", { imageUrl, productId });
 
-  // Validate productId
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return res.status(400).json({
       success: false,
@@ -369,7 +354,6 @@ const deleteSingleImage = asyncHandler(async (req, res) => {
     });
   }
 
-  // Find the product
   const product = await Product.findById(productId);
   if (!product) {
     return res.status(404).json({
@@ -378,7 +362,6 @@ const deleteSingleImage = asyncHandler(async (req, res) => {
     });
   }
 
-  // Find the index of the image URL
   const imageIndex = product.productImage.indexOf(imageUrl);
   if (imageIndex === -1) {
     return res.status(404).json({
@@ -387,22 +370,18 @@ const deleteSingleImage = asyncHandler(async (req, res) => {
     });
   }
 
-  // Get the corresponding cloudinary public_id
   const publicId = product.cloudinaryIds[imageIndex];
   console.log("Attempting to delete Cloudinary image:", publicId);
 
-  // Delete from cloudinary if it's a cloudinary URL
   if (publicId) {
     try {
       await cloudinary.uploader.destroy(publicId);
       console.log("Successfully deleted from Cloudinary");
     } catch (cloudinaryError) {
       console.error("Cloudinary deletion error:", cloudinaryError);
-      // Continue with local deletion even if cloudinary fails
     }
   }
 
-  // Remove from product document
   product.productImage.splice(imageIndex, 1);
   product.cloudinaryIds.splice(imageIndex, 1);
   await product.save();

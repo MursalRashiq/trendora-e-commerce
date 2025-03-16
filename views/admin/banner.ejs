@@ -1,72 +1,216 @@
 <%- include("../../views/partials/admin/header") %>
-
 <head>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fa;
+        }
+
         .content-wrapper {
-            padding: 2rem;
-            margin-top: 2rem;
+            padding: 3rem;
+            margin-top: 3rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        
+
         .content-header {
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
+            text-align: center;
         }
-        
+
+        .content-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a3c63;
+            letter-spacing: 1px;
+        }
+
         .table-container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-            margin: 1rem 0;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin: 1.5rem 0;
+            animation: fadeIn 0.8s ease-in;
         }
-        
+
         .table {
             width: 100%;
             margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0 10px;
         }
-        
+
         .table th {
-            background-color: #f8f9fa;
-            padding: 1rem;
+            background: #eef2f7;
+            padding: 1.25rem;
+            font-weight: 600;
+            color: #1a3c63;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
             vertical-align: middle;
+            border-bottom: 2px solid #e2e8f0;
         }
-        
+
         .table td {
-            padding: 1rem;
+            padding: 1.25rem;
             vertical-align: middle;
+            background: #fafafa;
+            transition: background 0.3s ease;
         }
-        
+
+        .table tr:hover td {
+            background: #f5f7fa;
+        }
+
         .img-xs {
+            width: 60px;
+            height: 40px;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
-        
+
+        .table tr:hover .img-xs {
+            transform: scale(1.1);
+        }
+
         .badge {
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
             font-weight: 500;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        
+
         .alert-success {
-            background-color: #d1e7dd;
+            background: #d1e7dd;
             color: #0f5132;
         }
-        
+
         .alert-danger {
-            background-color: #f8d7da;
+            background: #f8d7da;
             color: #842029;
         }
-        
+
         .action a {
             color: #dc3545;
-            transition: color 0.2s;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
         }
-        
+
         .action a:hover {
-            color: #bb2d3b;
+            color: #b71c1c;
+            transform: scale(1.2);
         }
-        
+
         .add-banner-btn {
-            margin-top: 2rem;
+            margin-top: 2.5rem;
+            background: linear-gradient(90deg, #088178, #056b63);
+            border: none;
+            padding: 0.875rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .add-banner-btn:hover {
+            background: linear-gradient(90deg, #056b63, #044e47);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(8, 129, 120, 0.3);
+        }
+
+        .custom-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeInModal 0.3s ease-in;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 2.5rem;
+            border-radius: 15px;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-content h4 {
+            font-size: 1.5rem;
+            color: #1a3c63;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content p {
+            font-size: 1rem;
+            color: #4a5568;
+            margin-bottom: 2rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .modal-buttons .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background: #4a5568;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background: #b71c1c;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper { padding: 1.5rem; }
+            .table-container { padding: 1rem; }
+            .table th, .table td { padding: 0.75rem; font-size: 0.85rem; }
+            .img-xs { width: 50px; height: 35px; }
+            .add-banner-btn { padding: 0.75rem 1.5rem; }
         }
     </style>
 </head>
@@ -85,8 +229,8 @@
                     <th>Image</th>
                     <th>Title</th>
                     <th>Description</th>
-                    <th>Active</th>
-                    <th>Delete</th>
+                    <th>Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -95,9 +239,8 @@
                         <tr>
                             <td>
                                 <img src="/uploads/re-image/<%= data[i].image %>" 
-                                     style="height: 2rem; width: 3rem;" 
                                      class="img-xs" 
-                                     alt="Banner Image">
+                                     alt="<%= data[i].title %>">
                             </td>
                             <td><%= data[i].title %></td>
                             <td><%= data[i].description %></td>
@@ -105,7 +248,7 @@
                                 <% if (data[i].startDate < Date.now() && data[i].endDate > Date.now()) { %>
                                     <span class="badge rounded-pill alert-success">Active</span>
                                 <% } else { %>
-                                    <span class="badge rounded-pill alert-danger">Not Active</span>
+                                    <span class="badge rounded-pill alert-danger">Inactive</span>
                                 <% } %>
                             </td>
                             <td class="action">
@@ -118,7 +261,8 @@
                     <% } %>
                 <% } else { %>
                     <tr>
-                        <td colspan="5" class="text-center">No banners available</td>
+                        <td colspan="5" class="text-center" style="color: #6b7280; padding: 2rem;">
+                        <i class="material-icons" style="font-size: 1.5rem; vertical-align: middle; margin-right: 5px;">info</i> No banners available</td>
                     </tr>
                 <% } %>
             </tbody>
@@ -128,9 +272,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6 text-center">
-                <a href="/admin/addBanner" class="btn btn-primary add-banner-btn">
-                    Add Banner
-                </a>
+                <a href="/admin/addBanner" class="btn btn-primary add-banner-btn">Add Banner</a>
             </div>
         </div>
     </div>
@@ -138,7 +280,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Add modal HTML to the document
     const modalHTML = `
         <div id="deleteModal" class="custom-modal" style="display: none;">
             <div class="modal-content">
@@ -152,37 +293,6 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-    // Add modal styles
-    const modalStyle = document.createElement('style');
-    modalStyle.textContent = `
-        .custom-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            max-width: 400px;
-            text-align: center;
-        }
-        .modal-buttons {
-            margin-top: 1.5rem;
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-    `;
-    document.head.appendChild(modalStyle);
 
     const deleteLinks = document.querySelectorAll('.action a');
     const modal = document.getElementById('deleteModal');
@@ -206,87 +316,74 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = 'none';
         if (currentRow && currentBannerId) {
             currentRow.style.opacity = '0.5';
-            
-            fetch(`/admin/deleteBanner?id=${currentBannerId}`, {
-                method: 'GET'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    currentRow.style.transition = 'all 0.3s';
-                    currentRow.style.opacity = '0';
-                    setTimeout(() => {
-                        currentRow.remove();
-                        showNotification('Banner deleted successfully', 'success');
-                        
-                        if (document.querySelectorAll('tbody tr').length === 0) {
-                            const tbody = document.querySelector('tbody');
-                            tbody.innerHTML = `
-                                <tr>
-                                    <td colspan="5" class="text-center">No banners available</td>
-                                </tr>
-                            `;
-                        }
-                    }, 300);
-                } else {
-                    throw new Error(data.message || 'Failed to delete banner');
-                }
-            })
-            .catch(error => {
-                currentRow.style.opacity = '1';
-                showNotification(error.message, 'error');
-            });
+            fetch(`/admin/deleteBanner?id=${currentBannerId}`, { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        currentRow.style.transition = 'all 0.3s';
+                        currentRow.style.opacity = '0';
+                        setTimeout(() => {
+                            currentRow.remove();
+                            showNotification('Banner deleted successfully', 'success');
+                            if (!document.querySelector('tbody tr')) {
+                                document.querySelector('tbody').innerHTML = `
+                                    <tr>
+                                        <td colspan="5" class="text-center" style="color: #6b7280; padding: 2rem;">
+                                            <i class="material-icons" style="font-size: 1.5rem; vertical-align: middle; margin-right: 5px;">info</i> No banners available
+                                        </td>
+                                    </tr>
+                                `;
+                            }
+                        }, 300);
+                    } else {
+                        throw new Error(data.message || 'Failed to delete banner');
+                    }
+                })
+                .catch(error => {
+                    currentRow.style.opacity = '1';
+                    showNotification(error.message, 'error');
+                });
         }
     });
 
-    // Close modal when clicking outside
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
+        if (e.target === modal) modal.style.display = 'none';
     });
-});
 
-// Your existing showNotification function and animation styles remain the same
-function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} notification`;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 25px;
-        border-radius: 4px;
-        z-index: 1000;
-        animation: slideIn 0.3s ease-out;
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} notification`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-out';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
     `;
-    notification.textContent = message;
-
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease-out';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
-
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-    }
-    
-    .notification {
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-`;
-document.head.appendChild(style);
+    document.head.appendChild(style);
+});
 </script>
 
 <%- include("../../views/partials/admin/footer") %>

@@ -83,7 +83,8 @@ router.get("/banner",adminAuth,bannerController.getBannerPage)
 router.get('/addBanner',adminAuth,bannerController.getAddBannerPage)
 router.post('/addBanner',adminAuth,uploads.single("images"),bannerController.postAddBanner)
 router.get("/deleteBanner",adminAuth,bannerController.deleteBanner)
-
+//chart Management
+router.get("/chart-data",adminAuth,adminController.chartData)
 
 
 

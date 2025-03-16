@@ -10,7 +10,7 @@ const brandSchema = new mongoose.Schema(
         trim: true,
       },
       brandImage: {
-        type: [String], // Array to allow multiple images if needed, change to `type: String` for a single image.
+        type: [String], 
         default: ['default-image.jpg'],
       },
       isBlocked: {
@@ -18,7 +18,7 @@ const brandSchema = new mongoose.Schema(
         default: true,
       },
     },
-    { timestamps: true } // Adds createdAt and updatedAt fields
+    { timestamps: true } 
   );
 
 // const mongoose = require('mongoose');

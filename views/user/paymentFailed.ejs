@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #088178;
+            overflow: hidden;
+        }
+        .wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            animation: waveFlow 8s infinite ease-in-out;
+            z-index: 0;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            animation: fadeIn 0.6s ease-out;
+        }
+        .icon {
+            font-size: 60px;
+            color: #088178;
+            margin-bottom: 20px;
+            animation: shake 0.5s ease-in-out infinite;
+        }
+        h1 {
+            color: #088178;
+            font-size: 32px;
+            margin: 0 0 15px;
+        }
+        p {
+            color: #333;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #088178;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: #06655e;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(8, 129, 120, 0.5);
+        }
+        .link {
+            display: block;
+            margin-top: 15px;
+            color: #088178;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        .link:hover {
+            color: #06655e;
+            text-decoration: underline;
+        }
+        /* Animations */
+        @keyframes waveFlow {
+            0% { transform: translateX(-50%); }
+            50% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="wave"></div>
+    <div class="container">
+        <div class="icon">⚠️</div>
+        <h1>Payment Failed</h1>
+        <p>Sorry, your payment was canceled or couldn’t be processed.</p>
+        <p>Let’s give it another shot!</p>
+        <a href="/orderDetails?id=<%= order._id.toString() %>" class="btn">Order Details</a>
+        <a href="/" class="link">Continue Shopping</a>
+    </div>
+</body>
+</html>
