@@ -1,103 +1,135 @@
 <%- include("../../views/partials/admin/header") %>
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #333;
+    }
+
     .content-main {
-        padding: 30px;
-        margin-top: 20px;
+        padding: 40px;
+        margin-top: 30px;
         max-width: 1400px;
         margin-left: auto;
         margin-right: auto;
+        animation: fadeIn 0.5s ease-in;
     }
 
     .content-header {
-        margin-bottom: 25px;
+        margin-bottom: 30px;
+        text-align: center;
     }
 
     .content-title {
-        font-size: 1.75rem;
-        color: #2c3e50;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #3498db;
+        font-size: 2rem;
+        color: #1a3c63;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #3498db;
+        display: inline-block;
+        font-weight: 600;
+        letter-spacing: 1px;
     }
 
-    .search-container {
-        margin: 20px 0;
-        width: 100%;
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .search-form {
+    .filter-container {
         display: flex;
-        align-items: center;
-        gap: 10px;
-        background-color: #fff;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        margin: 30px auto;
+        max-width: 1100px;
+        transition: transform 0.3s ease;
     }
 
-    .search-input {
+    .filter-container:hover {
+        transform: translateY(-5px);
+    }
+
+    .filter-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: center;
+        width: 100%;
+    }
+
+    .search-input, .filter-select, .filter-date {
         flex: 1;
-        padding: 10px 15px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
+        padding: 12px 18px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
         outline: none;
         font-size: 14px;
+        min-width: 180px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        background: #f9f9f9;
+    }
+
+    .search-input:focus, .filter-select:focus, .filter-date:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+        background: #fff;
     }
 
     .table-container {
-        background: white;
+        background: #ffffff;
         border-radius: 12px;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-        margin-top: 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
         overflow-x: auto;
+        padding: 20px;
     }
 
     .table {
         width: 100%;
         margin-bottom: 0;
-        border-collapse: collapse;
+        border-collapse: separate;
+        border-spacing: 0 10px;
     }
 
     .table th {
-        background-color: #f8f9fa;
-        color: #2c3e50;
+        background: linear-gradient(90deg, #3498db, #2980b9);
+        color: #fff;
         padding: 15px 20px;
-        font-weight: 600;
+        font-weight: 500;
         text-align: left;
-        border-bottom: 2px solid #e0e0e0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     .table td {
         padding: 15px 20px;
         vertical-align: middle;
-        border-bottom: 1px solid #e0e0e0;
+        background: #fafafa;
+        border-bottom: none;
+        transition: background 0.3s ease;
     }
 
-    .table-row.visible {
-        display: table-row;
-    }
-
-    .table-row {
-        display: none;
+    .table tr:hover td {
+        background: #f1f5f9;
     }
 
     .btn-view {
-        padding: 8px 16px;
-        background-color: #007bff;
+        padding: 10px 20px;
+        background: linear-gradient(90deg, #2ecc71, #27ae60);
         color: white;
-        border-radius: 6px;
+        border-radius: 8px;
         text-decoration: none;
         display: inline-block;
-        transition: background-color 0.3s;
+        font-weight: 500;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .btn-view:hover {
-        background-color: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
         color: white;
     }
 
@@ -105,49 +137,90 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         margin-top: 30px;
         padding: 0;
         list-style: none;
     }
 
-    .page-item {
-        margin: 0 4px;
-    }
-
     .page-link {
-        display: inline-block;
-        padding: 8px 16px;
-        background-color: #007bff;
+        padding: 8px 15px;
+        background: #3498db;
         color: white;
         border-radius: 6px;
         text-decoration: none;
-        transition: background-color 0.3s;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background 0.3s ease, transform 0.3s ease;
     }
 
     .page-link:hover {
-        background-color: #0056b3;
+        background: #2980b9;
+        transform: translateY(-2px);
         color: white;
     }
 
-    .page-item.active .page-link {
-        background-color: #0056b3;
+    .page-link.disabled {
+        background: #95a5a6;
+        cursor: not-allowed;
+        transform: none;
+        opacity: 0.7;
+        pointer-events: none; /* Prevents clicking when disabled */
     }
 
-    .page-item.disabled .page-link {
-        background-color: #6c757d;
-        cursor: not-allowed;
-        pointer-events: none;
+    .page-current {
+        padding: 8px 15px;
+        background: #1a3c63;
+        color: white;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .btn-primary {
+        background: linear-gradient(90deg, #3498db, #2980b9);
+        border: none;
+        padding: 12px 25px;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(90deg, #95a5a6, #7f8c8d);
+        border: none;
+        padding: 12px 25px;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(149, 165, 166, 0.4);
     }
 
     @media (max-width: 768px) {
         .content-main {
-            padding: 15px;
+            padding: 20px;
         }
 
-        .search-container {
-            width: 100%;
-            padding: 0 15px;
+        .filter-container {
+            padding: 15px;
+            max-width: 100%;
+        }
+
+        .search-input, .filter-select, .filter-date {
+            min-width: 100%;
         }
 
         .table td, .table th {
@@ -155,97 +228,42 @@
         }
 
         .pagination {
-            flex-wrap: wrap;
+            gap: 8px;
         }
     }
-    .filter-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
 
-.filter-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-}
-
-.filter-select, .filter-date {
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-}
-
-.btn-primary {
-    background-color: #007bff;
-    border: none;
-    padding: 10px 15px;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.btn-secondary {
-    background-color: #6c757d;
-    border: none;
-    padding: 10px 15px;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
 </style>
 
 <div class="content-main">
     <div class="content-header">
-        <h2 class="content-title">Order List</h2>
+        <h2 class="content-title">Order Dashboard</h2>
     </div>
 
-    <div class="search-container">
-        <form action="" method="get" class="search-form">
-            <input type="text" 
-                   class="search-input" 
-                   placeholder="Search orders or customers" 
-                   name="search"
-                   value="">
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-    </div>
     <div class="filter-container">
-        <form action="" method="get" class="filter-form">
-            <!-- Status Dropdown -->
+        <form id="filterForm" action="/admin/orderList" method="get" class="filter-form">
+            <input type="text" name="search" class="search-input" placeholder="Search by Order ID or Customer" value="<%= search || '' %>">
             <select name="status" class="filter-select">
                 <option value="">All Status</option>
-                <option value="Pending">Pending</option>
-                <option value="Confirmed">Confirmed</option>
-                <option value="Cancelled">Cancelled</option>
-                <option value="Returned">Returned</option>
-                <option value="Cancelled">Cancelled</option>
-                <option value="Cancelled">Cancelled</option>
+                <% ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'Return Request', 'Returned', 'Return Rejected', 'Failed'].forEach(s => { %>
+                    <option value="<%= s %>" <%= status === s ? 'selected' : '' %>><%= s %></option>
+                <% }) %>
             </select>
-    
-            <!-- Payment Method Dropdown -->
             <select name="payment" class="filter-select">
                 <option value="">All Payment Methods</option>
-                <option value="cod">Cash on Delivery</option>
-                <option value="razorpay">Online Payment</option>
-                <option value="wallet">Online Payment</option>
+                <% ['cod', 'razorpay', 'wallet'].forEach(p => { %>
+                    <option value="<%= p %>" <%= payment === p ? 'selected' : '' %>><%= p.charAt(0).toUpperCase() + p.slice(1) %></option>
+                <% }) %>
             </select>
-    
-        
-            <!-- Filter & Reset Buttons -->
+            <input type="date" name="startDate" class="filter-date" value="<%= startDate || '' %>">
+            <input type="date" name="endDate" class="filter-date" value="<%= endDate || '' %>">
             <button type="submit" class="btn btn-primary">Apply Filters</button>
-            <button type="reset" class="btn btn-secondary">Reset</button>
+            <a href="/admin/orderList" class="btn btn-secondary">Reset</a>
         </form>
     </div>
-    
 
     <div class="table-container">
         <table class="table">
@@ -260,104 +278,67 @@
                 </tr>
             </thead>
             <tbody>
-                <% for (let i = 0; i < orders.length; i++) { %>
-                <tr>
-                    <td><%= orders[i].orderId %></td>
-                    <td><%= orders[i].user ? orders[i].user.name : 'N/A' %></td>
-                    <td>₹<%= orders[i].totalPrice.toFixed(2) %></td>
-                    <td><%= orders[i].status %></td>
-                    <td><%= orders[i].payment %></td>
-                    <td>
-                        <a href="/admin/orderDetailsAdmin?id=<%= orders[i].orderId %>" 
-                           class="btn-view">View</a>
-                    </td>
-                </tr>
+                <% if (orders && orders.length > 0) { %>
+                    <% orders.forEach(order => { %>
+                        <tr>
+                            <td><%= order.orderId %></td>
+                            <td><%= order.user && order.user.name ? order.user.name : 'N/A' %></td>
+                            <td>₹<%= order.finalAmound ? order.finalAmound.toFixed(2) : '0.00' %></td>
+                            <td><%= order.status || 'N/A' %></td>
+                            <td><%= order.payment || 'N/A' %></td>
+                            <td>
+                                <a href="/admin/orderDetailsAdmin?id=<%= order.orderId %>" class="btn-view">View</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #7f8c8d; font-style: italic;">No orders found</td>
+                    </tr>
                 <% } %>
             </tbody>
         </table>
     </div>
 
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            <% for (let i = 1; i <= totalPages; i++) { %>
-            <li class="page-item <%= (i === currentPage) ? 'active' : '' %>">
-                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
-            </li>
-            <% } %>
-        </ul>
-    </nav>
+    <% if (totalPages > 1) { %>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link <%= currentPage === 1 ? 'disabled' : '' %>" 
+                       href="<%= currentPage > 1 ? `?page=${currentPage - 1}&search=${search || ''}&status=${status || ''}&payment=${payment || ''}&startDate=${startDate || ''}&endDate=${endDate || ''}` : '#' %>">
+                        Previous
+                    </a>
+                </li>
+                <li class="page-item">
+                    <span class="page-current"><%= currentPage %> of <%= totalPages %></span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link <%= currentPage === totalPages ? 'disabled' : '' %>" 
+                       href="<%= currentPage < totalPages ? `?page=${currentPage + 1}&search=${search || ''}&status=${status || ''}&payment=${payment || ''}&startDate=${startDate || ''}&endDate=${endDate || ''}` : '#' %>">
+                        Next
+                    </a>
+                </li>
+                <!-- <li class="page-item">
+                    <a class="page-link <%= currentPage === totalPages ? 'disabled' : '' %>" 
+                       href="<%= currentPage < totalPages ? `?page=${totalPages}&search=${search || ''}&status=${status || ''}&payment=${payment || ''}&startDate=${startDate || ''}&endDate=${endDate || ''}` : '#' %>">
+                        Last
+                    </a>
+                </li> -->
+            </ul>
+        </nav>
+    <% } %>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
 <script>
-  function changeOrderStatus(orderId, newStatus) {
-      Swal.fire({
-          title: `Change Status to ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}?`,
-          text: `Are you sure you want to change the status of this order to ${newStatus}?`,
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3885d6",
-          cancelButtonColor: "d33",
-          confirmButtonText: "Yes, change it!"
-      }).then((result) => {
-          if (result.isConfirmed) {
-              $.ajax({
-                  url: "/admin/changeStatus",
-                  method: "GET",
-                  data: { orderId: orderId, status: newStatus },
-                  success: (response) => {
-                      if (response.status) {
-                          Swal.fire("Status Updated", `Order status has been changed to ${newStatus}.`, "success");
-                          location.reload();
-                      } else {
-                          Swal.fire("Error", "Failed to update order status", "error");
-                      }
-                  },
-                  error: (error) => {
-                      Swal.fire("Error", "An error occurred", "error");
-                  }
-              });
-          }
-      });
-  }
-
-  $(document).ready(function () {
+$(document).ready(function () {
     $("#filterForm").on("submit", function (e) {
-        e.preventDefault(); // Prevent page reload
-
-        let status = $("select[name='status']").val();
-        let payment = $("select[name='payment']").val();
-
-        $.ajax({
-            url: "/admin/orderList",
-            method: "GET",
-            data: { status: status, payment: payment }, // Send filter data
-            success: function (response) {
-                $("#ordersContainer").html(response); // Update the page with filtered orders
-            },
-            error: function () {
-                alert("Something went wrong!");
-            }
-        });
-    });
-
-    // Reset button functionality
-    $("button[type='reset']").on("click", function () {
-        setTimeout(() => $("#filterForm").submit(), 100); // Auto-submit after reset
+        e.preventDefault();
+        const formData = $(this).serialize();
+        window.location.href = "/admin/orderList?" + formData;
     });
 });
 </script>
 
 <%- include("../../views/partials/admin/footer") %>
-
-
-
-
-
-
-
-
-
-

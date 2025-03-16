@@ -540,10 +540,10 @@
                                          Only <%= product.quantity %> items left in stock - order soon
                                      </div>
                                  <% } else { %>
-                                     <div class="stock-status in-stock">
+                                     <!-- <div class="stock-status in-stock">
                                          <i class="fi-rs-check"></i>
                                          In Stock (<%= product.quantity %> available)
-                                     </div>
+                                     </div> -->
                                  <% } %>
                              <% } else { %>
                                  <div class="stock-status out-of-stock">
@@ -556,15 +556,15 @@
                          <p class="product-description"><%= product.description %></p>
                          
                          <div class="quantity-selector">
-                             <div class="quantity-controls">
-                                 <button type="button" class="qty-btn minus">
-                                     <i class="fi-rs-minus"></i>
-                                 </button>
-                                 <input type="text" class="qty-input" value="1" readonly>
-                                 <button type="button" class="qty-btn plus">
-                                     <i class="fi-rs-plus"></i>
-                                 </button>
-                             </div>
+                            <div class="quantity-controls">
+                                <button type="button" class="qty-btn minus">
+                                    &minus;
+                                </button>
+                                <input type="text" class="qty-input" value="1" readonly>
+                                <button type="button" class="qty-btn plus">
+                                    &plus;
+                                </button>
+                            </div>
                              <button class="add-to-cart" 
                                      onclick="addToCart('<%= product._id %>')"
                                      <%= product.quantity === 0 ? 'disabled' : '' %>>
@@ -585,7 +585,7 @@
                                  </div>
                                  <div class="feature-text">7 Day Return Policy</div>
                              </div>
-                             <% if (product.salePrice > 1000){%>
+                             <% if (product.salePrice < 1000){%>
                              <div class="feature-item">
                                  <div class="feature-icon">
                                      <i class="fi-rs-credit-card"></i>

@@ -320,66 +320,150 @@
     }
 
     /* Success Animation */
-    const style = document.createElement('style');
-style.textContent = `
-.wishlist-notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 25px;
-    border-radius: 4px;
-    transform: translateX(150%);
-    transition: transform 0.3s ease-in-out;
-    z-index: 1000;
-    display: none;
-}
+    .wishlist-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 4px;
+        transform: translateX(150%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 1000;
+        display: none;
+    }
 
-.wishlist-notification.show {
-    transform: translateX(0);
-    display: block;
-}
+    .wishlist-notification.show {
+        transform: translateX(0);
+        display: block;
+    }
 
-.wishlist-notification.success {
-    background-color: #4CAF50;
-    color: white;
-}
+    .wishlist-notification.success {
+        background-color: #4CAF50;
+        color: white;
+    }
 
-.wishlist-notification.error {
-    background-color: #f44336;
-    color: white;
-}
+    .wishlist-notification.error {
+        background-color: #f44336;
+        color: white;
+    }
 
-.wishlist-notification.warning {
-    background-color: #ff9800;
-    color: white;
-}
+    .wishlist-notification.warning {
+        background-color: #ff9800;
+        color: white;
+    }
 
-.wishlist-notification.info {
-    background-color: #2196F3;
-    color: white;
-}
+    .wishlist-notification.info {
+        background-color: #2196F3;
+        color: white;
+    }
 
-.wishlist-btn {
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+    .wishlist-btn {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
 
-.wishlist-btn.active {
-    color: red;
-}
+    .wishlist-btn.active {
+        color: red;
+    }
 
-.wishlist-btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-}
-    
+    .wishlist-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    /* Filter Checkboxes */
+    .filter-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .filter-checkbox input[type="checkbox"] {
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+        accent-color: #9F78FF;
+    }
+
+    /* Active Filters Display */
+    .active-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 15px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .filter-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background-color: #e5e1ff;
+        border-radius: 20px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .filter-tag .remove-filter {
+        cursor: pointer;
+        font-size: 16px;
+        color: #666;
+        transition: color 0.2s ease;
+    }
+
+    .filter-tag .remove-filter:hover {
+        color: #ff4b6e;
+    }
+
+    /* Filter Action Buttons */
+    .filter-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .apply-filter-btn, .clear-filter-btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .apply-filter-btn {
+        background-color: #9F78FF;
+        color: white;
+        flex: 2;
+    }
+
+    .apply-filter-btn:hover {
+        background-color: #8a66eb;
+    }
+
+    .clear-filter-btn {
+        background-color: #f8f9fa;
+        color: #666;
+        border: 1px solid #ddd;
+        flex: 1;
+    }
+
+    .clear-filter-btn:hover {
+        background-color: #f1f1f1;
+        color: #333;
+    }
 </style>
 
 <main class="main-container">
     <section class="shop-page">
         <div class="shop-topbar">
-            <form action="/search" method="POST" class="search-form">
-                <input type="text" name="query" placeholder="Search items..." class="search-input">
+            <form action="/search" method="GET" class="search-form" onsubmit="saveSearchQuery()">
+                <input type="text" name="query" placeholder="Search items..." class="search-input" value="<%= query || '' %>">
                 <button type="submit" class="search-button">Search</button>
             </form>
 
@@ -392,45 +476,101 @@ style.textContent = `
                     <option value="zToA" <%= (typeof sortOption !== 'undefined' && sortOption === 'zToA') ? 'selected' : '' %>>Name: Z to A</option>
                 </select>
             </div>
-          
-
         </div>
 
         <div class="product-list-container">
             <aside class="sidebar">
-                <div class="filter-section">
-                    <h3>Categories</h3>
-                    <ul>
-                        <% for (let i = 0; i < category.length; i++) { %>
+                <form id="filterForm" action="/filter" method="GET">
+                    <!-- Hidden input for sort option -->
+                    <input type="hidden" name="sort" value="<%= typeof sortOption !== 'undefined' ? sortOption : 'latest' %>">
+                    
+                    <div class="filter-section">
+                        <h3>Categories</h3>
+                        <ul>
+                            <% for (let i = 0; i < category.length; i++) { %>
+                                <li>
+                                    <label class="filter-checkbox">
+                                        <input type="checkbox" name="category" value="<%= category[i]._id %>"
+                                            <%= (typeof activeFilters !== 'undefined' && 
+                                                 activeFilters?.category && 
+                                                 Array.isArray(activeFilters.category) && 
+                                                 activeFilters.category.includes(category[i]._id.toString())) ? 'checked' : '' %>>
+                                        <%= category[i].name %>
+                                    </label>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </div>
+            
+                    <div class="filter-section">
+                        <h3>Brands</h3>
+                        <ul>
+                            <% for (let i = 0; i < brand.length; i++) { %>
+                                <li>
+                                    <label class="filter-checkbox">
+                                        <input type="checkbox" name="brand" value="<%= brand[i]._id %>"
+                                            <%= (typeof activeFilters !== 'undefined' && 
+                                                 activeFilters?.brand && 
+                                                 Array.isArray(activeFilters.brand) && 
+                                                 activeFilters.brand.includes(brand[i]._id.toString())) ? 'checked' : '' %>>
+                                        <%= brand[i].brandName %>
+                                    </label>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </div>
+            
+                    <div class="filter-section">
+                        <h3>Price Range</h3>
+                        <ul>
                             <li>
-                                <a href="/filter?category=<%= category[i]._id %>&sort=<%= typeof sortOption !== 'undefined' ? sortOption : 'latest' %>">
-                                    <%= category[i].name %>
-                                </a>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="price" value="0-500"
+                                        <%= (typeof activeFilters !== 'undefined' && 
+                                             activeFilters?.price && 
+                                             Array.isArray(activeFilters.price) && 
+                                             activeFilters.price.includes('0-500')) ? 'checked' : '' %>>
+                                    Under ₹500
+                                </label>
                             </li>
-                        <% } %>
-                    </ul>
-                </div>
-
-                <div class="filter-section">
-                    <h3>Brands</h3>
-                    <ul>
-                        <% for (let i = 0; i < brand.length; i++) { %>
                             <li>
-                                <a href="/filter?brand=<%= brand[i]._id %>&sort=<%= typeof sortOption !== 'undefined' ? sortOption : 'latest' %>"><%= brand[i].brandName %></a>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="price" value="500-1000"
+                                        <%= (typeof activeFilters !== 'undefined' && 
+                                             activeFilters?.price && 
+                                             Array.isArray(activeFilters.price) && 
+                                             activeFilters.price.includes('500-1000')) ? 'checked' : '' %>>
+                                    ₹500 - ₹1000
+                                </label>
                             </li>
-                        <% } %>
-                    </ul>
-                </div>
-
-                <div class="filter-section">
-                    <h3>Price Range</h3>
-                    <ul>
-                        <li><a href="/filterPrice?gt=0&lt=500&sort=<%= typeof sortOption !== 'undefined' ? sortOption : 'latest' %>">Under ₹500</a></li>
-                        <li><a href="/filterPrice?gt=500&lt=1000&sort=<%= typeof sortOption !== 'undefined' ? sortOption : 'latest' %>">₹500 - ₹1000</a></li>
-                        <li><a href="/filterPrice?gt=1000&lt=1500&sort=<%= typeof sortOption !== 'undefined' ? sortOption : 'latest' %>">₹1000 - ₹1500</a></li>
-                        <li><a href="/filterPrice?gt=1500&lt=1000000&sort=<%= typeof sortOption !== 'undefined' ? sortOption : 'latest' %>">Above ₹1500</a></li>
-                    </ul>
-                </div>
+                            <li>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="price" value="1000-1500"
+                                        <%= (typeof activeFilters !== 'undefined' && 
+                                             activeFilters?.price && 
+                                             Array.isArray(activeFilters.price) && 
+                                             activeFilters.price.includes('1000-1500')) ? 'checked' : '' %>>
+                                    ₹1000 - ₹1500
+                                </label>
+                            </li>
+                            <li>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" name="price" value="1500-1000000"
+                                        <%= (typeof activeFilters !== 'undefined' && 
+                                             activeFilters?.price && 
+                                             Array.isArray(activeFilters.price) && 
+                                             activeFilters.price.includes('1500-1000000')) ? 'checked' : '' %>>
+                                    Above ₹1500
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="filter-actions">
+                        <button type="submit" class="apply-filter-btn">Apply Filters</button>
+                        <button type="button" class="clear-filter-btn" onclick="clearFilters()">Clear All</button>
+                    </div>
+                </form>
             </aside>
 
             <main class="product-grid">
@@ -438,14 +578,14 @@ style.textContent = `
                     <div class="product-card">
                         <!-- Wishlist button -->
                         <button 
-                        class="wishlist-btn"
-                        onclick="toggleWishlist(this, '<%= product._id %>')"
-                        data-tooltip="Add to Wishlist"
-                        data-product-id="<%= product._id %>"
-                    >
-                        <i class="bi bi-heart"></i>
-                        <i class="bi bi-heart-fill"></i>
-                    </button>
+                            class="wishlist-btn"
+                            onclick="toggleWishlist(this, '<%= product._id %>')"
+                            data-tooltip="Add to Wishlist"
+                            data-product-id="<%= product._id %>"
+                        >
+                            <i class="bi bi-heart"></i>
+                            <i class="bi bi-heart-fill"></i>
+                        </button>
                         <!-- Product link and image -->
                         <a href="/productDetails?id=<%= product._id %>">
                             <% if (product.productImage && product.productImage.length > 0) { %>
@@ -484,6 +624,7 @@ style.textContent = `
                             </div>
                         </a>
                         
+                        
                         <!-- Add to cart button -->
                         <button 
                             onclick="addToCart('<%= product._id %>')" 
@@ -498,12 +639,15 @@ style.textContent = `
                 <% }); %>
             </main>
             
-            <!-- Success notification (Move this outside the product grid, just before closing main-container) -->
-            <div class="wishlist-success">
+            <!-- Success notification -->
+            <div class="wishlist-notification">
                 <i class="bi bi-check-circle"></i>
                 <span class="success-message"></span>
             </div>
         </div>
+
+        
+        
 
         <div class="pagination">
             <% if (currentPage > 1) { %>
@@ -521,20 +665,18 @@ style.textContent = `
         </div>
     </section>
 </main>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
 <script>
-  function addToCart(productId) {
+function addToCart(productId) {
     $.ajax({
         url: '/addToCart',
         method: 'POST',
         data: { productId: productId },
         success: function(response) {
             if (response.status === true) {
-                // Update cart count
                 $('#cartCount').text(response.cartLength);
-                
                 Swal.fire({
                     icon: 'success',
                     title: 'Added to Cart',
@@ -577,14 +719,10 @@ style.textContent = `
 }
 
 
+
 function toggleWishlist(button, productId) {
     const isActive = button.classList.toggle('active');
-    const tooltip = button.getAttribute('data-tooltip');
-
-    // Update tooltip text
-    button.setAttribute('data-tooltip', 
-        isActive ? 'Remove from Wishlist' : 'Add to Wishlist'
-    );
+    button.setAttribute('data-tooltip', isActive ? 'Remove from Wishlist' : 'Add to Wishlist');
 
     $.ajax({
         url: '/addTOWishlist',
@@ -609,7 +747,6 @@ function toggleWishlist(button, productId) {
                     showConfirmButton: false,
                     timer: 1500
                 });
-                // Revert the active state if product was already in wishlist
                 button.classList.toggle('active');
             }
         },
@@ -622,13 +759,11 @@ function toggleWishlist(button, productId) {
                 showConfirmButton: false,
                 timer: 1500
             });
-            // Revert the active state on error
             button.classList.toggle('active');
         }
     });
 }
 
-// Optional: Add wishlist count to header
 function updateWishlistCount() {
     const wishlistCount = document.querySelectorAll('.wishlist-btn.active').length;
     const countElement = document.querySelector('.wishlist-count');
@@ -638,43 +773,28 @@ function updateWishlistCount() {
     }
 }
 
-
 function applySort(sortValue) {
     const currentUrl = new URL(window.location.href);
     currentUrl.searchParams.set('sort', sortValue);
-    currentUrl.searchParams.set('page', '1'); // Reset to first page when sorting
+    currentUrl.searchParams.set('page', '1');
     window.location.href = currentUrl.toString();
 }
 
+function clearFilters() {
+    document.querySelectorAll('#filterForm input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    document.getElementById('filterForm').submit();
+}
 
-
-  document.addEventListener('DOMContentLoaded', function() {
-    // Set default sort value if none exists
+document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const currentSort = urlParams.get('sort') || 'latest';
-    
-    // Set the dropdown value
     const sortDropdown = document.getElementById('sortDropdown');
     if (sortDropdown) {
         sortDropdown.value = currentSort;
     }
-});
 
-// Update the filter links to include current sort
-function updateFilterLinks() {
-    const currentSort = new URLSearchParams(window.location.search).get('sort') || 'latest';
-    document.querySelectorAll('[data-filter-link]').forEach(link => {
-        const url = new URL(link.href);
-        url.searchParams.set('sort', currentSort);
-        link.href = url.toString();
-    });
-}
-
-// Call this when page loads
-document.addEventListener('DOMContentLoaded', updateFilterLinks);
-
-// Add this to handle image loading errors
-document.addEventListener('DOMContentLoaded', function() {
     const images = document.querySelectorAll('.product-card img');
     images.forEach(img => {
         img.onerror = function() {
@@ -682,28 +802,128 @@ document.addEventListener('DOMContentLoaded', function() {
             this.alt = 'Image not available';
         };
     });
-});
 
-// Optional: Add lazy loading with intersection observer
-document.addEventListener('DOMContentLoaded', function() {
     if ('IntersectionObserver' in window) {
         const imageObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const img = entry.target;
-                    img.src = img.dataset.src;
+                    img.src = img.dataset.src || img.src;
                     img.classList.remove('lazy');
                     observer.unobserve(img);
                 }
             });
         });
+        document.querySelectorAll('img.lazy').forEach(img => imageObserver.observe(img));
+    }
 
-        const imgs = document.querySelectorAll('img.lazy');
-        imgs.forEach(img => imageObserver.observe(img));
+    // Handle active filters display
+    const shopTopbar = document.querySelector('.shop-topbar');
+    const activeFiltersDiv = document.createElement('div');
+    activeFiltersDiv.className = 'active-filters';
+    
+    const checkedFilters = document.querySelectorAll('#filterForm input[type="checkbox"]:checked');
+    if (checkedFilters.length > 0) {
+        checkedFilters.forEach(filter => {
+            const filterType = filter.name;
+            let filterValue = '';
+            
+            if (filterType === 'category') {
+                filterValue = filter.closest('label').textContent.trim();
+            } else if (filterType === 'brand') {
+                filterValue = filter.closest('label').textContent.trim();
+            } else if (filterType === 'price') {
+                const priceRange = filter.value.split('-');
+                if (priceRange[0] === '0') {
+                    filterValue = 'Under ₹' + priceRange[1];
+                } else if (priceRange[1] === '1000000') {
+                    filterValue = 'Above ₹' + priceRange[0];
+                } else {
+                    filterValue = '₹' + priceRange[0] + ' - ₹' + priceRange[1];
+                }
+            }
+            
+            const filterTag = document.createElement('span');
+            filterTag.className = 'filter-tag';
+            filterTag.innerHTML = `
+                ${filterValue}
+                <span class="remove-filter" data-filter-type="${filterType}" data-filter-value="${filter.value}">×</span>
+            `;
+            activeFiltersDiv.appendChild(filterTag);
+        });
+        
+        shopTopbar.after(activeFiltersDiv);
+        
+        document.querySelectorAll('.remove-filter').forEach(button => {
+            button.addEventListener('click', function() {
+                const filterType = this.dataset.filterType;
+                const filterValue = this.dataset.filterValue;
+                const checkbox = document.querySelector(`#filterForm input[name="${filterType}"][value="${filterValue}"]`);
+                if (checkbox) {
+                    checkbox.checked = false;
+                }
+                document.getElementById('filterForm').submit();
+            });
+        });
     }
 });
+
+window.addEventListener("pageshow", function(event) {
+    if (event.persisted) {
+        document.querySelector(".search-input").value = "";
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if the SweetAlert2 library is loaded
+    if (typeof Swal !== 'undefined') {
+        // Function to show flash message from session
+        function showSessionFlashMessage() {
+            // This assumes your server is exposing the session flash message as a global variable
+            // or you can modify this to access it from wherever it's available
+            if (window.sessionFlashMessage && window.sessionFlashMessage.length > 0) {
+                Swal.fire({
+                    icon: "warning",
+                    title: window.sessionFlashMessage,
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+                
+                // Clear the flash message after showing it
+                window.sessionFlashMessage = null;
+                
+                // If you're using AJAX to update server-side session
+                /*
+                fetch('/clear-flash-message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                */
+            }
+        }
+        
+        // Execute the function
+        showSessionFlashMessage();
+    } else {
+        console.error('SweetAlert2 library is not loaded. Make sure to include it in your page.');
+    }
+});
+
+
+
+
 </script>
+
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+
 <%- include("../../views/partials/user/footer") %>
-
-
-

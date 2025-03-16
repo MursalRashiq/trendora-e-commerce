@@ -10,6 +10,8 @@ const adminRouter = require("./routes/admin");
 const bodyParser = require("body-parser");
 const flash = require("connect-flash");
 const { updateCounts } = require("./middleware/auth");
+const morgan = require("morgan")
+const helmet = require("helmet")
 
 connectDB();
 
@@ -22,7 +24,8 @@ app.use(
   "/admin/productImages",
   express.static(path.join(__dirname, "public/admin/productImages"))
 );
-
+// app.use(morgan("dev"))
+// app.use(helmet())
 // Session Configuration
 app.use(
   session({
@@ -42,7 +45,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Prevent browser caching
 app.use(nochache());
 
 // Initialize Passport
@@ -59,7 +61,7 @@ app.set("views", [
 // Static Files Middleware
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(express.urlencoded({ extended: true })); // For form data
+app.use(express.urlencoded({ extended: true })); 
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -78,37 +80,33 @@ app.use((req, res, next) => {
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
 
-
-
-// Admin Error Handler 
+// Admin Error Handler
 app.use((err, req, res, next) => {
   if (req.session.admin) {
-      console.error("Admin Error:", err.message); 
+    console.error("Admin Error:", err.message);
 
-     
-      return res.status(500).render("admin-error", {
-          message: err.message || "Something went wrong with the admin action. Please try again later."
-      });
+    return res.status(500).render("admin-error", {
+      message:
+        err.message ||
+        "Something went wrong with the admin action. Please try again later.",
+    });
   }
-  next(err); 
+  next(err);
 });
 
-
-
-// User Error Handler (for User Routes)
+// User Error Handler 
 app.use((err, req, res, next) => {
   if (!req.session.admin) {
-      console.error("User Error:", err.message);  
+    console.error("User Error:", err.message);
 
-      return res.status(500).render("404", {
-          message: err.message || "Something went wrong for the user. Please try again later."
-      });
+    return res.status(500).render("404", {
+      message:
+        err.message ||
+        "Something went wrong for the user. Please try again later.",
+    });
   }
-  next(err);  
+  next(err);
 });
-
-
-
 
 const PORT = process.env.PORT || 4001;
 app.listen(PORT, () => {

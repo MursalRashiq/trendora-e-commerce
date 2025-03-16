@@ -432,7 +432,11 @@
                                 <tr>
                                     <td class="cart_total_label">Shipping</td>
                                     <td class="cart_total_amount">
+                                        <% if(shippingCharge === 0){%>
                                         <span class="text-success">Free</span>
+                                        <%}else{%>
+                                            <span class="text-success"><%= shippingCharge%></span>
+                                        <%}%>
                                     </td>
                                 </tr>
                                 <tr>
@@ -458,17 +462,7 @@
 function changeQuantity(productId, cartQuantity, count, productPrice, productIndex, maxQuantity) {
     console.log('Updating quantity for product:', productId);
     
-    // Get elements - Updated selectors to match the HTML structure
-    const quantityInput = document.querySelector(`tr:nth-child(${productIndex + 1}) .quantity-input`);
-    const subtotalSpan = document.querySelector(`span[data-subtotal-id="${productId}"]`);
-    const totalSpans = document.querySelectorAll('#total'); // Select all elements with id="total"
-    
-    if (!quantityInput || !subtotalSpan || totalSpans.length === 0) {
-        console.error('Required elements not found');
-        return;
-    }
-
-    const currentQuantity = parseInt(quantityInput.value);
+    const currentQuantity = cartQuantity;
     const newQuantity = currentQuantity + parseInt(count);
 
     // Toast configuration
@@ -522,36 +516,16 @@ function changeQuantity(productId, cartQuantity, count, productPrice, productInd
         },
         success: (response) => {
             if (response.status) {
-                // Update quantity
-                quantityInput.value = newQuantity;
-                
-                // Calculate and update subtotal
-                const newSubtotal = newQuantity * productPrice;
-                subtotalSpan.textContent = `₹${newSubtotal}`;
-                
-                // Update all total spans (both in summary and cart totals)
-                totalSpans.forEach(span => {
-                    span.textContent = response.grandTotal;
-                });
-                
-                // Add visual feedback
-                subtotalSpan.classList.add('quantity-flash');
-                setTimeout(() => {
-                    subtotalSpan.classList.remove('quantity-flash');
-                }, 500);
-
-                // Update button states
-                const decrementBtn = quantityInput.previousElementSibling;
-                const incrementBtn = quantityInput.nextElementSibling;
-                
-                decrementBtn.disabled = newQuantity <= 1;
-                incrementBtn.disabled = newQuantity >= maxQuantity || newQuantity >= 3;
-
                 // Show success toast
                 Toast.fire({
                     icon: 'success',
                     title: 'Quantity updated successfully'
                 });
+                
+                // Refresh the page after a short delay to let the toast be visible
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             } else {
                 Toast.fire({
                     icon: 'error',

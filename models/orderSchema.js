@@ -51,6 +51,10 @@ const orderSchema = new Schema({
         type: String,
         default: "",
       },
+      cancelReason: {
+        type: String,
+        default: "",
+      },
       deliveredAt: {
         type: Date,
       },
@@ -97,6 +101,20 @@ const orderSchema = new Schema({
       "Failed",
     ],
   },
+  paymentStatus: {
+    type: String,
+    required: true,
+    enum: [
+      "Pending",
+      "Paid",
+      "Failed",
+      "Refunded",
+      "Confirmed",
+      "Refund Processing",
+      "Partial Refund Processing",
+    ],
+    default: "Pending",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -124,6 +142,10 @@ const orderSchema = new Schema({
   },
   razorpaySignature: {
     type: String,
+  },
+  shippingCharge: {
+    type: Number,
+    default: 0 
   },
 });
 

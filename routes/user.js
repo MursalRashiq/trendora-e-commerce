@@ -35,9 +35,9 @@ router.get("/logout", userController.logout)
 
 //shop management
 router.get("/shop",userController.loadShoppingPage)
-router.get("/filter",userController.filterProduct)
-router.get("/filterPrice",userAuth,userController.filterByPrice)
-router.post("/search", userAuth,userController.searchProducts)
+router.get("/filter",userController.filterProducts)
+// router.get("/filterPrice",userAuth,userController.filterByPrice)
+router.get("/search", userAuth,userController.searchProducts)
 
 //transition
 router.get("/transition",userController.transition)
@@ -99,7 +99,8 @@ router.get("/downloadInvoice/:orderId", userAuth, (req, res, next) => {
   console.log("OrderId:", req.params.orderId);
   next();
 }, orderController.downloadInvoice);
-
+router.get("/paymentFailed",userAuth,orderController.paymentFailed)
+router.post("/retryPayment",userAuth,orderController.retryPayment)
 
 //wishlist management 
 router.get("/wishlist",userAuth,wishlistController.loadWishlist)
