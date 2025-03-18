@@ -17,14 +17,14 @@ connectDB();
 
 const app = express();
 
-// Body parsers (Express built-in)
+// Body parsers 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   "/admin/productImages",
   express.static(path.join(__dirname, "public/admin/productImages"))
 );
-// app.use(morgan("dev"))
+app.use(morgan("dev"))
 // app.use(helmet())
 // Session Configuration
 app.use(

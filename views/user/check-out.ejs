@@ -668,7 +668,7 @@
             <% if(shippingCharge === 0) {%>
             <span id="shippingCharge">Free</span>
             <%}else{%>
-                <span id="shippingCharge"><%= shippingCharge %></span>
+            <span id="shippingCharge"><%= shippingCharge %></span>
             <%}%>
           </div>
           <div class="summary-row">
@@ -740,10 +740,13 @@
 
     const sum = document.getElementById("totalValue").textContent;
     const numericValue = parseInt(sum.replace(/[^\d.]/g, ""));
-    let shippingChargeText = document.getElementById("shippingCharge").textContent.trim();
-    let shippingCharge = shippingChargeText === "Free" ? 0 : parseInt(shippingChargeText) || 0;
+    let shippingChargeText = document
+      .getElementById("shippingCharge")
+      .textContent.trim();
+    let shippingCharge =
+      shippingChargeText === "Free" ? 0 : parseInt(shippingChargeText) || 0;
 
-    console.log(shippingCharge,"from the fronend")
+    console.log(shippingCharge, "from the fronend");
     // Initial validations
     if (!payment) {
       Swal.fire({
@@ -786,7 +789,7 @@
           addressId: address,
           payment: payment,
           discount: discount,
-          shippingCharge: shippingCharge
+          shippingCharge: shippingCharge,
         },
       });
 
@@ -819,13 +822,13 @@
         case "wallet":
           if (response.payment === true) {
             await $.ajax({
-      url: "/paymentConfirm",
-      method: "POST",
-      data: {
-        status: "Paid",
-        orderId: orderId,  // Send the correct orderId
-      },
-    });
+              url: "/paymentConfirm",
+              method: "POST",
+              data: {
+                status: "Paid",
+                orderId: orderId,
+              },
+            });
             Swal.fire({
               title: "Order Success",
               text: "Order placed successfully",
@@ -878,25 +881,25 @@
           const rzp1 = new Razorpay(options);
 
           rzp1.on("payment.failed", function (response) {
-    // Handle payment failure immediately
-    $.ajax({
-        url: "/paymentConfirm",
-        method: "POST",
-        data: {
-            status: "Pending",
-            orderId: orderId,  // Use this directly
-        },
-        success: function () {
-            // Redirect directly using the already defined 'orderId'
-            location.href = `/paymentFailed?id=${orderId}`;
-        },
-        error: function (err) {
-            console.error("Failed to update status to Failed:", err);
-        },
-    });
-});
-rzp1.open();
-break
+            // Handle payment failure immediately
+            $.ajax({
+              url: "/paymentConfirm",
+              method: "POST",
+              data: {
+                status: "Pending",
+                orderId: orderId, // Use this directly
+              },
+              success: function () {
+                // Redirect directly using the already defined 'orderId'
+                location.href = `/paymentFailed?id=${orderId}`;
+              },
+              error: function (err) {
+                console.error("Failed to update status to Failed:", err);
+              },
+            });
+          });
+          rzp1.open();
+          break;
 
         default:
           Swal.fire({

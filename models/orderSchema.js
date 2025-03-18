@@ -99,6 +99,7 @@ const orderSchema = new Schema({
       "Returned",
       "Return Rejected",
       "Failed",
+      "Partially Returned"
     ],
   },
   paymentStatus: {
@@ -112,6 +113,7 @@ const orderSchema = new Schema({
       "Confirmed",
       "Refund Processing",
       "Partial Refund Processing",
+      "Partial Refunded"
     ],
     default: "Pending",
   },

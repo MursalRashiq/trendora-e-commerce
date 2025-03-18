@@ -158,12 +158,10 @@ const changeItemStatus = asyncHandler(async (req, res) => {
     // );
 
     if (!orderId || itemIndex === undefined || !status) {
-      return res
-        .status(400)
-        .json({
-          status: false,
-          message: "orderId, itemIndex, and status are required",
-        });
+      return res.status(400).json({
+        status: false,
+        message: "orderId, itemIndex, and status are required",
+      });
     }
 
     const order = await Order.findOne({ orderId: orderId });
@@ -210,9 +208,9 @@ const changeItemStatus = asyncHandler(async (req, res) => {
 
 const changeOrderStatus = async (req, res) => {
   try {
-    const orderId =  req.body.orderId;
-    let status =  req.body.status;
-    console.log(req.body)
+    const orderId = req.body.orderId;
+    let status = req.body.status;
+    console.log(req.body);
 
     if (!orderId || !status) {
       return res
@@ -306,7 +304,7 @@ const approveReturn = asyncHandler(async (req, res) => {
     });
   }
 
-  const findOrder = await Order.findById(orderId);
+  const findOrder = await Order.findById(orderId).populate("orderItems");
   if (!findOrder) {
     return res.status(404).json({ message: "Order not found" });
   }
@@ -368,25 +366,30 @@ const approveReturn = asyncHandler(async (req, res) => {
   await findOrder.save();
 
   const updatedOrder = await Order.findById(orderId);
+
   const allItemsReturned = updatedOrder.orderItems.every(
     (item) => item.status === "Returned"
   );
 
-  if (allItemsReturned) {
-    await Order.updateOne({ _id: orderId }, { $set: { status: "Returned" } });
-  }
+  const newStatus = allItemsReturned ? "Returned" : "Partially Returned";
 
-  const statusCounts = updatedOrder.orderItems.reduce((acc, item) => {
-    acc[item.status] = (acc[item.status] || 0) + 1;
-    return acc;
-  }, {});
+  await Order.updateOne({ _id: orderId }, { $set: { status: newStatus } });
 
-  const mostFrequentStatus = Object.keys(statusCounts).reduce((a, b) =>
-    statusCounts[a] >= statusCounts[b] ? a : b
+  const paymentStatusUpdate = updatedOrder.orderItems.every(
+    (item) => item.status === "Returned"
   );
 
-  updatedOrder.status = mostFrequentStatus;
-  await updatedOrder.save();
+  if (paymentStatusUpdate) {
+    await Order.updateOne(
+      { _id: updatedOrder._id },
+      { $set: { paymentStatus: "Refunded" } }
+    );
+  } else {
+    await Order.updateOne(
+      { _id: updatedOrder._id },
+      { $set: { paymentStatus: "Partial Refunded" } }
+    );
+  }
 
   return res.status(200).json({
     status: true,
@@ -408,7 +411,7 @@ const rejectReturnRequest = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Invalid orderId or itemIndex" });
   }
 
-  const findOrder = await Order.findOne({ _id: orderId });
+  const findOrder = await Order.findOne({ _id: orderId }).populate("orderItems")
 
   if (!findOrder) {
     return res.status(404).json({ message: "Order not found" });
@@ -448,6 +451,16 @@ const rejectReturnRequest = asyncHandler(async (req, res) => {
     }
   }
 
+  
+
+  const result = await Order.updateOne(
+    { orderId: findOrder.orderId },
+    { $set: { paymentStatus: "Paid" } }
+  );
+  console.log(result);
+  
+
+  
   res
     .status(200)
     .json({ status: true, message: "Return request rejected successfully" });
