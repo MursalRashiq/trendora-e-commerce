@@ -127,7 +127,7 @@ const paymentConfirm = async (req, res) => {
 
     await Order.updateOne(
       { _id: orderId },
-      { $set: { paymentStatus: status } } 
+      { $set: { paymentStatus: status, payment: "razorpay" } } 
     ).then(() => {
       res.json({ status: true });
     });
@@ -606,12 +606,11 @@ const cancelOrder = async (req, res) => {
     // Calculate the amount to deduct
     const itemAmount = canceledItem.price * canceledItem.quantity;
     console.log(itemAmount);
-    // Update item status and reason
     canceledItem.status = "Cancelled";
     canceledItem.cancelReason = cancelReason;
     console.log(cancelReason);
 
-    // Refund logic for razorpay or wallet payments
+    // Refund 
     if (
       (findOrder.payment === "razorpay" || findOrder.payment === "wallet") &&
       findOrder.status === "Confirmed"
@@ -627,6 +626,20 @@ const cancelOrder = async (req, res) => {
       });
 
       await findUser.save();
+    }
+
+    const paymentStatusUpdate = findOrder.orderItems.every((item)=>item.status === "Cancelled")
+
+    if (paymentStatusUpdate){
+      await Order.updateOne(
+        {_id: findOrder._id},
+        {$set : {paymentStatus : "Refunded"}}
+      )
+    }else{
+      await Order.updateOne(
+        {_id: findOrder._id},
+        {$set: {paymentStatus: "Partial Refunded"}}
+      )
     }
 
     // Restore product stock
@@ -677,7 +690,7 @@ const returnorder = async (req, res) => {
 
     const { orderId, itemIndex, returnReason } = req.body;
 
-    const findOrder = await Order.findOne({ _id: orderId });
+    const findOrder = await Order.findOne({ _id: orderId }).populate("orderItems")
     if (!findOrder) {
       return res.status(404).json({ message: "Order not found" });
     }
@@ -714,6 +727,20 @@ const returnorder = async (req, res) => {
       return res.status(400).json({
         message: `Return period expired. Returns are only accepted within ${returnPeriodDays} days after delivery.`,
       });
+    }
+
+    const paymentStatusUpdate = findOrder.orderItems.every((item)=>item.status === "Return Request")
+
+    if (paymentStatusUpdate) {
+      await Order.updateOne(
+        { orderId: findOrder.orderId },  
+        { $set: { paymentStatus: "Refund Processing" } }
+      );
+    }else{
+      await Order.updateOne(
+        { orderId: findOrder.orderId },
+        { $set: {paymentStatus: "Partial Refund Processing"}}
+      )
     }
 
     const updateQuery = {};
@@ -816,12 +843,18 @@ const paymentFailed = asyncHandler(async (req, res) => {
 
 const retryPayment = async (req, res) => {
   try {
-    const { orderId } = req.body;
-    console.log(req.body,"im the body from the retryPayment")
-    
+    const { orderId, paymentMethod } = req.body;  // Get paymentMethod from frontend
+    console.log(req.body, "I'm the body from retryPayment");
+
     const order = await Order.findById(orderId);
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Update payment method to Razorpay if needed
+    if (paymentMethod && order.payment !== paymentMethod) {
+      order.payment = paymentMethod;
+      await order.save();
     }
 
     // Generate new Razorpay order for retry

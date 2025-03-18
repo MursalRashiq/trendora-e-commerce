@@ -81,7 +81,7 @@ const loadDashboard = asyncHandler(async (req, res) => {
       0
     );
 
-    // Top 5 Selling Products (Include productImage)
+    // Top 5 Selling Products 
     const topProducts = await Order.aggregate([
       { $match: { status: { $ne: 'Cancelled' } } },
       { $unwind: '$orderItems' },
@@ -106,14 +106,14 @@ const loadDashboard = asyncHandler(async (req, res) => {
           _id: 0,
           name: '$productInfo.productName',
           count: 1,
-          image: { $arrayElemAt: ['$productInfo.productImage', 0] } // First image
+          image: { $arrayElemAt: ['$productInfo.productImage', 0] } 
         }
       },
       { $sort: { count: -1 } },
       { $limit: 5 }
     ]);
 
-    // Top 5 Selling Brands (No image yet, brand is a string)
+    // Top 5 Selling Brands 
     const topBrands = await Order.aggregate([
       { $match: { status: { $ne: 'Cancelled' } } },
       { $unwind: '$orderItems' },

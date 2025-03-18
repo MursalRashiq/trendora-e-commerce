@@ -14,14 +14,14 @@ const getCartPage = asyncHandler(async (req, res) => {
 
 
   if (!locals) {
-    return res.redirect("/login"); // Redirect to login if user not found
+    return res.redirect("/login"); 
   }
 
   const productIds = locals.cart.map((item) => item.productId);
   const products = await Product.find({ _id: { $in: productIds } });
 
   let data = await User.aggregate([
-    { $match: { _id: locals._id } }, // Use `locals._id` as the match condition
+    { $match: { _id: locals._id } }, 
     { $unwind: "$cart" },
     {
       $project: {

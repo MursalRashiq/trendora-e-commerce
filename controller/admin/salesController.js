@@ -559,7 +559,6 @@ const downloadSalesReportExcel = asyncHandler(async (req, res) => {
     alignment: { horizontal: "center", vertical: "middle" },
   };
 
-  // Define columns with proper styling
   worksheet.columns = [
     { header: "Order ID", key: "orderId", width: 15 },
     { header: "Customer", key: "customer", width: 20 },

@@ -644,7 +644,7 @@
     <div class="container header-content">
       <div class="logo">
         <i class="material-icons">shopping_bag</i>
-        <span>ShopEase</span>
+        <span>Trendora</span>
       </div>
       <div class="order-id-header">
         Order #<%= orders.orderId %>
@@ -737,7 +737,9 @@
                 <p class="timeline-info"><%= new Date(orders.createdAt).toLocaleDateString() %></p>
                 <% if(orders.status === "Pending") {%>
                   <p class="timeline-info">Your order Pending Due to Payment issue</p>
-                  <%} else {%>
+                  <%} else if(orders.status === "Cancelled"){%>
+                    <p class="timeline-info">Your order has been Cancelled </p>
+                    <%} else {%>
                 <p class="timeline-info">Your order has been successfully placed</p>
                 <%}%>
               </div>
@@ -949,13 +951,13 @@
     </div>
   </div>
   <!-- Floating Back Button -->
-  <a href="/orders" class="floating-back">
+  <a href="/profile" class="floating-back">
     <i class="material-icons">arrow_back</i>
   </a>
 
   <footer class="footer">
     <div class="container">
-      <p>© 2025 ShopEase. All rights reserved.</p>
+      <p>© 2025 Trendora. All rights reserved.</p>
     </div>
   </footer>
 
