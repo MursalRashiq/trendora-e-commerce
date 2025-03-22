@@ -10,9 +10,8 @@
     <link rel="shortcut icon" type="image/x-icon" href="/assets/img/logo/logo-removebg-preview.png">
 
     <!-- CSS here -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="assets/css/slicknav.css">
     <link rel="stylesheet" href="assets/css/flaticon.css">
     <link rel="stylesheet" href="assets/css/progressbar_barfiller.css">
     <link rel="stylesheet" href="assets/css/gijgo.css">
@@ -26,460 +25,482 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
-/* Header Base */
-/* Reset basic navigation styles */
-/* Main Navigation Styles */
-#navigation {
-    list-style: none;
-    display: flex;
-    padding: 0;
-    margin: 0;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-}
+        /* Header Base */
+        .header-area {
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-/* Navigation Items */
-#navigation > li {
-    position: relative;
-    margin-right: 30px;
-}
+        #navigation {
+            list-style: none;
+            display: flex;
+            padding: 0;
+            margin: 0;
+            align-items: center;
+            gap: 20px; /* Gap between nav items */
+        }
 
-#navigation > li > a {
-    display: block;
-    padding: 10px 0;
-    color: black;
-    text-decoration: none;
-    font-weight: 500;
-}
+        #navigation > li {
+            position: relative;
+        }
 
-/* Auth Container Positioning */
-#navigation .sign-in-container {
-    margin-left: auto !important;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
+        #navigation > li > a {
+            display: block;
+            padding: 10px 0;
+            color: black;
+            text-decoration: none;
+            font-weight: 500;
+        }
 
-/* Dropdown Styles */
-.dropdown {
-    margin-left: auto !important;
-}
+        #navigation .sign-in-container {
+            margin-left: 120px; /* Increased gap after Contact */
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Gap between sign-in/signup */
+        }
 
-/* Mobile Styles */
-@media (max-width: 991px) {
-    #navigation {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
+        .dropdown {
+            position: relative;
+        }
 
-    #navigation > li {
-        margin-right: 0;
-        margin-bottom: 10px;
-        width: 100%;
-    }
+        .sign-in-link {
+            color: black;
+            text-decoration: none;
+            padding: 8px 20px;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            display: inline-block;
+            white-space: nowrap;
+        }
 
-    #navigation .sign-in-container {
-        margin: 10px 0 !important;
-        justify-content: center;
-        width: 100%;
-    }
+        .dropdown .sign-in-link {
+            padding: 8px 20px;
+        }
 
-    .dropdown {
-        margin-left: 0 !important;
-        width: 100%;
-    }
-}
+        .dropdown-content {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            display: none;
+            z-index: 1000;
+        }
 
-/* Container Styles */
-.main-menu {
-    flex-grow: 1;
-}
+        .dropdown-content a {
+            padding: 12px 16px;
+            display: block;
+            color: black;
+            text-decoration: none;
+        }
 
-.menu-wrapper {
-    padding: 15px 0;
-}
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
 
-.header-left {
-    flex-grow: 1;
-    gap: 40px;
-}
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
 
-.sign-in-link {
-    color: black;
-    text-decoration: none;
-    padding: 8px 20px;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-    display: inline-block;
-    white-space: nowrap; /* Prevent text wrapping */
-}
+        .header-right1 {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Gap between search/wishlist/cart */
+        }
 
-/* Mobile adjustments */
-@media (max-width: 991px) {
-    .sign-in-container {
-        margin: 10px 0 !important;
-        justify-content: center;
-        width: 100%;
-        gap: 15px; /* Reduce gap on smaller screens */
-    }
-}
+        .search ul {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
 
-@media (max-width: 576px) {
-    .sign-in-link {
-        padding: 8px 15px; /* Smaller padding for mobile */
-        font-size: 14px; /* Optional: Adjust font size */
-    }
-    .sign-in-container {
-        gap: 10px; /* Smaller gap for mobile */
-    }
-}
+        .wishlist-stor, .card-stor {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
 
-.dropdown {
-    position: relative;
-    margin-left: auto !important;
-    text-align: center;
-}
+        .wishlist-stor a, .card-stor a {
+            color: #000;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
 
-.dropdown .sign-in-link {
-    padding: 8px 20px;
-}
+        .card-stor img {
+            width: 24px; /* Fixed size for cart icon */
+            height: 24px;
+            object-fit: contain;
+        }
 
-.dropdown-content {
-    position: absolute;
-    right: 0;
-    top: 100%;
-    background-color: white;
-    min-width: 180px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-    display: none;
-    z-index: 1000;
-}
+        .wishlist-stor:hover a, .card-stor:hover a {
+            color: #ff4b6e;
+        }
 
-.dropdown-content a {
-    padding: 12px 16px;
-    display: block;
-}
+        .wishlist-stor i {
+            transition: transform 0.3s ease;
+        }
 
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
-}
+        .wishlist-stor:hover i {
+            transform: scale(1.1);
+        }
 
-.dropdown:hover .dropdown-content {
-    display: block;
-}
+        .wishlist-count, #cartCount, #wishlistCountDesktop, #cartCountDesktop {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ff4b6e;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-.header-right1 {
-    display: flex;
-    align-items: center;
-    margin-left: 30px;
-}
+        .menu-wrapper {
+            padding: 15px 0;
+        }
 
-.search ul {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
+        /* Bootstrap Overrides and Responsive Adjustments */
+        .navbar-toggler {
+            border: none;
+            padding: 5px;
+            margin-left: 10px; /* Gap between icons and toggler */
+        }
 
-.wishlist-stor {
-    position: relative;
-    cursor: pointer;
-}
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.8)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
 
-.wishlist-stor a {
-    color: #000;
-    font-size: 24px;
-    transition: all 0.3s ease;
-}
+        @media (min-width: 992px) {
+            .header-left {
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                gap: 40px;
+            }
 
-.wishlist-stor:hover a {
-    color: #ff4b6e;
-}
+            .header-right1 {
+                margin-left: 30px;
+            }
 
-.wishlist-stor i {
-    transition: transform 0.3s ease;
-}
+            .navbar-nav {
+                align-items: center;
+            }
+        }
 
-.wishlist-stor:hover i {
-    transform: scale(1.1);
-}
+        @media (max-width: 991px) {
+            .menu-wrapper {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
 
-.wishlist-count {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: #ff4b6e;
-    color: white;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+            #navigation {
+                flex-direction: column;
+                align-items: start;
+                text-align: left;
+                width: 100%;
+                gap: 10px; /* Reduced gap in mobile menu */
+            }
 
-@media (max-width: 991px) {
-    #navigation {
-        flex-direction: column;
-        text-align: center;
-    }
+            #navigation > li {
+                margin-right: 0;
+                margin-bottom: 10px;
+                width: 100%;
+            }
 
-    #navigation > li {
-        margin-right: 0 !important;
-        padding: 10px 0;
-    }
+            #navigation .sign-in-container {
+                margin: 10px 0;
+                justify-content: start;
+                width: 100%;
+                gap: 15px;
+                flex-direction: column;
+            }
 
-    .sign-in-container {
-        margin: 10px 0 !important;
-        justify-content: center;
-        width: 100%;
-    }
+            .dropdown {
+                margin-left: 0;
+                width: 100%;
+            }
 
-    .dropdown-content {
-        position: static;
-        width: 100%;
-        box-shadow: none;
-        border-top: 1px solid #eee;
-        border-bottom: 1px solid #eee;
-    }
-}
+            .dropdown-content {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                border-top: 1px solid #eee;
+                border-bottom: 1px solid #eee;
+                padding-left: 15px; /* Indent for alignment */
+            }
 
-@media (max-width: 576px) {
-    .sign-in-container {
-        flex-direction: row;
-        gap: 10px;
-    }
+            .header-right1 {
+                margin-left: 0;
+                gap: 15px; /* Reduced gap between cart/wishlist in mobile */
+            }
 
-    .sign-in-link {
-        padding: 8px 15px;
-    }
-}
+            .search ul {
+                gap: 15px;
+            }
 
-/* Header Auth Section Styles */
-.sign-in-container {
-    margin-left: auto !important;
-    display: flex;
-    flex-direction: row;  /* Explicitly set horizontal layout */
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-}
+            .navbar-collapse {
+                background: #fff;
+                padding: 15px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
 
-.sign-in-link {
-    color: black;
-    text-decoration: none;
-    padding: 8px 20px;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-    display: inline-block;
-    white-space: nowrap;
-}
+            .logo img {
+                max-width: 150px;
+            }
 
-/* Ensure horizontal layout is maintained on mobile */
-@media (max-width: 991px) {
-    .sign-in-container {
-        margin: 10px 0 !important;
-        flex-direction: row;
-        width: 100%;
-        gap: 15px;
-    }
-}
+            .navbar-top {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+            }
+        }
 
-@media (max-width: 576px) {
-    .sign-in-container {
-        flex-direction: row;
-        gap: 10px;
-        justify-content: center;
-    }
+        @media (max-width: 576px) {
+            .sign-in-container {
+                gap: 10px;
+            }
 
-    .sign-in-link {
-        padding: 8px 15px;
-        font-size: 14px;
-    }
-}
+            .sign-in-link {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
 
+            .search ul, .header-right1 {
+                gap: 10px;
+            }
+
+            .wishlist-stor a, .card-stor a {
+                font-size: 20px;
+            }
+
+            .wishlist-count, #cartCount, #wishlistCountDesktop, #cartCountDesktop {
+                width: 16px;
+                height: 16px;
+                font-size: 10px;
+            }
+
+            .logo img {
+                max-width: 120px;
+            }
+        }
     </style>
-
 </head>
 <body class="full-wrapper">
-    <!-- ? Preloader Start -->
+    <!-- Preloader Start -->
     <div id="preloader-active">
         <div class="preloader d-flex align-items-center justify-content-center">
             <div class="preloader-inner position-relative">
                 <div class="preloader-circle"></div>
                 <div class="preloader-img pere-text">
-                    <h5>TRENDORA</h5>
+                    <h6>TRENDORA</h6>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Preloader Start-->
+    <!-- Preloader End -->
+
     <header>
         <div class="header-area">
             <div class="main-header header-sticky">
-                <div class="container-fluid">
-                    <div class="menu-wrapper d-flex align-items-center justify-content-between">
-                        <!-- Left Section with Logo and Navigation -->
-                        <div class="header-left d-flex align-items-center">
-                            <!-- Logo -->
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <div class="container-fluid">
+                        <!-- Top Bar for Mobile (Logo, Toggler, Cart/Wishlist) -->
+                        <div class="navbar-top">
                             <div class="logo">
                                 <a href="/">
                                     <img src="/assets/img/logo/logo-removebg-preview.png" alt="" width="200px">
                                 </a>
                             </div>
-                            <!-- Main Menu -->
-                            <div class="main-menu d-none d-lg-block">
-                                <nav>
-                                    <ul id="navigation">
-                                        <li><a href="/">Home</a></li>
-                                        <li><a href="/shop">Shop</a></li>
-                                        <li><a href="contact.html">Contact</a></li>
-                                        
-                                        <!-- Auth Section -->
-                                        
-                                        <% if (locals && locals.name) { %>
-                                            <li class="dropdown">
-                                                <a href="#" class="sign-in-link"><%= locals.name%></a>
-                                                <div class="dropdown-content">
-                                                    <a href="/profile">Profile</a>
-                                                    <a type="button" onclick="confirmLogout()">Logout</a>
+                            <div class="header-right1 d-lg-none">
+                                <div class="search d-md-block">
+                                    <ul class="d-flex align-items-center">
+                                        <li>
+                                            <div class="wishlist-stor">
+                                                <a href="/wishlist">
+                                                    <i class="ti-heart"></i>
+                                                    <span id="wishlistCount" class="wishlist-count">0</span>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="card-stor">
+                                                <a href="/cart">
+                                                    <img src="/assets/img/gallery/card.svg" alt="">
+                                                    <span id="cartCount">0</span>
+                                                </a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                        </div>
+
+                        <!-- Navbar Content -->
+                        <div class="collapse navbar-collapse" id="navbarContent">
+                            <div class="menu-wrapper d-flex align-items-center justify-content-between w-100">
+                                <!-- Left Section with Navigation -->
+                                <div class="header-left d-flex align-items-center">
+                                    <div class="main-menu">
+                                        <nav>
+                                            <ul id="navigation" class="navbar-nav">
+                                                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                                                <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
+                                                <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+                                                <% if (locals && locals.name) { %>
+                                                    <li class="nav-item dropdown">
+                                                        <a href="#" class="sign-in-link nav-link"><%= locals.name %></a>
+                                                        <div class="dropdown-content">
+                                                            <a href="/profile">Profile</a>
+                                                            <a type="button" onclick="confirmLogout()">Logout</a>
+                                                        </div>
+                                                    </li>
+                                                <% } else { %>
+                                                    <li class="nav-item sign-in-container">
+                                                        <a href="/signup" class="sign-in-link">Sign Up</a>
+                                                        <a href="/login" class="sign-in-link">Login</a>
+                                                    </li>
+                                                <% } %>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+
+                                <!-- Right Section with Search and Cart (Desktop Only) -->
+                                <div class="header-right1 d-none d-lg-flex">
+                                    <div class="search d-md-block">
+                                        <ul class="d-flex align-items-center">
+                                            <li>
+                                                <div class="nav-search search-switch">
+                                                    <form action="/search" method="POST" class="search-form">
+                                                        <i class="ti-search"></i>
+                                                    </form>
                                                 </div>
                                             </li>
-                                        <% } else { %>
-                                            <li class="sign-in-container">
-                                                <a href="/signup" class="sign-in-link">Sign Up</a>
-                                                <a href="/login" class="sign-in-link">Login</a>
+                                            <li>
+                                                <div class="wishlist-stor">
+                                                    <a href="/wishlist">
+                                                        <i class="ti-heart"></i>
+                                                        <span id="wishlistCountDesktop" class="wishlist-count">0</span>
+                                                    </a>
+                                                </div>
                                             </li>
-                                        <% } %>
-                                        
-                                    </ul>
-                                </nav>
+                                            <li>
+                                                <div class="card-stor">
+                                                    <a href="/cart">
+                                                        <img src="/assets/img/gallery/card.svg" alt="">
+                                                        <span id="cartCountDesktop">0</span>
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-    
-                        <!-- Right Section with Search and Cart -->
-                        <div class="header-right1">
-                            <div class="search d-none d-md-block">
-                                <ul class="d-flex align-items-center">
-                                    <li>
-                                        <div class="nav-search search-switch">
-                                            <form action="/search" method="POST" class="search-form">
-                                            <i class="ti-search"></i>
-                                            </form>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="wishlist-stor">
-                                            <a href="/wishlist">
-                                                <i class="ti-heart"></i>
-                                                <span id="wishlistCount" class="wishlist-count">0</span>
-                                            </a>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="card-stor">
-                                            <a href="/cart">
-                                                <img src="/assets/img/gallery/card.svg" alt="">
-                                                <span id="cartCount">0</span>
-                                            </a>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-    
-                        <!-- Mobile Menu -->
-                        <div class="col-12">
-                            <div class="mobile_menu d-block d-lg-none"></div>
                         </div>
                     </div>
-                </div>
+                </nav>
             </div>
         </div>
     </header>
-    <!-- header end -->
+    <!-- Header End -->
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-      function confirmLogout() {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You will be logged out of your session.",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, logout',
-          cancelButtonText: 'Cancel',
-        }).then((result) => {
-          if (result.isConfirmed) {
-          
-            fetch('/logout', {
-              method: 'GET',
-            })
-              .then((response) => {
-                if (response.ok) {
-                  Swal.fire({
-                    icon: 'success',
-                    title: 'Logged out!',
-                    text: 'You have been successfully logged out.',
-                    showConfirmButton: false,
-                    timer: 1500,
-                  }).then(() => {
-                    
-                    window.location.href = '/login';
-                  });
-                } else {
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to log out. Please try again.',
-                  });
+        function confirmLogout() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You will be logged out of your session.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, logout',
+                cancelButtonText: 'Cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/logout', {
+                        method: 'GET',
+                    })
+                    .then((response) => {
+                        if (response.ok) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Logged out!',
+                                text: 'You have been successfully logged out.',
+                                showConfirmButton: false,
+                                timer: 1500,
+                            }).then(() => {
+                                window.location.href = '/login';
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to log out. Please try again.',
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Logout error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An unexpected error occurred.',
+                        });
+                    });
                 }
-              })
-              .catch((error) => {
-                console.error('Logout error:', error);
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: 'An unexpected error occurred.',
-                });
-              });
-          }
-        });
-      }
-
-      function updateWishlistCount(count) {
-        const wishlistCount = document.getElementById('wishlistCount');
-        if (wishlistCount) {
-            wishlistCount.textContent = count;
-            wishlistCount.style.display = count > 0 ? 'flex' : 'none';
+            });
         }
-      }
 
-      async function updateCounts() {
-          try {
-              const response = await fetch('/getCountOfCartWish'); 
-              const data = await response.json();
+        async function updateCounts() {
+            try {
+                const response = await fetch('/getCountOfCartWish');
+                const data = await response.json();
+                // Mobile counts
+                document.getElementById('wishlistCount').innerText = data.wishlistQuantity;
+                document.getElementById('cartCount').innerText = data.cartQuantity;
+                // Desktop counts
+                document.getElementById('wishlistCountDesktop').innerText = data.wishlistQuantity;
+                document.getElementById('cartCountDesktop').innerText = data.cartQuantity;
 
-              // Update count in the UI
-              document.getElementById('wishlistCount').innerText = data.wishlistQuantity;
-              document.getElementById('cartCount').innerText = data.cartQuantity;
-          } catch (error) {
-              console.error("Error updating counts:", error);
-          }
-      }
+                // Show/hide counts
+                ['wishlistCount', 'cartCount', 'wishlistCountDesktop', 'cartCountDesktop'].forEach(id => {
+                    const elem = document.getElementById(id);
+                    if (elem) {
+                        elem.style.display = parseInt(elem.innerText) > 0 ? 'flex' : 'none';
+                    }
+                });
+            } catch (error) {
+                console.error("Error updating counts:", error);
+            }
+        }
 
-      // Fetch updated counts every 5 seconds
-      setInterval(updateCounts, 5000);
+        // Fetch updated counts every 5 seconds
+        setInterval(updateCounts, 5000);
 
-      // Call once when the page loads
-      updateCounts();
+        // Call once when the page loads
+        updateCounts();
     </script>
+</body>
+</html>

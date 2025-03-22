@@ -196,6 +196,65 @@ td[data-title="Add to Cart"] .btn-sm:hover {
         font-size: 13px;
     }
 }
+
+/* Empty Wishlist Styling */
+.empty-wishlist {
+    padding: 60px 20px;
+}
+
+.empty-wishlist-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.btn-continue-shopping {
+    background: #046963;
+    color: white;
+    border: 2px solid #046963;
+    padding: 10px 25px;
+    font-size: 16px;
+}
+
+.btn-continue-shopping:hover {
+    background: white;
+    color: #046963;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(4, 105, 99, 0.2);
+}
+
+/* Responsive Design for Empty Wishlist */
+@media (max-width: 768px) {
+    .empty-wishlist {
+        padding: 40px 15px;
+    }
+
+    .empty-wishlist-content .lead {
+        font-size: 16px;
+        padding: 0 10px;
+    }
+
+    .btn-continue-shopping {
+        padding: 8px 20px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .empty-wishlist {
+        padding: 30px 10px;
+    }
+
+    .empty-wishlist-content .lead {
+        font-size: 14px;
+    }
+
+    .btn-continue-shopping {
+        padding: 6px 15px;
+        font-size: 13px;
+    }
+}
 </style>
 
 <main class="main">
@@ -215,6 +274,7 @@ td[data-title="Add to Cart"] .btn-sm:hover {
                 <div class="col-12">
                     <div class="table-responsive">
                         <table class="table shopping-summery text-center clean">
+                            <% if (wishlist.length > 0) { %>
                             <thead>
                                 <tr class="main-heading">
                                     <th scope="col">Image</th>
@@ -224,9 +284,10 @@ td[data-title="Add to Cart"] .btn-sm:hover {
                                     <th scope="col">Remove</th>
                                 </tr>
                             </thead>
+                            <% } %>
                             <tbody>
-                                <%if (wishlist.length>0){%>
-                                    <%for(let product of wishlist){%>
+                                <% if (wishlist.length > 0) { %>
+                                    <% for(let product of wishlist) { %>
                                        <tr data-product-id="<%= product._id %>">
                                            <td class="image product-thumbnail">
                                                <img src="<%=product.productImage[0]%>" />
@@ -255,8 +316,19 @@ td[data-title="Add to Cart"] .btn-sm:hover {
                                                </a>
                                            </td>
                                        </tr>
-                                    <%}%>
-                                <%}%>
+                                    <% } %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="5" class="text-center empty-wishlist">
+                                            <div class="empty-wishlist-content">
+                                                <p class="lead mb-4">Your wishlist is empty</p>
+                                                <a href="/shop" class="btn btn-sm btn-continue-shopping">
+                                                    Continue Shopping
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>

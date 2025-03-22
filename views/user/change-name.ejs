@@ -1,327 +1,475 @@
+<%- include("../../views/partials/user/header") %>
+
 <style>
-.content-main {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 80px 0;
-}
-
-.card-login {
-    max-width: 500px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 15px 35px rgba(4, 105, 99, 0.1);
-    overflow: hidden;
-}
-
-.card-header {
-    background: #046963;
-    padding: 30px;
-    text-align: center;
-    border: none;
-    position: relative;
-    overflow: hidden;
-}
-
-.card-header::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 150px;
-    height: 150px;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    transform: translate(50%, 50%);
-}
-
-.card-title {
-    color: white;
-    font-size: 2.2rem;
-    font-weight: 600;
-    margin: 0;
-    letter-spacing: 1px;
-}
-
-.card-body {
-    padding: 40px;
-}
-
-.form-group {
-    margin-bottom: 25px;
-    position: relative;
-}
-
-.form-label {
-    font-weight: 500;
-    color: #046963;
-    margin-bottom: 10px;
-    display: block;
-    font-size: 0.95rem;
-    letter-spacing: 0.5px;
-}
-
-.form-control {
-    height: 55px;
-    padding: 12px 15px;
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background: #f8f9fa;
-}
-
-.form-control:focus {
-    border-color: #046963;
-    box-shadow: 0 0 0 0.2rem rgba(4, 105, 99, 0.15);
-    background: white;
-}
-
-.error-message {
-    color: #dc3545;
-    font-size: 0.875rem;
-    margin-top: 8px;
-    display: none;
-    padding-left: 5px;
-}
-
-.btn-primary {
-    width: 100%;
-    height: 55px;
-    background: #046963;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-    margin-top: 30px;
-    letter-spacing: 1px;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-primary:hover {
-    background: #035750;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(4, 105, 99, 0.3);
-}
-
-.btn-primary:active {
-    transform: translateY(0);
-}
-
-.alert {
-    border-radius: 10px;
-    padding: 18px 20px;
-    margin-bottom: 25px;
-    border: none;
-    font-weight: 500;
-    position: relative;
-    overflow: hidden;
-}
-
-.alert-danger {
-    background-color: #fff5f5;
-    color: #dc3545;
-    border-left: 4px solid #dc3545;
-}
-
-.alert-success {
-    background-color: #f0fff4;
-    color: #046963;
-    border-left: 4px solid #046963;
-}
-
-.input-icon {
-    position: absolute;
-    right: 15px;
-    top: 48px;
-    color: #046963;
-    opacity: 0.7;
-    transition: all 0.3s ease;
-}
-
-.form-control:focus + .input-icon {
-    opacity: 1;
-    transform: scale(1.1);
-}
-
-.input-group {
-    position: relative;
-}
-
-/* Animation for form elements */
-.form-group {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.5s forwards;
-}
-
-.form-group:nth-child(2) {
-    animation-delay: 0.1s;
-}
-
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .content-main {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 80px 0;
     }
-}
-
-/* Responsive adjustments */
-@media (max-width: 576px) {
+    
     .card-login {
-        margin: 0 15px;
+        max-width: 500px;
+        margin: 0 auto;
+        background: linear-gradient(145deg, #ffffff, #f8fafc);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(4, 105, 99, 0.15);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+    
+    .card-login:hover {
+        transform: translateY(-5px);
     }
     
     .card-header {
-        padding: 25px;
+        background: linear-gradient(90deg, #046963, #03413c);
+        padding: 35px;
+        text-align: center;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .card-header::after {
+        content: '';
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        transform: skewY(-3deg);
+        animation: wave 3s infinite ease-in-out;
+    }
+    
+    @keyframes wave {
+        0%, 100% { transform: skewY(-3deg) translateY(0); }
+        50% { transform: skewY(3deg) translateY(-10px); }
     }
     
     .card-title {
-        font-size: 1.8rem;
+        color: white;
+        font-size: 2.4rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     
     .card-body {
-        padding: 30px 20px;
+        padding: 45px;
     }
-}
-</style>
-
-<div class="content-main">
-    <div class="container">
-        <div class="card-login">
-            <div class="card-header">
-                <h2 class="card-title">Change Name</h2>
-            </div>
-            <div class="card-body">
-                <form action="/changeName" method="POST" onsubmit="return validateForm()">
-                    <% if (message.error) { %>
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-circle mr-2"></i>
-                            <%= message.error %>
+    
+    .form-group {
+        margin-bottom: 30px;
+        position: relative;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #046963;
+        margin-bottom: 12px;
+        display: block;
+        font-size: 1rem;
+        letter-spacing: 0.75px;
+    }
+    
+    .form-control {
+        height: 60px;
+        padding: 15px 20px;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        width: 100%;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-control:focus {
+        border-color: #046963;
+        box-shadow: 0 0 0 0.25rem rgba(4, 105, 99, 0.2), 0 5px 15px rgba(4, 105, 99, 0.1);
+        background: white;
+    }
+    
+    .error-message {
+        color: #dc3545;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        display: none;
+        padding-left: 5px;
+        font-style: italic;
+    }
+    
+    .btn-primary {
+        width: 100%;
+        height: 60px;
+        background: linear-gradient(90deg, #046963, #035750);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-weight: 700;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        margin-top: 35px;
+        letter-spacing: 1.5px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 5px 15px rgba(4, 105, 99, 0.2);
+    }
+    
+    .btn-primary::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+    }
+    
+    .btn-primary:hover::after {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .btn-primary:hover {
+        background: #035750;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(4, 105, 99, 0.4);
+    }
+    
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+    
+    .alert {
+        border-radius: 12px;
+        padding: 20px 25px;
+        margin-bottom: 30px;
+        border: none;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .alert-danger {
+        background-color: #fff5f5;
+        color: #dc3545;
+        border-left: 5px solid #dc3545;
+    }
+    
+    .alert-success {
+        background-color: #f0fff4;
+        color: #046963;
+        border-left: 5px solid #046963;
+    }
+    
+    .input-icon {
+        position: absolute;
+        right: 20px;
+        top: 50px;
+        color: #046963;
+        opacity: 0.8;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus + .input-icon {
+        opacity: 1;
+        transform: scale(1.15);
+    }
+    
+    .input-group {
+        position: relative;
+    }
+    
+    /* Animation for form elements */
+    .form-group {
+        opacity: 0;
+        transform: translateY(25px);
+        animation: fadeInUp 0.6s forwards;
+    }
+    
+    .form-group:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .content-main {
+            padding: 60px 0;
+        }
+    
+        .card-login {
+            max-width: 480px;
+            margin: 0 25px;
+        }
+    
+        .card-header {
+            padding: 30px;
+        }
+    
+        .card-title {
+            font-size: 2.2rem;
+        }
+    
+        .card-body {
+            padding: 35px;
+        }
+    
+        .form-control {
+            height: 55px;
+            font-size: 1rem;
+        }
+    
+        .input-icon {
+            top: 45px;
+        }
+    
+        .btn-primary {
+            height: 55px;
+            font-size: 1.1rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .content-main {
+            padding: 50px 0;
+        }
+    
+        .card-login {
+            max-width: 90%; /* Increased size for mobile */
+            margin: 0 20px;
+            border-radius: 15px;
+        }
+    
+        .card-header {
+            padding: 25px;
+        }
+    
+        .card-title {
+            font-size: 2rem;
+        }
+    
+        .card-body {
+            padding: 30px; /* Larger padding for mobile */
+        }
+    
+        .form-group {
+            margin-bottom: 25px;
+        }
+    
+        .form-label {
+            font-size: 0.95rem;
+        }
+    
+        .form-control {
+            height: 50px;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+        }
+    
+        .input-icon {
+            top: 40px;
+            right: 15px;
+            font-size: 1.1rem;
+        }
+    
+        .btn-primary {
+            height: 50px;
+            font-size: 1rem;
+            margin-top: 25px;
+        }
+    
+        .alert {
+            padding: 18px 20px;
+            font-size: 0.95rem;
+        }
+    
+        .error-message {
+            font-size: 0.85rem;
+        }
+    }
+    
+    @media (max-width: 400px) {
+        .card-login {
+            max-width: 95%; /* Even larger for small screens */
+            margin: 0 10px;
+        }
+    
+        .card-header {
+            padding: 20px;
+        }
+    
+        .card-title {
+            font-size: 1.8rem;
+        }
+    
+        .card-body {
+            padding: 25px;
+        }
+    
+        .form-control {
+            height: 45px;
+            font-size: 0.9rem;
+        }
+    
+        .input-icon {
+            top: 36px;
+            font-size: 1rem;
+        }
+    
+        .btn-primary {
+            height: 45px;
+            font-size: 0.95rem;
+        }
+    }
+    </style>
+    
+    <div class="content-main">
+        <div class="container">
+            <div class="card-login">
+                <div class="card-header">
+                    <h2 class="card-title">Change Name</h2>
+                </div>
+                <div class="card-body">
+                    <form action="/changeName" method="POST" onsubmit="return validateForm()">
+                        <% if (message.error) { %>
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-circle mr-2"></i>
+                                <%= message.error %>
+                            </div>
+                        <% } %>
+                        <% if (message.success) { %>
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                <%= message.success %>
+                            </div>
+                        <% } %>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="newName">New Name</label>
+                            <div class="input-group">
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="newName" 
+                                       name="newName" 
+                                       required
+                                       minlength="2"
+                                       maxlength="50"
+                                       pattern="[A-Za-z\s]+"
+                                       title="Please enter a valid name (letters and spaces only)">
+                                <i class="fas fa-user input-icon"></i>
+                            </div>
+                            <div class="error-message" id="newNameError"></div>
                         </div>
-                    <% } %>
-                    <% if (message.success) { %>
-                        <div class="alert alert-success">
-                            <i class="fas fa-check-circle mr-2"></i>
-                            <%= message.success %>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="reNewName">Confirm New Name</label>
+                            <div class="input-group">
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="reNewName" 
+                                       name="reNewName" 
+                                       required>
+                                <i class="fas fa-check input-icon"></i>
+                            </div>
+                            <div class="error-message" id="reNewNameError"></div>
                         </div>
-                    <% } %>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="newName">New Name</label>
-                        <div class="input-group">
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="newName" 
-                                   name="newName" 
-                                   required
-                                   minlength="2"
-                                   maxlength="50"
-                                   pattern="[A-Za-z\s]+"
-                                   title="Please enter a valid name (letters and spaces only)">
-                            <i class="fas fa-user input-icon"></i>
-                        </div>
-                        <div class="error-message" id="newNameError"></div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="reNewName">Confirm New Name</label>
-                        <div class="input-group">
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="reNewName" 
-                                   name="reNewName" 
-                                   required>
-                            <i class="fas fa-check input-icon"></i>
-                        </div>
-                        <div class="error-message" id="reNewNameError"></div>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary">
-                        Update Name
-                        <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
-                </form>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            Update Name
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<script>
-function validateForm() {
-    const newName = document.getElementById('newName');
-    const reNewName = document.getElementById('reNewName');
-    const newNameError = document.getElementById('newNameError');
-    const reNewNameError = document.getElementById('reNewNameError');
     
-    let isValid = true;
-    
-    // Reset error messages
-    newNameError.style.display = 'none';
-    reNewNameError.style.display = 'none';
-    
-    // Name validation
-    const nameRegex = /^[A-Za-z\s]+$/;
-    if (!nameRegex.test(newName.value)) {
-        newNameError.textContent = 'Please enter a valid name (letters and spaces only)';
-        newNameError.style.display = 'block';
-        isValid = false;
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    function validateForm() {
+        const newName = document.getElementById('newName');
+        const reNewName = document.getElementById('reNewName');
+        const newNameError = document.getElementById('newNameError');
+        const reNewNameError = document.getElementById('reNewNameError');
+        
+        let isValid = true;
+        
+        newNameError.style.display = 'none';
+        reNewNameError.style.display = 'none';
+        
+        const nameRegex = /^[A-Za-z\s]+$/;
+        if (!nameRegex.test(newName.value)) {
+            newNameError.textContent = 'Please enter a valid name (letters and spaces only)';
+            newNameError.style.display = 'block';
+            isValid = false;
+        }
+        
+        if (newName.value.length < 2) {
+            newNameError.textContent = 'Name must be at least 2 characters long';
+            newNameError.style.display = 'block';
+            isValid = false;
+        }
+        
+        if (newName.value !== reNewName.value) {
+            reNewNameError.textContent = 'Names do not match';
+            reNewNameError.style.display = 'block';
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please check the form and try again',
+                confirmButtonColor: '#046963'
+            });
+        }
+        
+        return isValid;
     }
     
-    if (newName.value.length < 2) {
-        newNameError.textContent = 'Name must be at least 2 characters long';
-        newNameError.style.display = 'block';
-        isValid = false;
-    }
+    document.getElementById('newName').addEventListener('input', function() {
+        const nameRegex = /^[A-Za-z\s]+$/;
+        const error = document.getElementById('newNameError');
+        
+        if (!nameRegex.test(this.value)) {
+            error.textContent = 'Please enter a valid name (letters and spaces only)';
+            error.style.display = 'block';
+        } else {
+            error.style.display = 'none';
+        }
+    });
     
-    // Name match validation
-    if (newName.value !== reNewName.value) {
-        reNewNameError.textContent = 'Names do not match';
-        reNewNameError.style.display = 'block';
-        isValid = false;
-    }
-    
-    if (!isValid) {
-        // Show error using SweetAlert
-        Swal.fire({
-            icon: 'error',
-            title: 'Validation Error',
-            text: 'Please check the form and try again',
-            confirmButtonColor: '#046963'
-        });
-    }
-    
-    return isValid;
-}
-
-// Real-time validation
-document.getElementById('newName').addEventListener('input', function() {
-    const nameRegex = /^[A-Za-z\s]+$/;
-    const error = document.getElementById('newNameError');
-    
-    if (!nameRegex.test(this.value)) {
-        error.textContent = 'Please enter a valid name (letters and spaces only)';
-        error.style.display = 'block';
-    } else {
-        error.style.display = 'none';
-    }
-});
-
-document.getElementById('reNewName').addEventListener('input', function() {
-    const error = document.getElementById('reNewNameError');
-    const newName = document.getElementById('newName').value;
-    
-    if (this.value !== newName) {
-        error.textContent = 'Names do not match';
-        error.style.display = 'block';
-    } else {
-        error.style.display = 'none';
-    }
-});
-</script>
-
-
-
-
+    document.getElementById('reNewName').addEventListener('input', function() {
+        const error = document.getElementById('reNewNameError');
+        const newName = document.getElementById('newName').value;
+        
+        if (this.value !== newName) {
+            error.textContent = 'Names do not match';
+            error.style.display = 'block';
+        } else {
+            error.style.display = 'none';
+        }
+    });
+    </script>
+    <%- include("../../views/partials/user/footer") %>

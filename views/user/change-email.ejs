@@ -1,46 +1,406 @@
 <%- include("../../views/partials/user/header") %>
-<section class="content-main mt-80 mb-80">
-   <div class="card mx-auto card-login col-4">
-       <div class="card-body">
-           <h4 class="card-title mb-4">Enter Current Email</h4>
-           <form method="post" action="/change-email" onsubmit="return validateLoginForm()">
-               <div class="mb-3">
-                   <input class="form-control" name="email" placeholder="Email" type="text" id="email">
-                   <div class="error-message" id="email-error"></div>
-               </div>
-               <div class="mb-4">
-                   <button type="submit" class="btn btn-primary w-100">Verify</button>
-               </div>
-           </form>
-         
-         
-       </div>
-   </div>
+
+<style>
+.content-main {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 80px 0;
+}
+
+.card-login {
+    max-width: 500px;
+    margin: 0 auto;
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(4, 105, 99, 0.15);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card-login:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    background: linear-gradient(90deg, #046963, #03413c);
+    padding: 35px;
+    text-align: center;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-header::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    transform: skewY(-3deg);
+    animation: wave 3s infinite ease-in-out;
+}
+
+@keyframes wave {
+    0%, 100% { transform: skewY(-3deg) translateY(0); }
+    50% { transform: skewY(3deg) translateY(-10px); }
+}
+
+.card-title {
+    color: white;
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    padding: 45px;
+}
+
+.form-group {
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #046963;
+    margin-bottom: 12px;
+    display: block;
+    font-size: 1rem;
+    letter-spacing: 0.75px;
+}
+
+.form-control {
+    height: 60px;
+    padding: 15px 20px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    width: 100%;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.form-control:focus {
+    border-color: #046963;
+    box-shadow: 0 0 0 0.25rem rgba(4, 105, 99, 0.2), 0 5px 15px rgba(4, 105, 99, 0.1);
+    background: white;
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    display: none;
+    padding-left: 5px;
+    font-style: italic;
+}
+
+.btn-primary {
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(90deg, #046963, #035750);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    margin-top: 35px;
+    letter-spacing: 1.5px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 5px 15px rgba(4, 105, 99, 0.2);
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-primary:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary:hover {
+    background: #035750;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(4, 105, 99, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.input-icon {
+    position: absolute;
+    right: 20px;
+    top: 50px;
+    color: #046963;
+    opacity: 0.8;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus + .input-icon {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+.input-group {
+    position: relative;
+}
+
+/* Animation for form elements */
+.form-group {
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInUp 0.6s forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .content-main {
+        padding: 60px 0;
+    }
+
+    .card-login {
+        max-width: 480px;
+        margin: 0 25px;
+    }
+
+    .card-header {
+        padding: 30px;
+    }
+
+    .card-title {
+        font-size: 2.2rem;
+    }
+
+    .card-body {
+        padding: 35px;
+    }
+
+    .form-control {
+        height: 55px;
+        font-size: 1rem;
+    }
+
+    .input-icon {
+        top: 45px;
+    }
+
+    .btn-primary {
+        height: 55px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .content-main {
+        padding: 50px 0;
+    }
+
+    .card-login {
+        max-width: 90%; /* Larger card on mobile */
+        margin: 0 20px;
+        border-radius: 15px;
+    }
+
+    .card-header {
+        padding: 25px;
+    }
+
+    .card-title {
+        font-size: 2rem;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        height: 50px;
+        padding: 12px 15px;
+        font-size: 0.95rem;
+    }
+
+    .input-icon {
+        top: 40px;
+        right: 15px;
+        font-size: 1.1rem;
+    }
+
+    .btn-primary {
+        height: 50px;
+        font-size: 1rem;
+        margin-top: 25px;
+    }
+
+    .error-message {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .card-login {
+        max-width: 95%; /* Even larger for small screens */
+        margin: 0 10px;
+    }
+
+    .card-header {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.8rem;
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .form-control {
+        height: 45px;
+        font-size: 0.9rem;
+    }
+
+    .input-icon {
+        top: 36px;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        height: 45px;
+        font-size: 0.95rem;
+    }
+}
+</style>
+
+<section class="content-main">
+    <div class="container">
+        <div class="card-login">
+            <div class="card-header">
+                <h2 class="card-title">Change Email</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" action="/change-email" onsubmit="return validateLoginForm()">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Current Email</label>
+                        <div class="input-group">
+                            <input class="form-control" 
+                                   name="email" 
+                                   placeholder="Enter your email" 
+                                   type="email" 
+                                   id="email" 
+                                   required>
+                            <i class="fas fa-envelope input-icon"></i>
+                        </div>
+                        <div class="error-message" id="email-error"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Verify
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-   function validateLoginForm() {
-       const emailInput = document.getElementById('email');
-       const emailError = document.getElementById('email-error');
-       const emailValue = emailInput.value.trim();
-       const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+function validateLoginForm() {
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('email-error');
+    const emailValue = emailInput.value.trim();
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
+    let isValid = true;
 
-       if (emailValue === '') {
-           emailError.textContent = 'Please enter your email.';
-           emailInput.classList.add('is-invalid');
-           return false;
-       } else if (!emailValue.match(emailPattern)) {
-           emailError.textContent = 'Please enter a valid email address';
-           emailInput.classList.add('is-invalid');
-           return false;
-       } else {
-           emailError.textContent = '';
-           emailInput.classList.remove('is-invalid');
-           return true;
-       }
-   }
+    emailError.style.display = 'none';
+    emailInput.classList.remove('is-invalid');
+
+    if (emailValue === '') {
+        emailError.textContent = 'Please enter your email.';
+        emailError.style.display = 'block';
+        emailInput.classList.add('is-invalid');
+        isValid = false;
+    } else if (!emailPattern.test(emailValue)) {
+        emailError.textContent = 'Please enter a valid email address.';
+        emailError.style.display = 'block';
+        emailInput.classList.add('is-invalid');
+        isValid = false;
+    }
+
+    if (!isValid) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Please enter a valid email address',
+            confirmButtonColor: '#046963'
+        });
+    }
+
+    return isValid;
+}
+
+document.getElementById('email').addEventListener('input', function() {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    const emailError = document.getElementById('email-error');
+    const emailValue = this.value.trim();
+
+    if (emailValue === '') {
+        emailError.textContent = 'Please enter your email.';
+        emailError.style.display = 'block';
+        this.classList.add('is-invalid');
+    } else if (!emailPattern.test(emailValue)) {
+        emailError.textContent = 'Please enter a valid email address.';
+        emailError.style.display = 'block';
+        this.classList.add('is-invalid');
+    } else {
+        emailError.style.display = 'none';
+        this.classList.remove('is-invalid');
+    }
+});
 </script>
+
 <%- include("../../views/partials/user/footer") %>
-
-
-

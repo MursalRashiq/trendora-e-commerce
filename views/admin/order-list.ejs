@@ -2,114 +2,266 @@
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <style>
     body {
         font-family: 'Poppins', sans-serif;
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         color: #333;
+        margin: 0;
+        overflow-x: hidden;
+        display: flex;
+        min-height: 100vh;
     }
 
-    .content-main {
-        padding: 40px;
-        margin-top: 30px;
-        max-width: 1400px;
-        margin-left: auto;
-        margin-right: auto;
-        animation: fadeIn 0.5s ease-in;
+    .dashboard-container {
+        flex: 1;
+        margin-left: 250px;
+        width: calc(100% - 250px);
+        transition: margin-left 0.3s ease, width 0.3s ease;
+    }
+
+    .main-content {
+        background: #fff;
+        padding: clamp(1rem, 3vw, 2rem);
+        width: 100%;
+        overflow-x: hidden;
+        padding-top: 70px;
+        border-radius: 15px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        min-height: calc(100vh - 70px);
     }
 
     .content-header {
-        margin-bottom: 30px;
+        margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
         text-align: center;
     }
 
     .content-title {
-        font-size: 2rem;
-        color: #1a3c63;
-        padding-bottom: 15px;
-        border-bottom: 3px solid #3498db;
-        display: inline-block;
-        font-weight: 600;
-        letter-spacing: 1px;
+        font-size: clamp(1.5rem, 5vw, 2.2rem);
+        color: #34495e;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        background: linear-gradient(90deg, #1abc9c, #34495e);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
-    .filter-container {
+    .filter-trigger {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-        padding: 20px;
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        margin: 30px auto;
-        max-width: 1100px;
-        transition: transform 0.3s ease;
+        justify-content: flex-end;
+        padding: clamp(10px, 2vw, 15px);
     }
 
-    .filter-container:hover {
-        transform: translateY(-5px);
-    }
-
-    .filter-form {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        align-items: center;
-        width: 100%;
-    }
-
-    .search-input, .filter-select, .filter-date {
-        flex: 1;
-        padding: 12px 18px;
-        border: 2px solid #e0e0e0;
+    .filter-btn {
+        background: linear-gradient(45deg, #1abc9c, #16a085);
+        color: white;
+        border: none;
+        padding: clamp(6px, 1.5vw, 10px) clamp(10px, 2vw, 15px);
         border-radius: 8px;
-        outline: none;
-        font-size: 14px;
-        min-width: 180px;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        background: #f9f9f9;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(26, 188, 156, 0.3);
     }
 
-    .search-input:focus, .filter-select:focus, .filter-date:focus {
-        border-color: #3498db;
-        box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+    .filter-btn:hover {
+        background: linear-gradient(45deg, #16a085, #1abc9c);
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px rgba(26, 188, 156, 0.5);
+    }
+
+    .filter-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Black transparent backdrop */
+        z-index: 1000;
+        overflow: hidden;
+    }
+
+    .filter-modal-content {
+        position: absolute;
+        top: 0;
+        right: -50%; /* Start off-screen to the right */
+        width: 50%; /* Half the page width */
+        height: 100%; /* Full height */
+        background: linear-gradient(135deg, #ffffff, #f9fbfc);
+        padding: clamp(15px, 3vw, 20px);
+        border-radius: 12px 0 0 12px; /* Rounded on the left side */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow-y: auto;
+        transition: right 0.4s ease-in-out;
+    }
+
+    .filter-modal.open .filter-modal-content {
+        right: 0; /* Slide in from the right */
+    }
+
+    .filter-modal-content h3 {
+        font-size: clamp(1.2rem, 3vw, 1.5rem);
+        color: #34495e;
+        margin-bottom: clamp(15px, 3vw, 20px);
+        border-bottom: 2px solid #1abc9c;
+        padding-bottom: 5px;
+    }
+
+    .filter-group {
+        margin-bottom: clamp(15px, 3vw, 20px);
+    }
+
+    .filter-group label {
+        font-weight: 500;
+        color: #34495e;
+        margin-bottom: 0.5rem;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        display: block;
+    }
+
+    .filter-group input, .filter-group select {
+        width: 100%;
+        padding: clamp(8px, 2vw, 12px);
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        transition: all 0.3s ease;
         background: #fff;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
     }
 
-    .table-container {
-        background: #ffffff;
+    .filter-group input:focus, .filter-group select:focus {
+        border-color: #1abc9c;
+        box-shadow: 0 0 8px rgba(26, 188, 156, 0.4);
+        outline: none;
+    }
+
+    .time-modal-trigger {
+        cursor: pointer;
+        color: #1abc9c;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: clamp(5px, 1vw, 10px);
+        border: 1px dashed #1abc9c;
+        border-radius: 5px;
+        transition: background 0.3s ease;
+    }
+
+    .time-modal-trigger:hover {
+        background: rgba(26, 188, 156, 0.1);
+    }
+
+    .time-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1100;
+    }
+
+    .time-modal-content {
+        background: #fff;
+        padding: clamp(15px, 3vw, 20px);
         border-radius: 12px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        margin-top: 30px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        border-top: 4px solid #1abc9c;
+    }
+
+    .time-modal-content h4 {
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        color: #34495e;
+        margin-bottom: clamp(10px, 2vw, 15px);
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: clamp(0.5rem, 1.5vw, 1rem);
+        justify-content: flex-end;
+        margin-top: clamp(15px, 3vw, 20px);
+    }
+
+    .btn-modal {
+        padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 12px);
+        border-radius: 8px;
+        border: none;
+        color: white;
+        font-weight: 600;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-apply {
+        background: linear-gradient(45deg, #1abc9c, #16a085);
+    }
+
+    .btn-apply:hover {
+        background: linear-gradient(45deg, #16a085, #1abc9c);
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(26, 188, 156, 0.4);
+    }
+
+    .btn-cancel {
+        background: #6b7280;
+    }
+
+    .btn-cancel:hover {
+        background: #4a5568;
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
+    }
+
+    /* Table and other styles remain unchanged */
+    .table-container {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin: clamp(20px, 4vw, 30px) auto;
         overflow-x: auto;
-        padding: 20px;
+        padding: clamp(15px, 3vw, 20px);
     }
 
     .table {
         width: 100%;
         margin-bottom: 0;
         border-collapse: separate;
-        border-spacing: 0 10px;
+        border-spacing: 0 clamp(5px, 1vw, 10px);
     }
 
     .table th {
         background: linear-gradient(90deg, #3498db, #2980b9);
         color: #fff;
-        padding: 15px 20px;
+        padding: clamp(10px, 2vw, 15px) clamp(15px, 3vw, 20px);
         font-weight: 500;
         text-align: left;
         text-transform: uppercase;
         letter-spacing: 1px;
+        font-size: clamp(0.85rem, 2vw, 1rem);
     }
 
     .table td {
-        padding: 15px 20px;
+        padding: clamp(10px, 2vw, 15px) clamp(15px, 3vw, 20px);
         vertical-align: middle;
         background: #fafafa;
         border-bottom: none;
         transition: background 0.3s ease;
+        font-size: clamp(0.85rem, 2vw, 1rem);
     }
 
     .table tr:hover td {
@@ -117,19 +269,21 @@
     }
 
     .btn-view {
-        padding: 10px 20px;
+        padding: clamp(6px, 1.5vw, 10px) clamp(10px, 2vw, 20px);
         background: linear-gradient(90deg, #2ecc71, #27ae60);
         color: white;
         border-radius: 8px;
         text-decoration: none;
+        font-weight: 600;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        transition: all 0.3s ease;
         display: inline-block;
-        font-weight: 500;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .btn-view:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+        background: linear-gradient(90deg, #27ae60, #2ecc71);
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
         color: white;
     }
 
@@ -137,26 +291,27 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 10px;
-        margin-top: 30px;
+        gap: clamp(0.5rem, 1.5vw, 1rem);
+        margin-top: clamp(20px, 4vw, 30px);
         padding: 0;
         list-style: none;
+        flex-wrap: wrap;
     }
 
     .page-link {
-        padding: 8px 15px;
+        padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 12px);
         background: #3498db;
         color: white;
-        border-radius: 6px;
+        border-radius: 8px;
         text-decoration: none;
-        font-size: 14px;
-        font-weight: 500;
-        transition: background 0.3s ease, transform 0.3s ease;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        font-weight: 600;
+        transition: all 0.3s ease;
     }
 
     .page-link:hover {
         background: #2980b9;
-        transform: translateY(-2px);
+        transform: scale(1.05);
         color: white;
     }
 
@@ -165,174 +320,304 @@
         cursor: not-allowed;
         transform: none;
         opacity: 0.7;
-        pointer-events: none; /* Prevents clicking when disabled */
+        pointer-events: none;
     }
 
     .page-current {
-        padding: 8px 15px;
+        padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 12px);
         background: #1a3c63;
         color: white;
-        border-radius: 6px;
-        font-size: 14px;
-        font-weight: 500;
-    }
-
-    .btn-primary {
-        background: linear-gradient(90deg, #3498db, #2980b9);
-        border: none;
-        padding: 12px 25px;
-        color: white;
         border-radius: 8px;
-        cursor: pointer;
-        font-weight: 500;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        font-weight: 600;
     }
 
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-    }
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+        .dashboard-container {
+            margin-left: 70px;
+            width: calc(100% - 70px);
+            position: relative;
+            left: 0;
+        }
 
-    .btn-secondary {
-        background: linear-gradient(90deg, #95a5a6, #7f8c8d);
-        border: none;
-        padding: 12px 25px;
-        color: white;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 500;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .btn-secondary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(149, 165, 166, 0.4);
+        .main-content {
+            padding: clamp(0.75rem, 2vw, 1.5rem);
+        }
     }
 
     @media (max-width: 768px) {
-        .content-main {
-            padding: 20px;
+        .main-content {
+            padding: clamp(0.5rem, 1.5vw, 1rem);
         }
 
-        .filter-container {
-            padding: 15px;
-            max-width: 100%;
+        .content-title {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
         }
 
-        .search-input, .filter-select, .filter-date {
-            min-width: 100%;
+        .filter-modal-content {
+            width: 70%; /* Slightly wider on smaller screens */
         }
 
-        .table td, .table th {
-            padding: 12px 15px;
+        .table {
+            display: block;
+            border-spacing: 0;
+        }
+
+        .table thead {
+            display: none;
+        }
+
+        .table tbody, .table tr, .table td {
+            display: block;
+            width: 100%;
+        }
+
+        .table tr {
+            margin-bottom: clamp(10px, 2vw, 15px);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            background: #fafafa;
+        }
+
+        .table td {
+            padding: clamp(8px, 1.5vw, 10px);
+            position: relative;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .table td:last-child {
+            border-bottom: none;
+        }
+
+        .table td::before {
+            content: attr(data-label);
+            font-weight: 500;
+            color: #34495e;
+            display: block;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .main-content {
+            padding: clamp(0.5rem, 1vw, 0.75rem);
+            border-radius: 8px;
+        }
+
+        .filter-modal-content {
+            width: 90%; /* Almost full width on very small screens */
+            border-radius: 8px;
+        }
+
+        .time-modal-content {
+            width: 95%;
+            padding: clamp(0.5rem, 1vw, 0.75rem);
+        }
+
+        .filter-btn, .btn-modal {
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
+            padding: clamp(6px, 1.5vw, 10px);
         }
 
         .pagination {
-            gap: 8px;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .page-link, .page-current {
+            width: 100%;
+            text-align: center;
         }
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+    @media (min-width: 1200px) {
+        .main-content {
+            padding: clamp(2rem, 3vw, 2.5rem);
+        }
+
+        .content-title {
+            font-size: 2.2rem;
+        }
     }
 </style>
 
-<div class="content-main">
-    <div class="content-header">
-        <h2 class="content-title">Order Dashboard</h2>
-    </div>
+<div class="dashboard-container">
+    <div class="main-content">
+        <div class="content-header">
+            <h2 class="content-title">Order Dashboard</h2>
+        </div>
 
-    <div class="filter-container">
-        <form id="filterForm" action="/admin/orderList" method="get" class="filter-form">
-            <input type="text" name="search" class="search-input" placeholder="Search by Order ID or Customer" value="<%= search || '' %>">
-            <select name="status" class="filter-select">
-                <option value="">All Status</option>
-                <% ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'Return Request', 'Returned', 'Return Rejected', 'Failed'].forEach(s => { %>
-                    <option value="<%= s %>" <%= status === s ? 'selected' : '' %>><%= s %></option>
-                <% }) %>
-            </select>
-            <select name="payment" class="filter-select">
-                <option value="">All Payment Methods</option>
-                <% ['cod', 'razorpay', 'wallet'].forEach(p => { %>
-                    <option value="<%= p %>" <%= payment === p ? 'selected' : '' %>><%= p.charAt(0).toUpperCase() + p.slice(1) %></option>
-                <% }) %>
-            </select>
-            <input type="date" name="startDate" class="filter-date" value="<%= startDate || '' %>">
-            <input type="date" name="endDate" class="filter-date" value="<%= endDate || '' %>">
-            <button type="submit" class="btn btn-primary">Apply Filters</button>
-            <a href="/admin/orderList" class="btn btn-secondary">Reset</a>
-        </form>
-    </div>
+        <div class="filter-trigger">
+            <button class="filter-btn" id="openFilterModal">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+        </div>
 
-    <div class="table-container">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Customer Name</th>
-                    <th>Total Price</th>
-                    <th>Status</th>
-                    <th>Payment Method</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (orders && orders.length > 0) { %>
-                    <% orders.forEach(order => { %>
-                        <tr>
-                            <td><%= order.orderId %></td>
-                            <td><%= order.user && order.user.name ? order.user.name : 'N/A' %></td>
-                            <td>₹<%= order.finalAmound ? order.finalAmound.toFixed(2) : '0.00' %></td>
-                            <td><%= order.status || 'N/A' %></td>
-                            <td><%= order.payment || 'N/A' %></td>
-                            <td>
-                                <a href="/admin/orderDetailsAdmin?id=<%= order.orderId %>" class="btn-view">View</a>
-                            </td>
-                        </tr>
-                    <% }) %>
-                <% } else { %>
+        <div class="filter-modal" id="filterModal">
+            <div class="filter-modal-content">
+                <h3>Filter Orders</h3>
+                <form id="filterForm" action="/admin/orderList" method="get">
+                    <div class="filter-group">
+                        <label>Search</label>
+                        <input type="text" name="search" placeholder="Order ID or Customer" value="<%= search || '' %>">
+                    </div>
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <select name="status">
+                            <option value="">All Status</option>
+                            <% ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'Return Request', 'Returned', 'Return Rejected', 'Failed'].forEach(s => { %>
+                                <option value="<%= s %>" <%= status === s ? 'selected' : '' %>><%= s %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Payment Method</label>
+                        <select name="payment">
+                            <option value="">All Payment Methods</option>
+                            <% ['cod', 'razorpay', 'wallet'].forEach(p => { %>
+                                <option value="<%= p %>" <%= payment === p ? 'selected' : '' %>><%= p.charAt(0).toUpperCase() + p.slice(1) %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Time Range</label>
+                        <div class="time-modal-trigger" id="openTimeModal">
+                            <i class="fas fa-calendar-alt"></i> Select Date Range
+                        </div>
+                        <input type="hidden" name="startDate" id="startDate" value="<%= startDate || '' %>">
+                        <input type="hidden" name="endDate" id="endDate" value="<%= endDate || '' %>">
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn-modal btn-apply">Apply</button>
+                        <a href="/admin/orderList" class="btn-modal btn-cancel">Reset</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="time-modal" id="timeModal">
+            <div class="time-modal-content">
+                <h4>Select Date Range</h4>
+                <div class="filter-group">
+                    <label>Start Date</label>
+                    <input type="date" id="modalStartDate" value="<%= startDate || '' %>">
+                </div>
+                <div class="filter-group">
+                    <label>End Date</label>
+                    <input type="date" id="modalEndDate" value="<%= endDate || '' %>">
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn-modal btn-apply" id="applyTime">Apply</button>
+                    <button class="btn-modal btn-cancel" id="cancelTime">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td colspan="6" style="text-align: center; color: #7f8c8d; font-style: italic;">No orders found</td>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th>Payment Method</th>
+                        <th>Action</th>
                     </tr>
-                <% } %>
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    <% if (orders && orders.length > 0) { %>
+                        <% orders.forEach(order => { %>
+                            <tr>
+                                <td data-label="Order ID"><%= order.orderId %></td>
+                                <td data-label="Customer Name"><%= order.user && order.user.name ? order.user.name : 'N/A' %></td>
+                                <td data-label="Total Price">₹<%= order.finalAmound ? order.finalAmound.toFixed(2) : '0.00' %></td>
+                                <td data-label="Status"><%= order.status || 'N/A' %></td>
+                                <td data-label="Payment Method"><%= order.payment || 'N/A' %></td>
+                                <td data-label="Action">
+                                    <a href="/admin/orderDetailsAdmin?id=<%= order.orderId %>" class="btn-view">View</a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #7f8c8d; font-style: italic;">No orders found</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
 
-    <% if (totalPages > 1) { %>
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item">
-                    <a class="page-link <%= currentPage === 1 ? 'disabled' : '' %>" 
-                       href="<%= currentPage > 1 ? `?page=${currentPage - 1}&search=${search || ''}&status=${status || ''}&payment=${payment || ''}&startDate=${startDate || ''}&endDate=${endDate || ''}` : '#' %>">
-                        Previous
-                    </a>
-                </li>
-                <li class="page-item">
-                    <span class="page-current"><%= currentPage %> of <%= totalPages %></span>
-                </li>
-                <li class="page-item">
-                    <a class="page-link <%= currentPage === totalPages ? 'disabled' : '' %>" 
-                       href="<%= currentPage < totalPages ? `?page=${currentPage + 1}&search=${search || ''}&status=${status || ''}&payment=${payment || ''}&startDate=${startDate || ''}&endDate=${endDate || ''}` : '#' %>">
-                        Next
-                    </a>
-                </li>
-                <!-- <li class="page-item">
-                    <a class="page-link <%= currentPage === totalPages ? 'disabled' : '' %>" 
-                       href="<%= currentPage < totalPages ? `?page=${totalPages}&search=${search || ''}&status=${status || ''}&payment=${payment || ''}&startDate=${startDate || ''}&endDate=${endDate || ''}` : '#' %>">
-                        Last
-                    </a>
-                </li> -->
-            </ul>
-        </nav>
-    <% } %>
+        <% if (totalPages > 1) { %>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link <%= currentPage === 1 ? 'disabled' : '' %>" 
+                           href="<%= currentPage > 1 ? `?page=${currentPage - 1}&search=${search || ''}&status=${status || ''}&payment=${payment || ''}&startDate=${startDate || ''}&endDate=${endDate || ''}` : '#' %>">
+                            Previous
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <span class="page-current"><%= currentPage %> of <%= totalPages %></span>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link <%= currentPage === totalPages ? 'disabled' : '' %>" 
+                           href="<%= currentPage < totalPages ? `?page=${currentPage + 1}&search=${search || ''}&status=${status || ''}&payment=${payment || ''}&startDate=${startDate || ''}&endDate=${endDate || ''}` : '#' %>">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        <% } %>
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
 <script>
 $(document).ready(function () {
+    const filterModal = $('#filterModal');
+    const timeModal = $('#timeModal');
+    const openFilterModal = $('#openFilterModal');
+    const openTimeModal = $('#openTimeModal');
+    const applyTime = $('#applyTime');
+    const cancelTime = $('#cancelTime');
+
+    openFilterModal.on('click', function () {
+        filterModal.css('display', 'block');
+        setTimeout(() => filterModal.addClass('open'), 10); // Slight delay for animation
+    });
+
+    filterModal.on('click', function (e) {
+        if (e.target === this) {
+            filterModal.removeClass('open');
+            setTimeout(() => filterModal.css('display', 'none'), 400); // Match transition duration
+        }
+    });
+
+    openTimeModal.on('click', function () {
+        timeModal.fadeIn(300);
+    });
+
+    timeModal.on('click', function (e) {
+        if (e.target === this) timeModal.fadeOut(300);
+    });
+
+    applyTime.on('click', function () {
+        const startDate = $('#modalStartDate').val();
+        const endDate = $('#modalEndDate').val();
+        $('#startDate').val(startDate);
+        $('#endDate').val(endDate);
+        timeModal.fadeOut(300);
+    });
+
+    cancelTime.on('click', function () {
+        timeModal.fadeOut(300);
+    });
+
     $("#filterForm").on("submit", function (e) {
         e.preventDefault();
         const formData = $(this).serialize();

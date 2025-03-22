@@ -2,113 +2,149 @@
 <head>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: #f4f7fa;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #333;
+      margin: 0;
+      overflow-x: hidden;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .dashboard-container {
+      flex: 1;
+      margin-left: clamp(70px, 15vw, 250px);
+      width: calc(100% - clamp(70px, 15vw, 250px));
+      transition: margin-left 0.3s ease, width 0.3s ease;
+    }
+
+    .main-content {
+      background: #fff;
+      padding: clamp(0.5rem, 2vw, 2rem);
+      width: 100%;
+      overflow-x: hidden;
+      padding-top: clamp(50px, 10vw, 70px);
+      border-radius: clamp(8px, 2vw, 15px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      min-height: calc(100vh - clamp(50px, 10vw, 70px));
     }
 
     .content-header {
-      margin-top: 40px;
+      margin-top: clamp(20px, 5vw, 40px);
       text-align: center;
     }
 
     .content-title {
-      font-size: 2rem;
-      font-weight: 600;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
       color: #1a3c63;
-      letter-spacing: 1px;
+      letter-spacing: clamp(0.5px, 0.2vw, 1.5px);
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #1abc9c, #34495e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: clamp(10px, 2vw, 20px);
     }
 
     .card {
       border: none;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      background: #fff;
-      margin: 5% auto;
-      max-width: 1200px;
-      padding: 30px;
-      transition: transform 0.3s ease;
+      border-radius: clamp(10px, 2vw, 20px);
+      box-shadow: 0 clamp(5px, 1vw, 10px) clamp(15px, 3vw, 30px) rgba(0, 0, 0, 0.1);
+      background: linear-gradient(145deg, #ffffff, #f9fbfc);
+      margin: clamp(2%, 3vw, 5%) auto;
+      max-width: clamp(800px, 90vw, 1200px);
+      padding: clamp(15px, 3vw, 30px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       animation: fadeIn 0.8s ease-in;
     }
 
     .card:hover {
-      transform: translateY(-5px);
+      transform: translateY(clamp(-2px, -0.5vw, -5px));
+      box-shadow: 0 clamp(7px, 1.5vw, 15px) clamp(20px, 4vw, 40px) rgba(0, 0, 0, 0.15);
     }
 
     .card-title {
-      font-size: 1.5rem;
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
       font-weight: 600;
       color: #088178;
-      margin-bottom: 20px;
+      margin-bottom: clamp(10px, 2vw, 20px);
+      border-bottom: 2px solid #1abc9c;
+      padding-bottom: clamp(3px, 0.5vw, 5px);
+      display: inline-block;
     }
 
     .card-body p {
-      font-size: 0.95rem;
+      font-size: clamp(0.85rem, 1.8vw, 1rem);
       color: #4a5568;
-      margin-bottom: 10px;
+      margin-bottom: clamp(6px, 1.5vw, 12px);
     }
 
     .card-body p strong {
       color: #1a3c63;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .row.mb-4 {
       background: #fafafa;
-      padding: 20px;
-      border-radius: 12px;
+      padding: clamp(10px, 2vw, 20px);
+      border-radius: clamp(6px, 1.5vw, 12px);
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
     }
 
     hr {
       border: 0;
-      height: 1px;
-      background: linear-gradient(to right, transparent, #e2e8f0, transparent);
-      margin: 30px 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, #1abc9c, transparent);
+      margin: clamp(15px, 3vw, 30px) 0;
     }
 
     .product-list h5 {
-      font-size: 1.25rem;
+      font-size: clamp(1.1rem, 2.2vw, 1.5rem);
       color: #1a3c63;
-      margin-bottom: 20px;
+      margin-bottom: clamp(10px, 2vw, 20px);
+      font-weight: 600;
     }
 
     .product-card {
       border: none;
-      border-radius: 15px;
-      padding: 25px;
-      margin-bottom: 30px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+      border-radius: clamp(8px, 1.5vw, 15px);
+      padding: clamp(15px, 3vw, 25px);
+      margin-bottom: clamp(15px, 3vw, 30px);
+      box-shadow: 0 clamp(3px, 0.8vw, 6px) clamp(10px, 2vw, 20px) rgba(0, 0, 0, 0.05);
       background: #fff;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       overflow: hidden;
     }
 
     .product-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+      transform: translateY(clamp(-4px, -1vw, -8px));
+      box-shadow: 0 clamp(6px, 1.2vw, 12px) clamp(15px, 3vw, 25px) rgba(0, 0, 0, 0.1);
     }
 
     .product-details {
       display: flex;
       flex-direction: row;
-      gap: 30px;
+      gap: clamp(15px, 3vw, 30px);
       align-items: center;
     }
 
     .product-image-container {
       flex-shrink: 0;
       position: relative;
-      border-radius: 10px;
+      border-radius: clamp(5px, 1vw, 10px);
       overflow: hidden;
       background: #f8f9fa;
+      padding: clamp(5px, 1vw, 10px);
     }
 
     .product-image {
-      width: 140px;
-      height: 140px;
+      width: clamp(80px, 15vw, 140px);
+      height: clamp(80px, 15vw, 140px);
       object-fit: cover;
-      border-radius: 10px;
+      border-radius: clamp(5px, 1vw, 10px);
       transition: transform 0.4s ease;
     }
 
@@ -116,44 +152,46 @@
       transform: scale(1.08);
     }
 
-    .product-info {
-      flex-grow: 1;
-    }
-
     .product-info h5 {
-      font-size: 1.2rem;
+      font-size: clamp(1rem, 2vw, 1.3rem);
       font-weight: 600;
       color: #333;
-      margin-bottom: 8px;
+      margin-bottom: clamp(5px, 1vw, 10px);
     }
 
     .product-meta {
       display: flex;
-      gap: 12px;
-      margin-bottom: 15px;
+      gap: clamp(6px, 1.5vw, 12px);
+      margin-bottom: clamp(8px, 1.5vw, 15px);
+      flex-wrap: wrap;
     }
 
     .meta-item {
-      font-size: 0.85rem;
+      font-size: clamp(0.75rem, 1.5vw, 0.9rem);
       color: #666;
       background: #eef2f7;
-      padding: 5px 12px;
-      border-radius: 20px;
+      padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 14px);
+      border-radius: clamp(10px, 2vw, 20px);
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: clamp(3px, 0.5vw, 5px);
+      transition: background 0.3s ease;
+    }
+
+    .meta-item:hover {
+      background: #e0f7fa;
     }
 
     .product-price-section {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 15px;
+      margin-top: clamp(8px, 1.5vw, 15px);
     }
 
     .price-box p {
-      margin: 6px 0;
-      font-size: 0.9rem;
+      margin: clamp(3px, 0.8vw, 6px) 0;
+      font-size: clamp(0.8rem, 1.5vw, 0.95rem);
       color: #4a5568;
     }
 
@@ -166,13 +204,18 @@
     }
 
     .status-badge {
-      padding: 8px 16px;
-      border-radius: 25px;
-      font-size: 0.8rem;
+      padding: clamp(5px, 1vw, 8px) clamp(10px, 2vw, 16px);
+      border-radius: clamp(15px, 3vw, 25px);
+      font-size: clamp(0.7rem, 1.3vw, 0.85rem);
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: clamp(0.3px, 0.1vw, 0.5px);
       display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    .status-badge:hover {
+      transform: scale(1.05);
     }
 
     .status-confirmed { background: #e3f2fd; color: #1565c0; }
@@ -184,198 +227,401 @@
 
     .action-buttons {
       display: flex;
-      gap: 12px;
-      margin-top: 20px;
+      gap: clamp(6px, 1.5vw, 12px);
+      margin-top: clamp(10px, 2vw, 20px);
       justify-content: flex-end;
+      flex-wrap: wrap;
     }
 
     .action-buttons .btn {
-      border-radius: 8px;
-      font-size: 0.75rem;
+      border-radius: clamp(5px, 1vw, 8px);
+      font-size: clamp(0.7rem, 1.3vw, 0.85rem);
       font-weight: 600;
-      padding: 10px 20px;
+      padding: clamp(6px, 1.5vw, 10px) clamp(12px, 2.5vw, 20px);
       text-transform: uppercase;
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: clamp(3px, 0.5vw, 6px);
+      color: white;
+      border: none;
     }
 
     .action-buttons .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(clamp(-1px, -0.3vw, -2px));
+      box-shadow: 0 clamp(2px, 0.5vw, 4px) clamp(6px, 1.5vw, 12px) rgba(0, 0, 0, 0.2);
     }
 
-    .btn-primary { background: #088178; border-color: #088178; }
-    .btn-primary:hover { background: #056b63; border-color: #056b63; }
-    .btn-warning { background: #ff8f00; border-color: #ff8f00; }
-    .btn-warning:hover { background: #e07b00; border-color: #e07b00; }
-    .btn-success { background: #2e7d32; border-color: #2e7d32; }
-    .btn-success:hover { background: #1b5e20; border-color: #1b5e20; }
-    .btn-danger { background: #c62828; border-color: #c62828; }
-    .btn-danger:hover { background: #b71c1c; border-color: #b71c1c; }
+    .btn-primary { background: linear-gradient(45deg, #088178, #056b63); }
+    .btn-primary:hover { background: linear-gradient(45deg, #056b63, #088178); }
+    .btn-warning { background: linear-gradient(45deg, #ff8f00, #e07b00); }
+    .btn-warning:hover { background: linear-gradient(45deg, #e07b00, #ff8f00); }
+    .btn-success { background: linear-gradient(45deg, #2e7d32, #1b5e20); }
+    .btn-success:hover { background: linear-gradient(45deg, #1b5e20, #2e7d32); }
+    .btn-danger { background: linear-gradient(45deg, #c62828, #b71c1c); }
+    .btn-danger:hover { background: linear-gradient(45deg, #b71c1c, #c62828); }
 
     .return-reason {
-      margin-top: 20px;
+      margin-top: clamp(10px, 2vw, 20px);
       background: #f8f9fa;
-      border-radius: 10px;
-      padding: 15px;
-      font-size: 0.9rem;
+      border-radius: clamp(5px, 1vw, 10px);
+      padding: clamp(8px, 1.5vw, 15px);
+      font-size: clamp(0.8rem, 1.5vw, 0.95rem);
       color: #666;
+      border-left: 4px solid #c62828;
     }
 
     .return-reason strong {
       color: #1a3c63;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .return-reason pre {
-      margin: 8px 0 0;
+      margin: clamp(4px, 1vw, 8px) 0 0;
       padding: 0;
       background: transparent;
       white-space: pre-wrap;
+      color: #4a5568;
     }
 
     .d-flex.justify-content-between {
-      padding: 20px;
+      padding: clamp(10px, 2vw, 20px);
       background: #fafafa;
-      border-radius: 12px;
+      border-radius: clamp(6px, 1.5vw, 12px);
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* Filter Modal Styles */
+    .filter-trigger {
+      display: flex;
+      justify-content: flex-end;
+      padding: clamp(5px, 1.5vw, 15px);
+    }
+
+    .filter-btn {
+      background: linear-gradient(45deg, #1abc9c, #16a085);
+      color: white;
+      border: none;
+      padding: clamp(4px, 1vw, 10px) clamp(6px, 1.5vw, 15px);
+      border-radius: clamp(5px, 1vw, 8px);
+      font-size: clamp(0.8rem, 1.5vw, 1rem);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: clamp(3px, 0.5vw, 5px);
+      transition: all 0.3s ease;
+      box-shadow: 0 clamp(1px, 0.3vw, 2px) clamp(5px, 1vw, 10px) rgba(26, 188, 156, 0.3);
+    }
+
+    .filter-btn:hover {
+      background: linear-gradient(45deg, #16a085, #1abc9c);
+      transform: scale(1.05);
+      box-shadow: 0 clamp(2px, 0.5vw, 4px) clamp(8px, 1.5vw, 15px) rgba(26, 188, 156, 0.5);
+    }
+
+    .filter-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .filter-modal-content {
+      position: absolute;
+      top: 0;
+      right: -50%;
+      width: clamp(40%, 50vw, 50%);
+      height: 100%;
+      background: linear-gradient(135deg, #ffffff, #f9fbfc);
+      padding: clamp(10px, 2vw, 20px);
+      border-radius: clamp(8px, 1.5vw, 12px) 0 0 clamp(8px, 1.5vw, 12px);
+      box-shadow: 0 clamp(5px, 1vw, 10px) clamp(15px, 3vw, 30px) rgba(0, 0, 0, 0.2);
+      overflow-y: auto;
+      transition: right 0.4s ease-in-out;
+    }
+
+    .filter-modal.open .filter-modal-content {
+      right: 0;
+    }
+
+    .filter-modal-content h3 {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      color: #34495e;
+      margin-bottom: clamp(10px, 2vw, 20px);
+      border-bottom: 2px solid #1abc9c;
+      padding-bottom: clamp(3px, 0.5vw, 5px);
+    }
+
+    .filter-group {
+      margin-bottom: clamp(10px, 2vw, 20px);
+    }
+
+    .filter-group label {
+      font-weight: 500;
+      color: #34495e;
+      margin-bottom: clamp(3px, 0.5vw, 0.5rem);
+      font-size: clamp(0.85rem, 1.5vw, 1rem);
+      display: block;
+    }
+
+    .filter-group input, .filter-group select {
+      width: 100%;
+      padding: clamp(5px, 1vw, 12px);
+      border: 1px solid #ced4da;
+      border-radius: clamp(5px, 1vw, 8px);
+      font-size: clamp(0.8rem, 1.5vw, 1rem);
+      transition: all 0.3s ease;
+      background: #fff;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-group input:focus, .filter-group select:focus {
+      border-color: #1abc9c;
+      box-shadow: 0 0 8px rgba(26, 188, 156, 0.4);
+      outline: none;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: clamp(5px, 1vw, 12px);
+      justify-content: flex-end;
+      margin-top: clamp(10px, 2vw, 20px);
+    }
+
+    .btn-modal {
+      padding: clamp(4px, 1vw, 8px) clamp(6px, 1.5vw, 12px);
+      border-radius: clamp(5px, 1vw, 8px);
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: clamp(0.75rem, 1.3vw, 0.95rem);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-apply {
+      background: linear-gradient(45deg, #1abc9c, #16a085);
+    }
+
+    .btn-apply:hover {
+      background: linear-gradient(45deg, #16a085, #1abc9c);
+      transform: scale(1.05);
+      box-shadow: 0 clamp(2px, 0.5vw, 4px) clamp(6px, 1.5vw, 12px) rgba(26, 188, 156, 0.4);
+    }
+
+    .btn-cancel {
+      background: #6b7280;
+    }
+
+    .btn-cancel:hover {
+      background: #4a5568;
+      transform: scale(1.05);
+      box-shadow: 0 clamp(2px, 0.5vw, 4px) clamp(6px, 1.5vw, 12px) rgba(107, 114, 128, 0.4);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+      .dashboard-container {
+        margin-left: clamp(50px, 10vw, 70px);
+        width: calc(100% - clamp(50px, 10vw, 70px));
+      }
+
+      .main-content {
+        padding: clamp(0.5rem, 1.5vw, 1.5rem);
+      }
+
+      .card { max-width: 90vw; }
     }
 
     @media (max-width: 768px) {
-      .card { margin: 3% auto; padding: 20px; }
       .product-details { flex-direction: column; align-items: flex-start; }
-      .product-image { width: 100px; height: 100px; }
-      .action-buttons { justify-content: flex-start; flex-wrap: wrap; }
+      .action-buttons { justify-content: flex-start; }
+      .filter-modal-content { width: clamp(60%, 70vw, 70%); }
+      .row.mb-4 { flex-direction: column; gap: clamp(10px, 2vw, 20px); }
+      .status-box { text-align: left; }
+    }
+
+    @media (max-width: 576px) {
+      .card { padding: clamp(10px, 2vw, 15px); }
+      .content-title { font-size: clamp(1.2rem, 3vw, 2rem); }
+      .filter-modal-content { width: clamp(80%, 90vw, 90%); border-radius: clamp(5px, 1vw, 8px); }
+      .filter-btn, .btn-modal { padding: clamp(4px, 1vw, 8px) clamp(6px, 1.5vw, 12px); }
+      .product-image { width: clamp(60px, 12vw, 100px); height: clamp(60px, 12vw, 100px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(clamp(10px, 2vw, 20px)); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <div class="content-header">
-    <h2 class="content-title card-title">Order Details</h2>
-  </div>
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">Order ID: <%= orders.orderId %></h5>
-
-      <div class="row mb-4">
-        <div class="col-md-6">
-          <p><strong>Customer Name:</strong> <%= orders.user.name %></p>
-          <p><strong>Address:</strong> <%= orders.address.type %>, <%= orders.address.city %>, <%= orders.address.state %>, <%= orders.address.pincode %></p>
-          <p><strong>Payment Method:</strong> <%= orders.payment %></p>
-          <p><strong>Status:</strong> <span class="status-badge status-<%= orders.status.toLowerCase() %>"><%= orders.status %></span></p>
-        </div>
-        <div class="col-md-6">
-          <p><strong>Order Date:</strong> <%= orders.createdAt ? new Date(orders.createdAt).toLocaleDateString() : "Not available" %></p>
-          <p><strong>Invoice Date:</strong> <%= orders.invoiceDate ? orders.invoiceDate.toDateString() : "Not available" %></p>
-          <p><strong>shipping Charge:</strong> ₹<%= orders.shippingCharge.toFixed() %></p>
-          <p><strong>Total Price:</strong> ₹<%= orders.totalPrice.toFixed(2) %></p>
-          <p><strong>Discount Applied:</strong> ₹<%= discount.toFixed(2) %></p>
-          <p><strong>Final Amount:</strong> ₹<%= (finalAmount + Number(orders.shippingCharge)).toFixed(2) %>
-          </p>
-        </div>
+  <div class="dashboard-container">
+    <div class="main-content">
+      <div class="content-header">
+        <h2 class="content-title">Order Details</h2>
       </div>
 
-      <hr />
-      <h5>Products</h5>
+      <div class="filter-trigger">
+        <button class="filter-btn" id="openFilterModal">
+          <i class="fas fa-filter"></i> Filter
+        </button>
+      </div>
 
-      <div class="product-list">
-        <% if (orders.orderItems && Array.isArray(orders.orderItems)) { %>
-          <% orders.orderItems.forEach((item, index) => { %>
-            <div class="product-card">
-              <div class="product-details">
-                <div class="product-image-container">
-                  <img src="<%= item.product.productImage[0] %>" alt="<%= item.product.productName %>" class="product-image" />
-                </div>
-                <div class="product-info">
-                  <h5><%= item.product?.productName || "No Product" %></h5>
-                  <div class="product-meta">
-                    <% if (item.product?.brand) { %>
-                      <span class="meta-item"><i class="fas fa-tag"></i> <%= item.product.brand %></span>
-                    <% } %>
-                    <% if (item.product?.category) { %>
-                      <span class="meta-item"><i class="fas fa-layer-group"></i> <%= item.product.category %></span>
-                    <% } %>
-                  </div>
-                  <div class="product-price-section">
-                    <div class="price-box">
-                      <p><strong>Quantity:</strong> <%= item.quantity %></p>
-                      <p><strong>Price:</strong> ₹<%= item.price.toFixed(2) %> / unit</p>
-                      <p><strong>shipping Charge:</strong> ₹<%= orders.shippingCharge %></p>
-                      <p><strong>Total:</strong> <span style="color: #088178; font-weight: 600;">$<%= ((item.price * item.quantity) + orders.shippingCharge).toFixed(2) %>
-                      </span></p>
-                    </div>
-                    <div class="status-box">
-                      <p><strong>Status:</strong><br><span class="status-badge status-<%= item.status.toLowerCase().replace(/\s+/g, '-') %>"><%= item.status %></span></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Order ID: <%= orders.orderId %></h5>
 
-              <% if (item.status === "Return Request" && item.returnReason) { %>
-                <div class="return-reason">
-                  <strong>Return Reason:</strong>
-                  <pre><%= item.returnReason || orders.returnReason %></pre>
-                </div>
-              <% } %>
-              <% if (item.status === "Cancelled" && item.cancelReason) { %>
-                <div class="return-reason">
-                  <strong>Cancel Reason:</strong>
-                  <pre><%= item.cancelReason || orders.cancelReason %></pre>
-                </div>
-              <% } %>
-
-              <div class="action-buttons">
-                <% if (item.status === "Confirmed") { %>
-                    <i class="fas fa-cogs"></i> Start Processing
-                <% } %>
-                <% if (item.status === "Processing") { %>
-                    <i class="fas fa-shipping-fast"></i> Mark as Shipped
-                <% } %>
-                <% if (item.status === "Shipped") { %>
-                    <i class="fas fa-check-circle"></i> Mark as Delivered
-                <% } %>
-                <% if (item.status === "Return Request") { %>
-                  <button class="btn btn-success" onclick="handleItemReturnApproval('<%= orders._id %>', '<%= item._id %>')">
-                    <i class="fas fa-thumbs-up"></i> Approve Return
-                  </button>
-                  <button class="btn btn-danger" onclick="handleItemReturnRejection('<%= orders._id %>', '<%= index %>')">
-                    <i class="fas fa-thumbs-down"></i> Reject Return
-                  </button>
-                <% } %>
-              </div>
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <p><strong>Customer Name:</strong> <%= orders.user.name %></p>
+              <p><strong>Address:</strong> <%= orders.address.type %>, <%= orders.address.city %>, <%= orders.address.state %>, <%= orders.address.pincode %></p>
+              <p><strong>Payment Method:</strong> <%= orders.payment %></p>
+              <p><strong>Status:</strong> <span class="status-badge status-<%= orders.status.toLowerCase() %>"><%= orders.status %></span></p>
             </div>
-          <% }) %>
-        <% } else { %>
-          <div class="alert alert-info" style="border-radius: 10px; padding: 15px;">No Orders Found</div>
-        <% } %>
+            <div class="col-md-6">
+              <p><strong>Order Date:</strong> <%= orders.createdAt ? new Date(orders.createdAt).toLocaleDateString() : "Not available" %></p>
+              <p><strong>Invoice Date:</strong> <%= orders.invoiceDate ? orders.invoiceDate.toDateString() : "Not available" %></p>
+              <p><strong>Shipping Charge:</strong> ₹<%= orders.shippingCharge.toFixed() %></p>
+              <p><strong>Total Price:</strong> ₹<%= orders.totalPrice.toFixed(2) %></p>
+              <p><strong>Discount Applied:</strong> ₹<%= discount.toFixed(2) %></p>
+              <p><strong>Final Amount:</strong> ₹<%= (finalAmount + Number(orders.shippingCharge)).toFixed(2) %></p>
+            </div>
+          </div>
+
+          <hr />
+          <h5 class="product-list">Products</h5>
+
+          <div class="product-list">
+            <% if (orders.orderItems && Array.isArray(orders.orderItems)) { %>
+              <% orders.orderItems.forEach((item, index) => { %>
+                <div class="product-card">
+                  <div class="product-details">
+                    <div class="product-image-container">
+                      <img src="<%= item.product.productImage[0] %>" alt="<%= item.product.productName %>" class="product-image" />
+                    </div>
+                    <div class="product-info">
+                      <h5><%= item.product?.productName || "No Product" %></h5>
+                      <div class="product-meta">
+                        <% if (item.product?.brand) { %>
+                          <span class="meta-item"><i class="fas fa-tag"></i> <%= item.product.brand %></span>
+                        <% } %>
+                        <% if (item.product?.category) { %>
+                          <span class="meta-item"><i class="fas fa-layer-group"></i> <%= item.product.category %></span>
+                        <% } %>
+                      </div>
+                      <div class="product-price-section">
+                        <div class="price-box">
+                          <p><strong>Quantity:</strong> <%= item.quantity %></p>
+                          <p><strong>Price:</strong> ₹<%= item.price.toFixed(2) %> / unit</p>
+                          <p><strong>Shipping Charge:</strong> ₹<%= orders.shippingCharge %></p>
+                          <p><strong>Total:</strong> <span style="color: #088178; font-weight: 600;">₹<%= ((item.price * item.quantity) + orders.shippingCharge).toFixed(2) %></span></p>
+                        </div>
+                        <div class="status-box">
+                          <p><strong>Status:</strong><br><span class="status-badge status-<%= item.status.toLowerCase().replace(/\s+/g, '-') %>"><%= item.status %></span></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <% if (item.status === "Return Request" && item.returnReason) { %>
+                    <div class="return-reason">
+                      <strong>Return Reason:</strong>
+                      <pre><%= item.returnReason || orders.returnReason %></pre>
+                    </div>
+                  <% } %>
+                  <% if (item.status === "Cancelled" && item.cancelReason) { %>
+                    <div class="return-reason">
+                      <strong>Cancel Reason:</strong>
+                      <pre><%= item.cancelReason || orders.cancelReason %></pre>
+                    </div>
+                  <% } %>
+
+                  <div class="action-buttons">
+                    <% if (item.status === "Confirmed") { %>
+                      <button class="btn btn-primary" onclick="changeItemStatus('<%= orders.orderId %>', '<%= index %>', 'Processing')">
+                        <i class="fas fa-cogs"></i> Start Processing
+                      </button>
+                    <% } %>
+                    <% if (item.status === "Processing") { %>
+                      <button class="btn btn-warning" onclick="changeItemStatus('<%= orders.orderId %>', '<%= index %>', 'Shipped')">
+                        <i class="fas fa-shipping-fast"></i> Mark as Shipped
+                      </button>
+                    <% } %>
+                    <% if (item.status === "Shipped") { %>
+                      <button class="btn btn-success" onclick="changeItemStatus('<%= orders.orderId %>', '<%= index %>', 'Delivered')">
+                        <i class="fas fa-check-circle"></i> Mark as Delivered
+                      </button>
+                    <% } %>
+                    <% if (item.status === "Return Request") { %>
+                      <button class="btn btn-success" onclick="handleItemReturnApproval('<%= orders._id %>', '<%= item._id %>')">
+                        <i class="fas fa-thumbs-up"></i> Approve Return
+                      </button>
+                      <button class="btn btn-danger" onclick="handleItemReturnRejection('<%= orders._id %>', '<%= index %>')">
+                        <i class="fas fa-thumbs-down"></i> Reject Return
+                      </button>
+                    <% } %>
+                  </div>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <div class="alert alert-info" style="border-radius: clamp(5px, 1vw, 10px); padding: clamp(8px, 1.5vw, 15px); background: #e3f2fd; color: #1565c0;">No Orders Found</div>
+            <% } %>
+          </div>
+
+          <hr />
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5>Overall Order Status</h5>
+              <p><strong>Status:</strong> <span class="status-badge status-<%= orders.status.toLowerCase() %>"><%= orders.status %></span></p>
+              <% if (orders.status === "Confirmed") { %>
+                <button class="btn btn-primary" onclick="changeOrderStatus('<%= orders.orderId %>', 'Processing')">
+                  <i class="fas fa-cogs"></i> Start Processing All
+                </button>
+              <% } %>
+              <% if (orders.status === "Processing") { %>
+                <button class="btn btn-warning" onclick="changeOrderStatus('<%= orders.orderId %>', 'Shipped')">
+                  <i class="fas fa-shipping-fast"></i> Mark All as Shipped
+                </button>
+              <% } %>
+              <% if (orders.status === "Shipped") { %>
+                <button class="btn btn-success" onclick="changeOrderStatus('<%= orders.orderId %>', 'Delivered')">
+                  <i class="fas fa-check-circle"></i> Mark All as Delivered
+                </button>
+              <% } %>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <hr />
-      <div class="d-flex justify-content-between">
-        <div>
-          <h5>Overall Order Status</h5>
-          <p><strong>Status:</strong> <span class="status-badge status-<%= orders.status.toLowerCase() %>"><%= orders.status %></span></p>
-          <% if (orders.status === "Confirmed") { %>
-            <button class="btn btn-primary" onclick="changeOrderStatus('<%= orders.orderId %>', 'Processing')">
-              <i class="fas fa-cogs"></i> Start Processing All
-            </button>
-          <% } %>
-          <% if (orders.status === "Processing") { %>
-            <button class="btn btn-warning" onclick="changeOrderStatus('<%= orders.orderId %>', 'Shipped')">
-              <i class="fas fa-shipping-fast"></i> Mark All as Shipped
-            </button>
-          <% } %>
-          <% if (orders.status === "Shipped") { %>
-            <button class="btn btn-success" onclick="changeOrderStatus('<%= orders.orderId %>', 'Delivered')">
-              <i class="fas fa-check-circle"></i> Mark All as Delivered
-            </button>
-          <% } %>
+      <!-- Filter Modal -->
+      <div class="filter-modal" id="filterModal">
+        <div class="filter-modal-content">
+          <h3>Filter Order Details</h3>
+          <form id="filterForm" action="/admin/orderDetailsAdmin" method="get">
+            <div class="filter-group">
+              <label>Order ID</label>
+              <input type="text" name="id" placeholder="Enter Order ID" value="<%= orders.orderId %>">
+            </div>
+            <div class="filter-group">
+              <label>Status</label>
+              <select name="status">
+                <option value="">All Status</option>
+                <% ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'Return Request', 'Returned', 'Return Rejected', 'Failed'].forEach(s => { %>
+                  <option value="<%= s %>" <%= orders.status === s ? 'selected' : '' %>><%= s %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="modal-buttons">
+              <button type="submit" class="btn-modal btn-apply">Apply</button>
+              <button type="button" class="btn-modal btn-cancel" id="closeFilterModal">Close</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -385,6 +631,35 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
   <script>
+    $(document).ready(function () {
+      const filterModal = $('#filterModal');
+      const openFilterModal = $('#openFilterModal');
+      const closeFilterModal = $('#closeFilterModal');
+
+      openFilterModal.on('click', function () {
+        filterModal.css('display', 'block');
+        setTimeout(() => filterModal.addClass('open'), 10);
+      });
+
+      filterModal.on('click', function (e) {
+        if (e.target === this) {
+          filterModal.removeClass('open');
+          setTimeout(() => filterModal.css('display', 'none'), 400);
+        }
+      });
+
+      closeFilterModal.on('click', function () {
+        filterModal.removeClass('open');
+        setTimeout(() => filterModal.css('display', 'none'), 400);
+      });
+
+      $("#filterForm").on("submit", function (e) {
+        e.preventDefault();
+        const formData = $(this).serialize();
+        window.location.href = "/admin/orderDetailsAdmin?" + formData;
+      });
+    });
+
     function changeOrderStatus(orderId, newStatus) {
       Swal.fire({
         title: `Change Status to ${newStatus}?`,

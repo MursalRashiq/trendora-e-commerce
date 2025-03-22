@@ -44,7 +44,7 @@ const userSchema = new Schema({
   walletHistory: [
     {
       amount: Number,
-      type: { type: String, enum: ["credit", "debit", "refund"] }, 
+      type: { type: String, enum: ["credit", "debit", "refund"] },
       timestamp: { type: Date, default: () => new Date() },
     },
   ],
@@ -64,18 +64,42 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  referalCode: {
+  referralCode: { // Fixed typo from "referalCode"
     type: String,
+    unique: true,
+    sparse: true,
   },
-  redeemed: {
+  referredBy: { // Tracks who referred this user
+    type: String,
+    default: null,
+  },
+  redeemed: { // Indicates if this user's referral reward is claimed
     type: Boolean,
+    default: false,
   },
-  redeemedUsers: [
+  redeemedUsers: [ // Users referred by this user
     {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
   ],
+  referralCount: { // Number of successful referrals
+    type: Number,
+    default: 0,
+  },
+  referralRewardStatus: { // Status of this user's referral reward
+    type: String,
+    enum: ["pending", "claimed", "ineligible"],
+    default: "pending",
+  },
+  referralEarnings: { // Total earnings from referrals
+    type: Number,
+    default: 0,
+  },
+  referredAt: { // When this user was referred
+    type: Date,
+    default: null,
+  },
   searchHistory: [
     {
       category: {

@@ -14,6 +14,7 @@ const path = require("path");
 const moment = require("moment");
 const fs = require("fs");
 const asyncHandler = require("express-async-handler");
+const ObjectId = mongoose.Types.ObjectId;
 
 let instance = new razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -122,12 +123,12 @@ const getCheckoutPage = async (req, res) => {
 const paymentConfirm = async (req, res) => {
   try {
     const { orderId, status, paymentMethod } = req.body; 
-    console.log(status,"hello im status ")
-    console.log(paymentMethod,"hey im from the paymentConfirm body")
+    console.log(status, "hello im status ");
+    console.log(paymentMethod, "hey im from the paymentConfirm body");
 
     await Order.updateOne(
       { _id: orderId },
-      { $set: { paymentStatus: status, payment: "razorpay" } } 
+      { $set: { paymentStatus: status, payment: paymentMethod } } 
     ).then(() => {
       res.json({ status: true });
     });
@@ -138,13 +139,12 @@ const paymentConfirm = async (req, res) => {
         {
           $set: {
             status: "Pending",
-           "orderItems.$[].status": "Pending"  
+            "orderItems.$[].status": "Pending"  
           }
         }
       );
     }
     
-
   } catch (error) {
     console.error("Error in paymentConfirm:", error);
     res.redirect("/pageNotFound");
@@ -159,6 +159,7 @@ const orderPlaced = async (req, res) => {
     if (!findUser) {
       return res.status(404).json({ error: "User not found" });
     }
+
     const productIds = findUser.cart.map((item) => item.productId);
     const findAddress = await Address.findOne({
       userId: userId,
@@ -206,7 +207,6 @@ const orderPlaced = async (req, res) => {
       const cartItem = findUser.cart.find(
         (cartItem) => cartItem.productId.toString() === item._id.toString()
       );
-
       if (cartItem.quantity > item.quantity) {
         return res.status(400).json({
           success: false,
@@ -219,8 +219,8 @@ const orderPlaced = async (req, res) => {
       }
     }
 
-    const finalAmound = Number(totalPrice) - Number(discount || 0) + Number(shippingCharge || 0);;
-     console.log("finalAmound", finalAmound);
+    const finalAmound = Number(totalPrice) - Number(discount || 0) + Number(shippingCharge || 0);
+    console.log("finalAmound", finalAmound);
 
     let newOrder = new Order({
       orderId: uuidv4(),
@@ -244,27 +244,55 @@ const orderPlaced = async (req, res) => {
 
     let orderDone = await newOrder.save();
 
-    await User.findByIdAndUpdate(userId, {
-      $push: { orderHistory: orderDone._id },
-    });
-
+    await User.findByIdAndUpdate(userId, { $push: { orderHistory: orderDone._id } });
     await User.updateOne({ _id: userId }, { $set: { cart: [] } });
+
     for (let orderedProduct of orderedProducts) {
       const product = await Product.findOne({ _id: orderedProduct._id });
       if (product) {
-        product.quantity = Math.max(
-          product.quantity - orderedProduct.quantity,
-          0
-        );
+        product.quantity = Math.max(product.quantity - orderedProduct.quantity, 0);
         await product.save();
       }
     }
 
-    // console.log("Order Details for Razorpay:", {
-    //   orderId: orderDone._id,
-    //   finalAmound: orderDone.finalAmound,
-    // });
+    // Referral Reward Logic
+    const updatedUser = await User.findOne({ _id: userId }); // Refresh after orderHistory update
+    console.log("Order history length:", updatedUser.orderHistory.length);
+    if (
+      updatedUser.referredBy &&
+      updatedUser.referralRewardStatus === "pending" &&
+      updatedUser.orderHistory.length === 1
+    ) {
+      const referrer = await User.findOne({ referralCode: updatedUser.referredBy });
+      console.log("Referrer found:", referrer ? referrer.email : "None");
+      if (referrer && !updatedUser.isBlocked && !referrer.isBlocked) {
+        referrer.wallet += 10;
+        referrer.referralEarnings += 10;
+        referrer.referralCount += 1;
+        referrer.walletHistory.push({
+          amount: 10,
+          type: "credit",
+          timestamp: new Date(),
+        });
+        await referrer.save();
 
+        updatedUser.wallet += 5;
+        updatedUser.walletHistory.push({
+          amount: 5,
+          type: "credit",
+          timestamp: new Date(),
+        });
+        updatedUser.referralRewardStatus = "claimed";
+        updatedUser.redeemed = true;
+        await updatedUser.save();
+
+        console.log(`Rewarded ${referrer.email} with $10 and ${updatedUser.email} with $5`);
+      } else {
+        console.warn(`Referral reward skipped: Referrer not found or user/referrer blocked`);
+      }
+    }
+
+    // Payment-specific responses
     switch (payment) {
       case "cod":
         return res.json({
@@ -276,15 +304,10 @@ const orderPlaced = async (req, res) => {
         });
 
       case "wallet":
-        if (newOrder.finalAmound <= findUser.wallet) {
-          findUser.wallet -= newOrder.finalAmound;
-
-          if (!findUser.history) {
-            findUser.history = [];
-          }
-
+        if (newOrder.finalAmound <= updatedUser.wallet) {
+          updatedUser.wallet -= newOrder.finalAmound;
           await User.updateOne(
-            { _id: findUser._id },
+            { _id: updatedUser._id },
             {
               $push: {
                 walletHistory: {
@@ -295,9 +318,7 @@ const orderPlaced = async (req, res) => {
               },
             }
           );
-
-          await findUser.save();
-
+          await updatedUser.save();
           return res.json({
             payment: true,
             method: "wallet",
@@ -307,12 +328,10 @@ const orderPlaced = async (req, res) => {
             success: true,
           });
         } else {
-          await Order.updateOne(
-            { _id: orderDone._id },
-            { $set: { status: "Failed" } }
-          );
+          await Order.updateOne({ _id: orderDone._id }, { $set: { status: "Failed" } });
           return res.json({ payment: false, method: "wallet", success: false });
         }
+
       case "razorpay":
         const razorPayGeneratedOrder = await generateOrderRazorpay(
           orderDone._id,
@@ -332,11 +351,10 @@ const orderPlaced = async (req, res) => {
     }
   } catch (error) {
     console.error("Error processing order:", error);
-    res
-      .status(500)
-      .json({ error: "Internal server error", details: error.message });
+    res.status(500).json({ error: "Internal server error", details: error.message });
   }
 };
+
 
 const generateOrderRazorpay = (orderId, total) => {
   return new Promise((resolve, reject) => {
@@ -357,23 +375,29 @@ const generateOrderRazorpay = (orderId, total) => {
 
 const getOrderSuccessPage = async (req, res) => {
   try {
-    const order = await Order.findOne({ user: req.session.user })
-      .sort({ createdAt: -1 })
+    const { id, method } = req.query;
+
+    if (!ObjectId.isValid(id)) {
+      return res.redirect("/pageNotFound");
+    }
+
+    const order = await Order.findOne({ _id: new ObjectId(id) })
       .populate("orderItems.product");
 
     if (!order) {
-      return res.redirect("/error");
+      return res.redirect("/pageNotFound");
     }
 
     res.render("orderSuccess", {
       order,
-      product: order.orderItems[0].product,
+      method,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).redirect("/error");
+    res.status(500).redirect("/pageNotFound");
   }
 };
+
 
 const verify = async (req, res) => {
   try {
@@ -873,6 +897,81 @@ const retryPayment = async (req, res) => {
 };
 
 
+// Cancel Entire Order Endpoint
+const cancelEntireOrder = async (req, res) => {
+  try {
+    const { orderId, cancelReason } = req.body;
+    const userId = req.session.user; // Assuming session-based authentication
+
+    // Check if user is logged in
+    if (!userId) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "User not logged in. Please log in to cancel the order." 
+      });
+    }
+
+    // Validate input
+    if (!orderId || !cancelReason) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Order ID and cancellation reason are required." 
+      });
+    }
+
+    // Find the order by ID and ensure it belongs to the user
+    const order = await Order.findOne({ 
+      _id: orderId, 
+      user: userId 
+    }).populate("orderItems.product");
+
+    if (!order) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Order not found or you do not have permission to cancel it." 
+      });
+    }
+
+    // Check if the order can be cancelled (only "Confirmed" status allowed)
+    if (order.status !== "Confirmed") {
+      return res.status(400).json({ 
+        success: false, 
+        message: "This order cannot be cancelled at its current stage." 
+      });
+    }
+
+    // Update the order status and reason
+    order.status = "Cancelled";
+    order.cancelReason = cancelReason;
+
+    // Update all order items to "Cancelled" unless they are already "Returned" or "Return Request"
+    order.orderItems.forEach(item => {
+      if (!["Returned", "Return Request", "Return Rejected"].includes(item.status)) {
+        item.status = "Cancelled";
+        item.cancelReason = cancelReason;
+      }
+    });
+
+    // Save the updated order
+    await order.save();
+
+    // Send success response
+    res.status(200).json({ 
+      success: true, 
+      message: "Entire order cancelled successfully." 
+    });
+  } catch (error) {
+    console.error("Error cancelling entire order:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Failed to cancel the order. Please try again later." 
+    });
+  }
+};
+
+
+
+
 module.exports = {
   getCheckoutPage,
   orderPlaced,
@@ -885,5 +984,6 @@ module.exports = {
   downloadInvoice,
   cancelProductItem,
   paymentFailed,
-  retryPayment
+  retryPayment,
+  cancelEntireOrder
 };

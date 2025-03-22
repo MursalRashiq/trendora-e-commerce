@@ -86,26 +86,29 @@ const addProducts = asyncHandler(async (req, res) => {
 
 const getAllProduct = asyncHandler(async (req, res) => {
   const search = req.query.search || "";
-  const page = req.query.page || 1;
+  const page = parseInt(req.query.page) || 1;
   const limit = 4;
 
   const productData = await Product.find({
     $or: [
-      { productName: { $regex: new RegExp(".*" + search + ".", "i") } },
+      { productName: { $regex: new RegExp(".*" + search + ".*", "i") } },
       { brand: { $regex: new RegExp(".*" + search + ".*", "i") } },
     ],
   })
-    .limit(limit * 1)
+    .sort({ createdAt: -1 }) // Sort by createdAt descending (newest first)
+    .limit(limit)
     .skip((page - 1) * limit)
     .populate("category")
     .exec();
 
   const count = await Product.find({
-    $or: [{ productName: { $regex: new RegExp(".*" + search + ".*", "i") } }],
+    $or: [
+      { productName: { $regex: new RegExp(".*" + search + ".*", "i") } },
+      { brand: { $regex: new RegExp(".*" + search + ".*", "i") } },
+    ],
   }).countDocuments();
 
   const category = await Category.find({ isListed: true });
-
   const brand = await Brand.find({ isBlocked: false });
 
   if (category && brand) {

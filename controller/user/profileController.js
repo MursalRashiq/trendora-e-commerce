@@ -213,9 +213,11 @@ const changeEmailValid = async (req, res) => {
         req.session.userOtp = otp;
         req.session.userData = req.body;
         req, (session.email = email);
-        res.render("change-email-otp");
+        res.render("change-email-otp",{
+          locals: userExists
+        });
         console.log("Otp :", otp);
-        console.log("emil :", email);
+        console.log("email :", email);
       } else {
         res.json("email-error");
       }
@@ -367,6 +369,8 @@ const addAddress = async (req, res) => {
 
 const postAddAddress = async (req, res) => {
   try {
+    conosle.log("hitting")
+
     const userId = req.session.user;
     if (!userId) {
       console.log("User ID not found in session");
@@ -549,34 +553,36 @@ const changeName = async (req, res) => {
       return res.redirect("/profile");
     }
 
-    res.render("change-name", {
-      user: userData,
-      message: req.flash(),
-    });
+    // Pass user data through locals
+    res.locals.user = userData;
+    res.locals.message = req.flash();
+
+    res.render("change-name",{locals:userData});
   } catch (error) {
     console.error("Error in changeName:", error);
     req.flash("error", "Something went wrong");
-    return res.redirect("/profile");
+    return res.redirect("/pageNotFound");
   }
 };
-
 const changeNamePost = async (req, res) => {
   try {
     const { newName, reNewName } = req.body;
     const userId = req.session.user;
 
+    const userData = await User.findById(userId); // Fetch user details
+
     if (!userId) {
-      return res.redirect("login");
+      return res.redirect("/login");
     }
 
     if (!newName || !reNewName) {
       req.flash("error", "Please fill all fields");
-      return res.redirect("change-name");
+      return res.render("change-name", { user: userData, message: req.flash() });
     }
 
     if (newName !== reNewName) {
       req.flash("error", "Names do not match");
-      return res.redirect("/change-name");
+      return res.render("change-name", { user: userData, message: req.flash() });
     }
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -587,20 +593,19 @@ const changeNamePost = async (req, res) => {
 
     if (!updatedUser) {
       req.flash("error", "User not found");
-      return res.redirect("change-name");
+      return res.render("change-name", { user: userData, message: req.flash() });
     }
 
     req.session.user.name = newName;
 
     req.flash("success", "Name updated successfully");
-    return res.redirect("profile");
+    return res.redirect("/profile");
   } catch (error) {
     console.error("Error in changeNamePost:", error);
     req.flash("error", "Something went wrong");
-    return res.redirect("change-name");
+    return res.redirect("/pageNotFound");
   }
 };
-
 const changePhone = async (req, res) => {
   try {
     const userId = req.session.user;
@@ -687,6 +692,117 @@ const changePhonePost = async (req, res) => {
   }
 };
 
+
+
+const addingAddressFromCheckout = async (req, res) => {
+  try {
+    console.log("Hitting /addAddressFromCheckout");
+    console.log("Received address data:", req.body);
+
+    const userId = req.body.userId || req.session.user; // Fallback to session if used
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "User not authenticated" });
+    }
+
+    const userData = await User.findOne({ _id: userId });
+    if (!userData) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const { addressType, name, city, landmark, state, pincode, phone, altPhone } = req.body;
+    const missingFields = [];
+    if (!addressType) missingFields.push("addressType");
+    if (!name) missingFields.push("name");
+    if (!city) missingFields.push("city");
+    if (!landmark) missingFields.push("landmark");
+    if (!state) missingFields.push("state");
+    if (!pincode) missingFields.push("pincode");
+    if (!phone) missingFields.push("phone");
+
+    if (missingFields.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "All required fields must be provided",
+        missing: missingFields
+      });
+    }
+
+    let userAddress = await Address.findOne({ userId: userData._id });
+    const newAddressEntry = { addressType, name, city, landmark, state, pincode, phone, altPhone };
+
+    if (!userAddress) {
+      userAddress = new Address({
+        userId: userData._id,
+        address: [newAddressEntry],
+      });
+    } else {
+      userAddress.address.push(newAddressEntry);
+    }
+
+    await userAddress.save();
+    res.status(200).json({ success: true, message: "Address added successfully" });
+  } catch (error) {
+    console.error("Error adding address:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const editAddressFromCheckout = async (req, res) => {
+  try {
+    console.log("Hitting /editAddressFromCheckout");
+    console.log("Received address data:", req.body);
+
+    const { userId, addressId, addressType, name, city, landmark, state, pincode, phone, altPhone } = req.body;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "User not authenticated" });
+    }
+    if (!addressId) {
+      return res.status(400).json({ success: false, message: "Address ID is required" });
+    }
+
+    const userData = await User.findOne({ _id: userId });
+    if (!userData) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const missingFields = [];
+    if (!addressType) missingFields.push("addressType");
+    if (!name) missingFields.push("name");
+    if (!city) missingFields.push("city");
+    if (!landmark) missingFields.push("landmark");
+    if (!state) missingFields.push("state");
+    if (!pincode) missingFields.push("pincode");
+    if (!phone) missingFields.push("phone");
+
+    if (missingFields.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "All required fields must be provided",
+        missing: missingFields
+      });
+    }
+
+    const userAddress = await Address.findOne({ userId: userData._id });
+    if (!userAddress) {
+      return res.status(404).json({ success: false, message: "Address document not found" });
+    }
+
+    const addressIndex = userAddress.address.findIndex(addr => addr._id.toString() === addressId);
+    if (addressIndex === -1) {
+      return res.status(404).json({ success: false, message: "Address not found" });
+    }
+
+    userAddress.address[addressIndex] = { addressType, name, city, landmark, state, pincode, phone, altPhone };
+    await userAddress.save();
+
+    res.status(200).json({ success: true, message: "Address updated successfully" });
+  } catch (error) {
+    console.error("Error editing address:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
 module.exports = {
   getForgotPassPage,
   forgotEmailValid,
@@ -710,4 +826,6 @@ module.exports = {
   changeNamePost,
   changePhone,
   changePhonePost,
+  addingAddressFromCheckout,
+  editAddressFromCheckout
 };

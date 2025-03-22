@@ -1,16 +1,40 @@
 <%- include("../../views/partials/admin/header") %>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Trendora Admin</title>
+
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/logo/logo-removebg-preview.png">
+
     <style>
         body {
+            background-color: #eef2f7;
             font-family: 'Poppins', sans-serif;
-            background: #f4f7fa;
+            margin: 0;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            display: flex; /* Match header layout */
+            min-height: 100vh;
         }
 
-        .content-main {
-            padding: 3rem;
-            max-width: 1400px;
-            margin: 3rem auto;
+        .dashboard-container {
+            flex: 1;
+            margin-left: 250px; /* Match sidebar width on laptop/TV */
+            width: calc(100% - 250px); /* Adjust for sidebar */
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+
+        .main-content {
+            background: #fff;
+            padding: clamp(1rem, 3vw, 2rem); /* Responsive padding */
+            width: 100%;
+            overflow-x: hidden; /* Ensure no horizontal scrolling */
+            padding-top: 70px; /* Match header height */
         }
 
         .search-wrapper {
@@ -18,14 +42,16 @@
             justify-content: space-between;
             align-items: center;
             background: #fff;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-            margin-bottom: 2rem;
-            animation: fadeIn 0.8s ease-in;
+            padding: clamp(1rem, 2vw, 1.5rem);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: clamp(1.5rem, 3vw, 2rem);
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            gap: clamp(0.75rem, 2vw, 1rem); /* Responsive gap */
         }
 
         .search-container {
+            flex: 1;
             width: 100%;
             max-width: 500px;
             margin: 0;
@@ -34,23 +60,23 @@
         .search-form {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: clamp(0.5rem, 1.5vw, 1rem); /* Responsive gap */
             width: 100%;
         }
 
         .search-input {
             flex: 1;
-            padding: 0.875rem 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 0.95rem;
+            padding: clamp(6px, 1.5vw, 8px); /* Responsive padding */
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: clamp(0.85rem, 2.5vw, 1rem); /* Responsive font */
             outline: none;
-            transition: all 0.3s ease;
+            transition: border-color 0.3s ease;
         }
 
         .search-input:focus {
-            border-color: #088178;
-            box-shadow: 0 0 10px rgba(8, 129, 120, 0.2);
+            border-color: #1abc9c;
+            box-shadow: 0 0 5px rgba(26, 188, 156, 0.5);
         }
 
         .search-input::placeholder {
@@ -58,10 +84,10 @@
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
+            padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 15px); /* Responsive padding */
+            border-radius: 5px;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 2vw, 1rem); /* Responsive font */
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
@@ -69,43 +95,51 @@
         }
 
         .btn-primary {
-            background: linear-gradient(90deg, #088178, #056b63);
+            background: #1abc9c;
             color: #fff;
         }
 
         .btn-primary:hover {
-            background: linear-gradient(90deg, #056b63, #044e47);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(8, 129, 120, 0.3);
+            background: #16a085;
+            transform: scale(1.05);
+        }
+
+        .btn-primary:active {
+            background: #138d75;
+            transform: scale(0.95);
         }
 
         .btn-danger {
-            background: #dc3545;
+            background: #e74c3c;
             color: #fff;
         }
 
         .btn-danger:hover {
-            background: #b71c1c;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .btn-danger:active {
+            background: #992d22;
+            transform: scale(0.95);
         }
 
         .add-product-btn {
-            margin-left: 1rem;
+            margin-left: clamp(0.75rem, 2vw, 1rem);
         }
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: clamp(1rem, 2vw, 1.5rem); /* Responsive gap */
+            margin-top: clamp(1.5rem, 3vw, 2rem);
         }
 
         .product-card {
             display: none;
             background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -116,177 +150,237 @@
 
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
         .product-thumbnail {
             width: 100%;
-            height: 220px;
+            height: clamp(180px, 30vw, 220px); /* Responsive height */
             object-fit: cover;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 1px solid #eee;
         }
 
         .product-details {
-            padding: 1.5rem;
+            padding: clamp(1rem, 2vw, 1.5rem);
         }
 
         .product-details h5 {
             margin: 0 0 0.75rem 0;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 2.5vw, 1.1rem); /* Responsive font */
             font-weight: 600;
-            color: #1a3c63;
+            color: #34495e;
+            word-break: break-word; /* Prevent text overflow */
         }
 
         .product-details p {
             margin: 0 0 1rem 0;
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2vw, 1rem); /* Responsive font */
             color: #4a5568;
             font-weight: 500;
         }
 
         .actions {
             display: flex;
-            gap: 1rem;
+            gap: clamp(0.75rem, 2vw, 1rem);
+            flex-wrap: wrap; /* Allow buttons to wrap on small screens */
         }
 
         .pagination-container {
-            margin-top: 3rem;
+            margin-top: clamp(2rem, 4vw, 3rem);
             display: flex;
             justify-content: center;
-            gap: 0.75rem;
+            gap: clamp(0.5rem, 1vw, 0.75rem);
+            flex-wrap: wrap;
         }
 
         .page-link {
-            padding: 0.75rem 1.25rem;
-            border-radius: 10px;
+            padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 15px); /* Responsive padding */
+            border-radius: 5px;
             background: #fff;
-            color: #088178;
+            color: #34495e;
             text-decoration: none;
-            border: 2px solid #e2e8f0;
+            border: 1px solid #ced4da;
             font-weight: 500;
+            font-size: clamp(0.85rem, 2vw, 1rem); /* Responsive font */
             transition: all 0.3s ease;
         }
 
         .page-link:hover {
             background: #eef2f7;
-            color: #056b63;
+            color: #1abc9c;
+            transform: scale(1.05);
         }
 
         .page-link.active {
-            background: #088178;
+            background: #1abc9c;
             color: #fff;
-            border-color: #088178;
+            border-color: #1abc9c;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                margin-left: 70px; /* Match minimized sidebar width */
+                width: calc(100% - 70px); /* Adjust for mobile sidebar */
+                position: relative;
+                left: 0;
+            }
+            .main-content {
+                padding: clamp(0.75rem, 2vw, 1.5rem);
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
         }
 
         @media (max-width: 768px) {
-            .content-main { padding: 1.5rem; }
-            .search-wrapper { flex-direction: column; gap: 1rem; padding: 1rem; }
-            .search-container { max-width: 100%; }
-            .add-product-btn { margin-left: 0; width: 100%; }
-            .products-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-            .product-thumbnail { height: 180px; }
+            .search-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+                padding: clamp(0.75rem, 1.5vw, 1rem);
+            }
+            .search-container {
+                max-width: 100%;
+            }
+            .add-product-btn {
+                margin-left: 0;
+                width: 100%;
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+            .product-thumbnail {
+                height: clamp(160px, 25vw, 180px);
+            }
         }
 
-        @media (max-width: 480px) {
-            .search-input { min-width: 150px; }
-            .btn { padding: 0.625rem 1rem; }
-            .product-details h5 { font-size: 1rem; }
-            .product-details p { font-size: 0.9rem; }
+        @media (max-width: 576px) {
+            .main-content {
+                padding: clamp(0.5rem, 1.5vw, 1rem);
+            }
+            .search-input, .btn {
+                font-size: clamp(0.75rem, 2vw, 0.85rem);
+            }
+            .products-grid {
+                grid-template-columns: 1fr; /* Single column on very small screens */
+            }
+            .product-details h5 {
+                font-size: clamp(0.9rem, 2vw, 1rem);
+            }
+            .product-details p {
+                font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+            }
+            .btn {
+                padding: clamp(5px, 1.2vw, 6px) clamp(10px, 1.8vw, 12px);
+                width: 100%; /* Full-width buttons on small screens */
+            }
+            .actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .product-thumbnail {
+                height: clamp(140px, 40vw, 160px);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .main-content {
+                padding: clamp(2rem, 3vw, 2.5rem);
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            .product-thumbnail {
+                height: 220px;
+            }
         }
     </style>
 </head>
-
-<div class="content-main">
-    <div class="search-wrapper">
-        <div class="search-container">
-            <form action="/admin/products" method="get" class="search-form">
-                <input type="text"
-                       class="search-input"
-                       placeholder="Search products..."
-                       name="search"
-                       value="<%= searchQuery || '' %>">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
-        </div>
-        <a href="/admin/addProducts" class="btn btn-primary add-product-btn">Add Product</a>
-    </div>
-
-    <div class="products-grid">
-        <% if (products && products.length > 0) { %>
-            <% products.forEach((product, index) => { %>
-                <div class="product-card">
-                    <img src="<%= product.productImage && product.productImage.length > 0 
-                        ? product.productImage[0] 
-                        : '/assets/img/no-image.jpg' %>"
-                         alt="<%= product.productName || 'Unnamed Product' %>"
-                         class="product-thumbnail"
-                         onerror="this.onerror=null; this.src='/assets/img/no-image.jpg';">
-                    <div class="product-details">
-                        <h5><%= product.productName || 'Unnamed Product' %></h5>
-                        <p>₹<%= typeof product.price === 'number' ? product.price.toFixed(2) : '0.00' %></p>
-                        <div class="actions">
-                            <a href="/admin/editProduct/<%= product._id %>" class="btn btn-primary">Edit</a>
-                            <button onclick="deleteProduct('<%= product._id %>')" class="btn btn-danger">Delete</button>
-                        </div>
-                    </div>
+<body>
+    <div class="dashboard-container">
+        <div class="main-content">
+            <div class="search-wrapper">
+                <div class="search-container">
+                    <form action="/admin/products" method="get" class="search-form">
+                        <input type="text" class="search-input" placeholder="Search products..." name="search" value="<%= searchQuery || '' %>">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
                 </div>
-            <% }); %>
-        <% } else { %>
-            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #6b7280;">
-                No products found
+                <a href="/admin/addProducts" class="btn btn-primary add-product-btn">Add Product</a>
             </div>
-        <% } %>
+
+            <div class="products-grid">
+                <% if (products && products.length > 0) { %>
+                    <% [...products].reverse().forEach((product, index) => { %>
+                        <div class="product-card">
+                            <img src="<%= product.productImage && product.productImage.length > 0 ? product.productImage[0] : '/assets/img/no-image.jpg' %>"
+                                 alt="<%= product.productName || 'Unnamed Product' %>"
+                                 class="product-thumbnail"
+                                 onerror="this.onerror=null; this.src='/assets/img/no-image.jpg';">
+                            <div class="product-details">
+                                <h5><%= product.productName || 'Unnamed Product' %></h5>
+                                <p>₹<%= typeof product.price === 'number' ? product.price.toFixed(2) : '0.00' %></p>
+                                <div class="actions">
+                                    <a href="/admin/editProduct/<%= product._id %>" class="btn btn-primary">Edit</a>
+                                    <button onclick="deleteProduct('<%= product._id %>')" class="btn btn-danger">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div style="grid-column: 1 / -1; text-align: center; padding: clamp(1rem, 3vw, 2rem); color: #6b7280;">
+                        No products found
+                    </div>
+                <% } %>
+            </div>
+
+            <div class="pagination-container">
+                <% if (products && products.length > 0) { %>
+                    <% const totalPages = Math.ceil(products.length / 3); %>
+                    <% for(let i = 1; i <= totalPages; i++) { %>
+                        <a href="?page=<%= i %><%= searchQuery ? '&search=' + searchQuery : '' %>"
+                           class="page-link <%= currentPage == i ? 'active' : '' %>">
+                            <%= i %>
+                        </a>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
     </div>
 
-    <div class="pagination-container">
-        <% if (products && products.length > 0) { %>
-            <% for(let i = 1; i <= Math.ceil(products.length / 3); i++) { %>
-                <a href="?page=<%= i %><%= searchQuery ? '&search=' + searchQuery : '' %>" 
-                   class="page-link <%= currentPage == i ? 'active' : '' %>">
-                    <%= i %>
-                </a>
-            <% } %>
-        <% } %>
-    </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const productsPerPage = 3;
-    const currentPage = <%= currentPage || 1 %>;
-    const products = document.querySelectorAll('.product-card');
-    
-    const start = (currentPage - 1) * productsPerPage;
-    const end = start + productsPerPage;
-    
-    products.forEach((product, index) => {
-        if (index >= start && index < end) {
-            product.classList.add('visible');
-        }
-    });
-});
-
-function deleteProduct(productId) {
-    if (confirm('Are you sure you want to delete this product?')) {
-        fetch(`/admin/deleteProduct/${productId}`, { method: 'DELETE' })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Failed to delete product: ' + (data.message || 'Unknown error'));
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const productsPerPage = 3;
+            const currentPage = <%= currentPage || 1 %>;
+            const products = document.querySelectorAll('.product-card');
+            
+            const start = (currentPage - 1) * productsPerPage;
+            const end = start + productsPerPage;
+            
+            products.forEach((product, index) => {
+                if (index >= start && index < end) {
+                    product.classList.add('visible');
                 }
-            })
-            .catch(error => {
-                alert('Error deleting product: ' + error.message);
             });
-    }
-}
-</script>
+        });
 
+        function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                fetch(`/admin/deleteProduct/${productId}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert('Failed to delete product: ' + (data.message || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error deleting product: ' + error.message);
+                    });
+            }
+        }
+    </script>
+</body>
+</html>
 <%- include("../../views/partials/admin/footer") %>

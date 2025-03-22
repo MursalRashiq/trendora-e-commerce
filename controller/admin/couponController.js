@@ -22,6 +22,8 @@ const loadCoupon = asyncHandler(async (req, res) => {
       currentPage: page,
       totalPages,
       totalCoupons,
+      message: null,
+      errorMessage: null,
     });
   } catch (error) {
     console.error("Error in loadCoupon:", error);
@@ -38,6 +40,12 @@ const createCoupon = asyncHandler(async (req, res) => {
     minimumPrice: parseInt(req.body.minimumPrice),
     maximumPrice: parseInt(req.body.maximumPrice),
   };
+  // checking the coupon name already exist
+  const existingCoupon = await Coupon.findOne({ name: { $regex: `^${data.couponName}$`, $options: "i" } });
+  
+  if (existingCoupon) {
+    return res.render("coupon", { message: "Coupon name already exists", messageType: "error" });
+  }
 
   const newCoupon = new Coupon({
     name: data.couponName,
@@ -48,7 +56,7 @@ const createCoupon = asyncHandler(async (req, res) => {
     maximumPrice: data.maximumPrice,
   });
   await newCoupon.save();
-  return res.redirect("/admin/coupon");
+  res.render("coupon", { message: "Coupon created successfully", messageType: "success" });
 });
 
 const editCoupon = async (req, res) => {

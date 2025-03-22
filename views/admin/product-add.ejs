@@ -1,79 +1,105 @@
 <%- include("../../views/partials/admin/header") %>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Product - Trendora Admin</title>
+
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/cropperjs/cropper.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/logo/logo-removebg-preview.png">
+
     <style>
         body {
+            background-color: #eef2f7;
             font-family: 'Poppins', sans-serif;
-            background: #f4f7fa;
             margin: 0;
-            overflow-x: hidden;
-            overflow-y: auto;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            display: flex; /* Match header layout */
+            min-height: 100vh;
         }
 
-        .content-main {
-            padding: 4rem;
-            max-width: 100%;
-            margin: 0 auto;
+        .dashboard-container {
+            flex: 1;
+            margin-left: 250px; /* Match sidebar width on laptop/TV */
+            width: calc(100% - 250px); /* Adjust for sidebar */
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+
+        .main-content {
+            background: #fff;
+            padding: clamp(1rem, 3vw, 2rem); /* Responsive padding */
+            width: 100%;
+            overflow-x: hidden; /* Ensure no horizontal scrolling */
+            padding-top: 70px; /* Match header height */
         }
 
         .content-title {
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 5vw, 2rem); /* Responsive font */
+            color: #2c3e50;
+            margin-bottom: clamp(1.5rem, 4vw, 2rem);
             font-weight: 600;
-            color: #1a3c63;
-            letter-spacing: 1px;
             text-align: center;
-            margin-bottom: 3rem;
         }
 
         .card {
             background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            padding: 2rem;
-            animation: fadeIn 0.8s ease-in;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: clamp(1rem, 2vw, 1.5rem); /* Responsive padding */
+            margin-bottom: 1.5rem;
+            overflow: hidden;
         }
 
         .card-header {
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e2e8f0;
+            padding: clamp(0.75rem, 2vw, 1rem);
+            border-bottom: 1px solid #eee;
+            background-color: #f8f9fa;
         }
 
         .card-header h4 {
             margin: 0;
-            font-size: 1.5rem;
+            font-size: clamp(1.25rem, 3vw, 1.5rem); /* Responsive font */
             font-weight: 600;
-            color: #1a3c63;
+            color: #34495e;
         }
 
         .form-label {
+            font-size: clamp(0.85rem, 2.5vw, 1rem); /* Responsive font */
             font-weight: 500;
-            color: #1a3c63;
-            margin-bottom: 0.75rem;
-            font-size: 0.95rem;
+            color: #34495e;
+            margin-bottom: 0.5rem;
         }
 
         .form-control, .form-select {
             width: 100%;
-            padding: 0.875rem;
-            margin-bottom: 1.25rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            background: #fff;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
+            padding: clamp(6px, 1.5vw, 8px); /* Responsive padding */
+            margin-bottom: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: clamp(0.85rem, 2.5vw, 1rem); /* Responsive font */
+            transition: border-color 0.3s ease;
         }
 
         .form-control:focus, .form-select:focus {
-            border-color: #088178;
-            box-shadow: 0 0 10px rgba(8, 129, 120, 0.2);
+            border-color: #1abc9c;
+            box-shadow: 0 0 5px rgba(26, 188, 156, 0.5);
             outline: none;
         }
 
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
         .error-message {
-            color: #e53e3e;
-            font-size: 0.85rem;
-            margin-top: -0.75rem;
+            color: #e74c3c;
+            font-size: clamp(0.75rem, 2vw, 0.9rem); /* Responsive font */
+            margin-top: -0.5rem;
             margin-bottom: 0.75rem;
             font-weight: 500;
         }
@@ -82,219 +108,264 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: clamp(1rem, 2vw, 1.5rem); /* Responsive gap */
         }
 
         .image-upload-row {
             display: flex;
-            gap: 2rem;
+            gap: clamp(1rem, 2vw, 1.5rem);
             align-items: flex-start;
             flex-wrap: wrap;
         }
 
         .image-card {
             border: 2px dashed #e2e8f0;
-            padding: 1rem;
-            border-radius: 15px;
+            padding: clamp(0.75rem, 2vw, 1rem);
+            border-radius: 10px;
             background: #fafafa;
             width: 100%;
-            max-width: 300px;
+            max-width: 250px;
             text-align: center;
             transition: border-color 0.3s ease;
         }
 
         .image-card:hover {
-            border-color: #088178;
+            border-color: #1abc9c;
         }
 
         .image-card img {
             max-width: 100%;
             height: auto;
-            border-radius: 10px;
-            margin-bottom: 1rem;
+            border-radius: 5px;
+            margin-bottom: 0.75rem;
         }
 
         .image-cropper {
             display: none;
             flex-direction: column;
             align-items: center;
-            width: 300px;
-            height: 300px;
+            width: 250px;
+            height: 250px;
             margin: 0 auto;
             border: 2px solid #e2e8f0;
-            padding: 1rem;
-            border-radius: 15px;
+            padding: clamp(0.75rem, 2vw, 1rem);
+            border-radius: 10px;
             background: #fff;
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
+            padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 15px); /* Responsive padding */
+            border-radius: 5px;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 2vw, 1rem); /* Responsive font */
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
         }
 
         .btn-primary {
-            background: linear-gradient(90deg, #088178, #056b63);
+            background: #1abc9c;
             color: #fff;
         }
 
         .btn-primary:hover {
-            background: linear-gradient(90deg, #056b63, #044e47);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(8, 129, 120, 0.3);
+            background: #16a085;
+            transform: scale(1.05);
+        }
+
+        .btn-primary:active {
+            background: #138d75;
+            transform: scale(0.95);
         }
 
         .btn-publish {
-            background: linear-gradient(90deg, #088178, #056b63);
+            background: #1abc9c;
             color: #fff;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
+            padding: clamp(10px, 2.5vw, 12px) clamp(20px, 3vw, 24px);
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            width: 100%;
+            max-width: 300px;
         }
 
         .btn-publish:hover {
-            background: linear-gradient(90deg, #056b63, #044e47);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(8, 129, 120, 0.4);
+            background: #16a085;
+            transform: scale(1.05);
         }
 
         .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
+            padding: clamp(4px, 1vw, 6px) clamp(8px, 1.5vw, 10px);
+            font-size: clamp(0.75rem, 2vw, 0.85rem);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        /* Responsive Adjustments */
         @media (max-width: 768px) {
-            .content-main { padding: 2rem; }
-            .card { padding: 1.5rem; }
-            .image-upload-row { flex-direction: column; gap: 1.5rem; }
-            .image-card, .image-cropper { max-width: 100%; }
-            .btn-publish { padding: 0.875rem 1.5rem; }
+            .dashboard-container {
+                margin-left: 70px; /* Match minimized sidebar width */
+                width: calc(100% - 70px); /* Adjust for mobile sidebar */
+                position: relative;
+                left: 0;
+            }
+            .main-content {
+                padding: 1rem;
+            }
+            .image-upload-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .image-card, .image-cropper {
+                max-width: 100%;
+                width: 100%;
+            }
+            .form-control, .form-select, .btn {
+                font-size: clamp(0.75rem, 2vw, 0.85rem);
+            }
+            .card-header h4 {
+                font-size: clamp(1rem, 2.5vw, 1.25rem);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 0.75rem;
+            }
+            .content-title {
+                text-align: left;
+            }
+            .card {
+                padding: 0.75rem;
+            }
+            .form-control, .form-select, .btn {
+                font-size: clamp(0.65rem, 1.8vw, 0.8rem);
+            }
+            .btn-publish {
+                padding: clamp(8px, 2vw, 10px) clamp(15px, 2.5vw, 20px);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .main-content {
+                padding: 2.5rem;
+            }
+            .content-title {
+                font-size: 2.2rem;
+            }
+            .image-card, .image-cropper {
+                max-width: 300px;
+            }
         }
     </style>
 </head>
 <body>
-    <section class="content-main">
-        <div class="row">
-            <div class="col-12">
-                <div class="content-header">
-                    <h2 class="content-title">Add New Product</h2>
-                </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <form method="POST" action="/admin/addProducts" enctype="multipart/form-data" id="productForm">
-                            <!-- Product Name -->
-                            <div class="mb-4">
-                                <label for="product_name" class="form-label">Product Name</label>
-                                <input type="text" placeholder="Enter product name" name="productName" class="form-control" id="product_name" required>
-                                <div id="productName-error" class="error-message"></div>
-                            </div>
+    <div class="dashboard-container">
+        <div class="main-content">
+            <h2 class="content-title">Add New Product</h2>
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="/admin/addProducts" enctype="multipart/form-data" id="productForm">
+                        <!-- Product Name -->
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Product Name</label>
+                            <input type="text" placeholder="Enter product name" name="productName" class="form-control" id="product_name" required>
+                            <div id="productName-error" class="error-message"></div>
+                        </div>
 
-                            <!-- Brand and Category Row -->
-                            <div class="row">
-                                <div class="col-lg-6 mb-4">
-                                    <label class="form-label">Brand</label>
-                                    <select class="form-select" name="brand" required>
-                                        <% if (brand && brand.length > 0) { %>
-                                            <% for (let i = 0; i < brand.length; i++) { %>
-                                                <option value="<%= brand[i].brandName %>"><%= brand[i].brandName %></option>
-                                            <% } %>
-                                        <% } else { %>
-                                            <option disabled>No brands available</option>
+                        <!-- Brand and Category Row -->
+                        <div class="row">
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">Brand</label>
+                                <select class="form-select" name="brand" required>
+                                    <% if (brand && brand.length > 0) { %>
+                                        <% for (let i = 0; i < brand.length; i++) { %>
+                                            <option value="<%= brand[i].brandName %>"><%= brand[i].brandName %></option>
                                         <% } %>
-                                    </select>
-                                    <div id="brand-error" class="error-message"></div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <label class="form-label">Category</label>
-                                    <select class="form-select" name="category" required>
-                                        <% for (let i = 0; i < cat.length; i++) { %>
-                                            <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
-                                        <% } %>
-                                    </select>
-                                    <div id="category-error" class="error-message"></div>
-                                </div>
+                                    <% } else { %>
+                                        <option disabled>No brands available</option>
+                                    <% } %>
+                                </select>
+                                <div id="brand-error" class="error-message"></div>
                             </div>
-
-                            <!-- Description -->
-                            <div class="mb-4">
-                                <label class="form-label">Description</label>
-                                <textarea placeholder="Enter product description" id="descriptionid" name="description" class="form-control" rows="4" required></textarea>
-                                <div id="description-error" class="error-message"></div>
+                            <div class="col-lg-6 mb-4">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="category" required>
+                                    <% for (let i = 0; i < cat.length; i++) { %>
+                                        <option value="<%= cat[i].name %>"><%= cat[i].name %></option>
+                                    <% } %>
+                                </select>
+                                <div id="category-error" class="error-message"></div>
                             </div>
+                        </div>
 
-                            <!-- Prices and Quantity Row -->
-                            <div class="row">
-                                <div class="col-lg-4 mb-4">
-                                    <label class="form-label" id="regular">Regular Price (₹)</label>
-                                    <input type="number" step="0.01" min="0" name="regularPrice" class="form-control" required>
-                                    <div id="regularPrice-error" class="error-message"></div>
-                                </div>
-                                <div class="col-lg-4 mb-4">
-                                    <label class="form-label" id="sale">Sale Price (₹)</label>
-                                    <input type="number" step="0.01" min="0" name="salePrice" class="form-control">
-                                    <div id="salePrice-error" class="error-message"></div>
-                                </div>
-                                <div class="col-lg-4 mb-4">
-                                    <label class="form-label">Quantity</label>
-                                    <input type="number" min="0" name="quantity" class="form-control" required>
-                                    <div id="quantity-error" class="error-message"></div>
-                                </div>
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Enter product description" id="descriptionid" name="description" class="form-control" rows="4" required></textarea>
+                            <div id="description-error" class="error-message"></div>
+                        </div>
+
+                        <!-- Prices and Quantity Row -->
+                        <div class="row">
+                            <div class="col-lg-4 mb-4">
+                                <label class="form-label">Regular Price (₹)</label>
+                                <input type="number" step="0.01" min="0" name="regularPrice" class="form-control" required>
+                                <div id="regularPrice-error" class="error-message"></div>
                             </div>
-
-                            <!-- Color -->
-                            <div class="row">
-                                <div class="col-lg-4 mb-4">
-                                    <label class="form-label">Color</label>
-                                    <input name="color" type="text" class="form-control" required>
-                                    <div id="color-error" class="error-message"></div>
-                                </div>
+                            <div class="col-lg-4 mb-4">
+                                <label class="form-label">Sale Price (₹)</label>
+                                <input type="number" step="0.01" min="0" name="salePrice" class="form-control">
+                                <div id="salePrice-error" class="error-message"></div>
                             </div>
+                            <div class="col-lg-4 mb-4">
+                                <label class="form-label">Quantity</label>
+                                <input type="number" min="0" name="quantity" class="form-control" required>
+                                <div id="quantity-error" class="error-message"></div>
+                            </div>
+                        </div>
 
-                            <!-- Image Upload Section -->
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h4>Product Images</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="image-upload-container">
-                                        <% for(let i = 1; i <= 4; i++) { %>
-                                            <div class="image-upload-row">
-                                                <div class="image-card">
-                                                    <img src="" alt="Preview" id="imgView<%= i %>">
-                                                    <input class="form-control mt-2" type="file" name="images" id="input<%= i %>" 
-                                                           accept="image/png, image/jpeg, image/jpg" 
-                                                           onchange="viewImage(event, <%= i %>)" 
-                                                           <%= i === 1 ? 'required' : '' %>>
-                                                </div>
-                                                <div class="image-cropper" id="cropperContainer<%= i %>">
-                                                    <img src="" id="croppedImg<%= i %>" alt="Cropped Image">
-                                                    <button type="button" id="saveButton<%= i %>" class="btn btn-primary btn-sm mt-2">Save Crop</button>
-                                                </div>
+                        <!-- Color -->
+                        <div class="row">
+                            <div class="col-lg-4 mb-4">
+                                <label class="form-label">Color</label>
+                                <input name="color" type="text" class="form-control" required>
+                                <div id="color-error" class="error-message"></div>
+                            </div>
+                        </div>
+
+                        <!-- Image Upload Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Product Images</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="image-upload-container">
+                                    <% for(let i = 1; i <= 4; i++) { %>
+                                        <div class="image-upload-row">
+                                            <div class="image-card">
+                                                <img src="" alt="Preview" id="imgView<%= i %>">
+                                                <input class="form-control mt-2" type="file" name="images" id="input<%= i %>"
+                                                       accept="image/png, image/jpeg, image/jpg"
+                                                       onchange="viewImage(event, <%= i %>)"
+                                                       <%= i === 1 ? 'required' : '' %>>
                                             </div>
-                                        <% } %>
-                                    </div>
-                                    <div id="images-error" class="error-message"></div>
+                                            <div class="image-cropper" id="cropperContainer<%= i %>">
+                                                <img src="" id="croppedImg<%= i %>" alt="Cropped Image">
+                                                <button type="button" id="saveButton<%= i %>" class="btn btn-primary btn-sm mt-2">Save Crop</button>
+                                            </div>
+                                        </div>
+                                    <% } %>
                                 </div>
+                                <div id="images-error" class="error-message"></div>
                             </div>
+                        </div>
 
-                            <!-- Publish Button -->
-                            <div class="text-center mt-4">
-                                <button class="btn btn-publish" type="submit">Publish Product</button>
-                            </div>
-                        </form>
-                    </div>
+                        <!-- Publish Button -->
+                        <div class="text-center mt-4">
+                            <button class="btn btn-publish" type="submit">Publish Product</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <script src="/assets/cropperjs/cropper.min.js"></script>
     <script>
@@ -317,6 +388,7 @@
             }
             if (file.size > CONFIG.maxSizeMB * 1024 * 1024) {
                 return { valid: false, message: `File size must be under ${CONFIG.maxSizeMB}MB.` };
+           ania: hidden;
             }
             return { valid: true };
         }
@@ -456,4 +528,5 @@
         });
     </script>
 </body>
+</html>
 <%- include("../../views/partials/admin/footer") %>

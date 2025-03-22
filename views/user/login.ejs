@@ -26,23 +26,28 @@
             background: linear-gradient(135deg, #eef2f7 0%, #d1dce5 100%);
             min-height: 100vh;
             overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .container {
-            min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 30px;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
             animation: fadeIn 0.8s ease-in;
+            width: 100%;
+            max-width: 1200px;
         }
 
         .card {
             background: #ffffff;
             border-radius: 25px;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            max-width: 1100px;
             width: 100%;
+            max-width: 1000px;
             overflow: hidden;
             transition: transform 0.3s ease;
         }
@@ -54,8 +59,7 @@
         .card-body {
             display: flex;
             flex-direction: row-reverse;
-            gap: 50px;
-            padding: 0;
+            gap: 40px;
         }
 
         .login-section {
@@ -65,16 +69,19 @@
 
         .login-form {
             flex: 1;
-            padding: 50px;
+            padding: 40px;
             max-width: 500px;
             background: #fff;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .login-image {
             flex: 1;
             background: #f8f9fa;
-            min-height: 650px;
+            min-height: 600px;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -97,32 +104,33 @@
             color: #1a3c63;
             font-size: 32px;
             font-weight: 700;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             text-align: center;
             letter-spacing: 1px;
         }
 
         .form-group {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             position: relative;
         }
 
         .form-group label {
             color: #4a5568;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: block;
             transition: color 0.3s ease;
         }
 
         .form-control {
             width: 100%;
-            padding: 14px 20px;
+            padding: 12px 18px;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             font-size: 16px;
             background: #fafafa;
             transition: all 0.3s ease;
+            box-sizing: border-box; /* Ensure padding doesn’t exceed width */
         }
 
         .form-control:focus {
@@ -138,7 +146,7 @@
 
         .fa-eye, .fa-eye-slash {
             position: absolute;
-            right: 20px;
+            right: 18px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
@@ -166,7 +174,7 @@
         }
 
         .btn {
-            padding: 14px 30px;
+            padding: 12px 25px;
             border-radius: 10px;
             font-weight: 600;
             font-size: 16px;
@@ -190,7 +198,7 @@
         .btn-google {
             background: #fff;
             border: 2px solid #e2e8f0;
-            padding: 12px;
+            padding: 10px;
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -220,7 +228,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .sign-up-link {
@@ -228,10 +236,9 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 15px;
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
+            text-align: center;
+            margin-top: 20px;
+            display: block; /* Ensure it’s a block element for centering */
             transition: color 0.3s ease;
         }
 
@@ -242,15 +249,15 @@
         .error-message {
             color: #e53e3e;
             font-size: 14px;
-            margin-top: 8px;
+            margin-top: 6px;
             font-weight: 500;
             display: none;
         }
 
         .alert {
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             font-size: 15px;
             background: #fff5f5;
             border: 1px solid #feb2b2;
@@ -258,23 +265,51 @@
             text-align: center;
         }
 
-        @media (max-width: 768px) {
+        /* Responsive Design */
+        @media (max-width: 992px) {
             .card-body {
                 flex-direction: column;
             }
 
             .login-form {
-                padding: 40px;
+                padding: 30px;
                 max-width: 100%;
             }
 
             .login-image {
                 min-height: 400px;
             }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 0;
+                max-width: 100%;
+            }
+
+            .card {
+                border-radius: 15px;
+                max-width: 100%;
+            }
+
+            .card-body {
+                flex-direction: column;
+            }
+
+            .login-image {
+                display: none;
+            }
+
+            .login-form {
+                padding: 25px;
+                max-width: 100%;
+                min-height: auto;
+            }
 
             .form-actions {
                 flex-direction: column;
-                gap: 20px;
+                gap: 15px;
                 align-items: stretch;
             }
 
@@ -285,27 +320,69 @@
             .social-btns {
                 justify-content: center;
             }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
-            }
-
-            .login-form {
-                padding: 30px;
-            }
 
             .card-title {
                 font-size: 28px;
             }
 
-            .btn {
-                padding: 12px 25px;
+            .form-control {
+                padding: 10px 15px; /* Reduced padding for mobile */
+                font-size: 14px; /* Smaller text */
+                max-width: 100%; /* Prevent overflow */
             }
 
-            .login-image {
-                min-height: 300px;
+            .fa-eye, .fa-eye-slash {
+                right: 15px; /* Adjust for reduced padding */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .card {
+                border-radius: 10px;
+            }
+
+            .login-form {
+                padding: 20px;
+            }
+
+            .card-title {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .form-control {
+                padding: 8px 12px; /* Further reduced for small screens */
+                font-size: 13px; /* Even smaller text */
+                max-width: 100%;
+            }
+
+            .fa-eye, .fa-eye-slash {
+                right: 12px;
+                font-size: 16px; /* Slightly smaller icon */
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .alert {
+                padding: 10px;
+                margin-bottom: 15px;
+                font-size: 14px;
+            }
+
+            .sign-up-link {
+                margin-top: 15px;
+                font-size: 14px;
             }
         }
 

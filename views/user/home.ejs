@@ -1,8 +1,19 @@
 <%- include("../../views/partials/user/header") %>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
+/* Remove Underline Globally */
+a {
+    text-decoration: none !important; /* Remove underline from all links */
+}
+
+a:hover {
+    text-decoration: none !important; /* Ensure no underline on hover */
+}
+
+/* Hero Slider */
 .hero-slider {
     position: relative;
     width: 100%;
@@ -17,8 +28,8 @@
 
 .single-hero-slider {
     position: relative;
-    height: 100vh;
-    min-height: 900px;
+    height: 70vh;
+    min-height: 500px;
     width: 100%;
 }
 
@@ -74,7 +85,6 @@
     opacity: 0;
     transform: translateY(30px);
     animation: fadeInUp 0.8s 0.3s forwards;
-    position: relative;
     padding-left: 20px;
     border-left: 4px solid #ff6b6b;
 }
@@ -85,7 +95,6 @@
     padding: 20px 50px;
     background: #ff6b6b;
     color: white;
-    text-decoration: none;
     border-radius: 50px;
     font-weight: 600;
     font-size: 1.2rem;
@@ -114,18 +123,11 @@
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.swiper-button-next,
-.swiper-button-prev {
+.swiper-button-next, .swiper-button-prev {
     width: 70px;
     height: 70px;
     background: rgba(255,255,255,0.1);
@@ -133,14 +135,12 @@
     transition: all 0.3s ease;
 }
 
-.swiper-button-next:after,
-.swiper-button-prev:after {
+.swiper-button-next:after, .swiper-button-prev:after {
     font-size: 28px;
     color: white;
 }
 
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
+.swiper-button-next:hover, .swiper-button-prev:hover {
     background: #ff6b6b;
     transform: scale(1.1);
 }
@@ -158,31 +158,7 @@
     background: #ff6b6b;
 }
 
-@media (max-width: 768px) {
-    .single-hero-slider {
-        height: 80vh;
-        min-height: 600px;
-    }
-
-    .single-slider-content {
-        left: 5%;
-        max-width: 90%;
-    }
-
-    .single-slider-content h1 {
-        font-size: 3rem;
-    }
-
-    .single-slider-content p {
-        font-size: 1.2rem;
-    }
-
-    .shop-now-btn {
-        padding: 15px 35px;
-        font-size: 1rem;
-    }
-}
-
+/* New Arrival */
 .new-arrival {
     padding: 80px 0;
     background: #f8f9fa;
@@ -252,15 +228,8 @@
     text-transform: uppercase;
 }
 
-.badge-new {
-    background: #2ecc71;
-    color: white;
-}
-
-.badge-sale {
-    background: #e74c3c;
-    color: white;
-}
+.badge-new { background: #2ecc71; color: white; }
+.badge-sale { background: #e74c3c; color: white; }
 
 .product-details {
     padding: 20px;
@@ -279,9 +248,7 @@
     -webkit-box-orient: vertical;
 }
 
-.product-price {
-    margin-bottom: 15px;
-}
+.product-price { margin-bottom: 15px; }
 
 .sale-price {
     font-size: 1.2rem;
@@ -307,25 +274,18 @@
     border-radius: 6px;
     font-size: 14px;
     text-align: center;
-    text-decoration: none;
     transition: all 0.3s ease;
 }
 
-.btn-view {
-    background: #3498db;
-    color: white;
-}
-
-.btn-cart {
-    background: #2ecc71;
-    color: white;
-}
+.btn-view { background: #3498db; color: white; }
+.btn-cart { background: #2ecc71; color: white; }
 
 .btn-view:hover, .btn-cart:hover {
     opacity: 0.9;
     color: white;
 }
 
+/* Banner Area */
 .banner-area {
     padding: 60px 0;
     background: #f8f9fa;
@@ -335,8 +295,6 @@
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 30px;
-    max-width: 1400px;
-    margin: 0 auto;
 }
 
 .banner__item {
@@ -347,23 +305,9 @@
     height: 400px;
 }
 
-/* First banner - large right */
-.banner__item:nth-child(1) {
-    grid-column: 5 / 13;
-    grid-row: 1;
-}
-
-/* Second banner - medium left */
-.banner__item:nth-child(2) {
-    grid-column: 1 / 6;
-    grid-row: 2;
-}
-
-/* Third banner - large bottom */
-.banner__item:nth-child(3) {
-    grid-column: 6 / 13;
-    grid-row: 2;
-}
+.banner__item:nth-child(1) { grid-column: 5 / 13; grid-row: 1; }
+.banner__item:nth-child(2) { grid-column: 1 / 6; grid-row: 2; }
+.banner__item:nth-child(3) { grid-column: 6 / 13; grid-row: 2; }
 
 .banner__item__pic {
     height: 100%;
@@ -395,16 +339,13 @@
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 20px;
-    color: #fff;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .banner__item__text a {
-    display: inline-block;
     padding: 12px 30px;
     background: #ff6b6b;
     color: white;
-    text-decoration: none;
     border-radius: 5px;
     font-weight: 600;
     text-transform: uppercase;
@@ -417,435 +358,280 @@
     transform: translateY(-2px);
 }
 
-@media (max-width: 992px) {
-    .banner-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-        padding: 0 15px;
-    }
-
-    .banner__item:nth-child(1),
-    .banner__item:nth-child(2),
-    .banner__item:nth-child(3) {
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+    .single-hero-slider { height: 60vh; min-height: 400px; }
+    .single-slider-content { left: 5%; max-width: 90%; }
+    .single-slider-content h1 { font-size: 3rem; }
+    .single-slider-content p { font-size: 1.2rem; }
+    .shop-now-btn { padding: 15px 35px; font-size: 1rem; }
+    .banner-grid { grid-template-columns: 1fr; gap: 20px; }
+    .banner__item:nth-child(1), .banner__item:nth-child(2), .banner__item:nth-child(3) {
         grid-column: 1 / -1;
         grid-row: auto;
         height: 300px;
     }
-
-    .banner__item__text {
-        padding: 20px;
-    }
-
-    .banner__item__text h2 {
-        font-size: 1.5rem;
-    }
+    .banner__item__text { padding: 20px; }
+    .banner__item__text h2 { font-size: 1.5rem; }
 }
 
-.banner__item--middle {
-    margin-top: -30px;
+@media (max-width: 767px) {
+    .single-hero-slider { height: 50vh; min-height: 350px; }
+    .single-slider-content h1 { font-size: 2.5rem; }
+    .single-slider-content p { font-size: 1rem; }
+    .shop-now-btn { padding: 12px 25px; font-size: 0.9rem; }
+    .title { font-size: 2.5rem; }
+    .subtitle { font-size: 1rem; }
+    .banner__item { height: 250px; }
 }
 
-.banner__item--last {
-    margin-top: 30px;
+@media (max-width: 576px) {
+    .single-slider-content h1 { font-size: 2rem; }
+    .single-slider-content p { font-size: 0.9rem; }
+    .shop-now-btn { padding: 10px 20px; font-size: 0.8rem; }
+    .title { font-size: 2rem; }
 }
 
-@media (max-width: 768px) {
-    .banner__item__pic {
-        height: 300px;
-    }
-    
-    .banner__item__text h2 {
-        font-size: 1.5rem;
-    }
-    
-    .banner__item--middle {
-        margin-top: 0;
-    }
-
-    .banner__item__text {
-        padding: 20px;
-    }
-}
-
-/* Reset container fluid for full width */
-.container-fluid {
-    width: 100%;
-    padding-right: 0;
-    padding-left: 0;
-    margin-right: auto;
-    margin-left: auto;
-}
-
-/* Hero slider modifications */
-.hero-slider {
-    position: relative;
-    width: 100vw;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-.swiper-container {
-    width: 100vw;
-    margin: 0;
-    padding: 0;
-}
-
-.single-hero-slider {
-    width: 100vw;
-    position: relative;
-    height: 70vh;
-    min-height: 500px;
-}
-
-.single-slider-img {
-    width: 100%;
-    height: 100%;
-}
-
-.single-slider-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Popular items section fix */
-.popular-items {
-    width: 100%;
-    margin: 0;
-    padding: 50px 0;
-}
-
-.popular-items .container-fluid {
-    max-width: 100%;
-    padding: 0 15px;
-}
-
-/* Banner area fixes */
-.banner-area {
-    width: 100vw;
-    margin: 0;
-    padding: 60px 0;
-}
-
-.banner-grid {
-    width: 100%;
-    max-width: 100%;
-    padding: 0 15px;
-}
-
-/* Fix for any potential horizontal scrolling */
-body {
-    overflow-x: hidden;
-}
-
-/* Ensure all sections maintain full width */
-section {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-/* Add these styles for header dropdown */
-.header-area {
-    position: relative;
-    z-index: 1000;
-}
-
-.nav-item.dropdown {
-    position: relative;
-}
-
-.dropdown-menu {
-    z-index: 1001;
-    position: absolute;
-}
+/* Bootstrap Overrides */
+.container-fluid { padding-right: 15px; padding-left: 15px; }
+body { overflow-x: hidden; }
 </style>
 
-<!-- Hero Section -->
-<section class="hero-slider">
-    <div class="swiper-container">
-        <div class="swiper-wrapper">
-            <% banner.slice(0, 2).forEach(bannerItem => { %>
-                <div class="swiper-slide">
-                    <div class="single-hero-slider">
-                        <div class="single-slider-img">
-                            <img src="/uploads/re-image/<%= bannerItem.image %>" alt="<%= bannerItem.title %>">
-                        </div>
-                        <div class="single-slider-content">
-                            <h1><%= bannerItem.title %></h1>
-                            <p><%= bannerItem.description %></p>
-                            <a href="<%= bannerItem.link %>" class="shop-now-btn">
-                                Shop Now <i class="fas fa-arrow-right ml-2"></i>
-                            </a>
+<main>
+    <!-- Hero Section -->
+    <section class="hero-slider">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <% banner.slice(0, 2).forEach(bannerItem => { %>
+                    <div class="swiper-slide">
+                        <div class="single-hero-slider">
+                            <div class="single-slider-img">
+                                <img src="/uploads/re-image/<%= bannerItem.image %>" alt="<%= bannerItem.title %>">
+                            </div>
+                            <div class="single-slider-content">
+                                <h1><%= bannerItem.title %></h1>
+                                <p><%= bannerItem.description %></p>
+                                <a href="<%= bannerItem.link %>" class="shop-now-btn">
+                                    Shop Now <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <% }) %>
+                <% }) %>
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
         </div>
-        <div class="swiper-pagination"></div>
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-    </div>
-</section>
+    </section>
 
-<!-- Banner Section -->
-<!-- <section class="banner-area">
-    <div class="banner-grid">
-        <% banner.slice(2).forEach(bannerItem => { %>
-            <div class="banner__item">
-                <div class="banner__item__pic">
-                    <img src="/uploads/re-image/<%= bannerItem.image %>" alt="<%= bannerItem.title %>">
-                </div>
-                <div class="banner__item__text">
-                    <h2><%= bannerItem.title %></h2>
-                    <a href="<%= bannerItem.link %>">Shop now</a>
-                </div>
-            </div>
-        <% }) %>
-    </div>
-</section> -->
-
-<!--? Popular Items Start -->
-<div class="popular-items pt-50">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="single-popular-items mb-50 text-center wow fadeInUp" data-wow-duration="1s" data-wow-delay=".1s">
-                    <div class="popular-img">
-                        <img src="assets/img/gallery/popular1.png" alt="">
-                        <div class="img-cap">
-                            <span>Glasses</span>
+    <!-- Popular Items -->
+    <section class="popular-items pt-5 pb-5">
+        <div class="container-fluid">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                <div class="col">
+                    <div class="single-popular-items text-center">
+                        <div class="popular-img">
+                            <img src="assets/img/gallery/popular1.png" alt="Glasses" class="img-fluid">
+                            <div class="img-cap"><span>Glasses</span></div>
+                            <div class="favorit-items">
+                                <a href="/shop" class="btn btn-primary">Shop Now</a>
+                            </div>
                         </div>
-                        <div class="favorit-items">
-                         <a href="/shop" class="btn">Shop Now</a>
-                     </div>
-                 </div>
-             </div>
-         </div>
-         <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="single-popular-items mb-50 text-center wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
-                <div class="popular-img">
-                    <img src="assets/img/gallery/popular2.png" alt="">
-                    <div class="img-cap">
-                        <span>Watches</span>
                     </div>
-                    <div class="favorit-items">
-                     <a href="/shop" class="btn">Shop Now</a>
-                 </div>
-             </div>
-         </div>
-     </div>
-     <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="single-popular-items mb-50 text-center wow fadeInUp" data-wow-duration="1s" data-wow-delay=".4s">
-            <div class="popular-img">
-                <img src="assets/img/gallery/popular3.png" alt="">
-                <div class="img-cap">
-                    <span>Jackets</span>
                 </div>
-                <div class="favorit-items">
-                 <a href="/shop" class="btn">Shop Now</a>
-             </div>
-         </div>
-     </div>
- </div>
- <div class="col-lg-3 col-md-6 col-sm-6">
-    <div class="single-popular-items mb-50 text-center wow fadeInUp" data-wow-duration="1s" data-wow-delay=".6s">
-        <div class="popular-img">
-            <img src="assets/img/gallery/popular4.png" alt="">
-            <div class="img-cap">
-                <span>Clothes</span>
+                <div class="col">
+                    <div class="single-popular-items text-center">
+                        <div class="popular-img">
+                            <img src="assets/img/gallery/popular2.png" alt="Watches" class="img-fluid">
+                            <div class="img-cap"><span>Watches</span></div>
+                            <div class="favorit-items">
+                                <a href="/shop" class="btn btn-primary">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="single-popular-items text-center">
+                        <div class="popular-img">
+                            <img src="assets/img/gallery/popular3.png" alt="Jackets" class="img-fluid">
+                            <div class="img-cap"><span>Jackets</span></div>
+                            <div class="favorit-items">
+                                <a href="/shop" class="btn btn-primary">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="single-popular-items text-center">
+                        <div class="popular-img">
+                            <img src="assets/img/gallery/popular4.png" alt="Clothes" class="img-fluid">
+                            <div class="img-cap"><span>Clothes</span></div>
+                            <div class="favorit-items">
+                                <a href="/shop" class="btn btn-primary">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="favorit-items">
-             <a href="/shop" class="btn">Shop Now</a>
-         </div>
-     </div>
- </div>
-</div>
-</div>
-</div>
-<!-- Popular Items End -->
-<!--? New Arrival Start -->
-<div class="new-arrival">
-    <div class="container">
-        <!-- Section title -->
-        <div class="row justify-content-center">
-            <div class="col-xl-7 col-lg-8 col-md-10">
-                <div class="section-tittle mb-60 text-center wow fadeInUp" data-wow-duration="2s" data-wow-delay=".2s">
+        </div>
+    </section>
+
+    <!-- New Arrival -->
+    <section class="new-arrival">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-7 text-center mb-5">
                     <h2 class="title">New<br>Arrivals</h2>
                     <p class="subtitle">Discover Our Latest Collection</p>
                 </div>
             </div>
-        </div>
-
-        <div class="container-fluid">
-            <div class="row px-xl-5 pb-3">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
                 <% for (let i = 0; i < products.length; i++) { %>
-                <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                    <div class="product-card wow fadeInUp" data-wow-delay=".<%= i+1 %>s">
-                        <div class="product-img">
-                            <a href="/productDetails?id=<%= products[i]._id %>">
-                                <% if (products[i].productImage && products[i].productImage.length > 0) { %>
-                                    <img src="<%= products[i].productImage[0] %>" alt="<%= products[i].productName %>">
-                                <% } else { %>
-                                    <img src="/uploads/product-images/default.jpg" alt="Default Product Image">
-                                <% } %>
-                            </a>
-                            <div class="product-badges">
-                                <% if (products[i].isNew) { %>
-                                    <span class="badge-new">New</span>
-                                <% } %>
-                                <% if (products[i].salePrice < products[i].regularPrice) { %>
-                                    <span class="badge-sale">Sale</span>
-                                <% } %>
-                            </div>
-                        </div>
-                        <div class="product-details">
-                            <h3 class="product-title"><%= products[i].productName %></h3>
-                            <div class="product-price">
-                                <span class="sale-price">₹<%= products[i].salePrice %></span>
-                                <% if (products[i].salePrice < products[i].regularPrice) { %>
-                                    <span class="regular-price">₹<%= products[i].regularPrice %></span>
-                                <% } %>
-                            </div>
-                            <div class="product-actions">
-                                <a href="/productDetails?id=<%= products[i]._id %>" class="btn-view">
-                                    <i class="fas fa-eye"></i> View Details
+                    <div class="col">
+                        <div class="product-card">
+                            <div class="product-img">
+                                <a href="/productDetails?id=<%= products[i]._id %>">
+                                    <% if (products[i].productImage && products[i].productImage.length > 0) { %>
+                                        <img src="<%= products[i].productImage[0] %>" alt="<%= products[i].productName %>" class="img-fluid">
+                                    <% } else { %>
+                                        <img src="/uploads/product-images/default.jpg" alt="Default Product Image" class="img-fluid">
+                                    <% } %>
                                 </a>
-                                <a href="/cart?id=<%=products[i]._id%>" class="btn-cart">
-                                    <i class="fas fa-shopping-cart"></i> Add to Cart
-                                </a>
+                                <div class="product-badges">
+                                    <% if (products[i].isNew) { %><span class="badge-new">New</span><% } %>
+                                    <% if (products[i].salePrice < products[i].regularPrice) { %><span class="badge-sale">Sale</span><% } %>
+                                </div>
+                            </div>
+                            <div class="product-details">
+                                <h3 class="product-title"><%= products[i].productName %></h3>
+                                <div class="product-price">
+                                    <span class="sale-price">₹<%= products[i].salePrice %></span>
+                                    <% if (products[i].salePrice < products[i].regularPrice) { %>
+                                        <span class="regular-price">₹<%= products[i].regularPrice %></span>
+                                    <% } %>
+                                </div>
+                                <div class="product-actions">
+                                    <a href="/productDetails?id=<%= products[i]._id %>" class="btn-view"><i class="fas fa-eye"></i> View Details</a>
+                                    <a href="/cart?id=<%=products[i]._id%>" class="btn-cart"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 <% } %>
             </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<!--? collection -->
-<section class="collection section-bg2 section-padding30 section-over1 ml-15 mr-15" data-background="assets/img/gallery/section_bg01.png">
-    <div class="container-fluid"></div>
-    <div class="row justify-content-center">
-        <div class="col-xl-7 col-lg-9">
-            <div class="single-question text-center">
-                <h2 class="wow fadeInUp" data-wow-duration="2s" data-wow-delay=".1s">collection houses our first-ever</h2>
-                <a href="about.html" class="btn class="wow fadeInUp" data-wow-duration="2s" data-wow-delay=".4s">About Us</a>
-            </div>
-        </div>
-    </div>
-</div>
-</section>
-<!-- End collection -->
-<!--? Popular Locations Start 01-->
-<div class="popular-product pt-50">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <div class="single-product mb-50">
-                    <div class="location-img">
-                        <img src="assets/img/gallery/popular-imtes1.png" alt="">
-                    </div>
-                    <div class="location-details">
-                        <p><a href="product_details.html">Established fact that by the<br> readable content</a></p>
-                        <a href="product_details.html" class="btn">Read More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <div class="single-product mb-50">
-                    <div class="location-img">
-                        <img src="assets/img/gallery/popular-imtes2.png" alt="">
-                    </div>
-                    <div class="location-details">
-                        <p><a href="product_details.html">Established fact that by the<br> readable content</a></p>
-                        <a href="product_details.html" class="btn">Read More</a>
+    <!-- Collection -->
+    <section class="collection section-bg2 section-padding30 section-over1" style="background-image: url('assets/img/gallery/section_bg01.png');">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-9 col-lg-7 text-center">
+                    <div class="single-question">
+                        <h2>Collection houses our first-ever</h2>
+                        <a href="about.html" class="btn btn-primary">About Us</a>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- Popular Locations End -->
-<!--? Services Area Start -->
-<div class="categories-area section-padding40 gray-bg">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="single-cat mb-50 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
-                    <div class="cat-icon">
-                        <img src="assets/img/icon/services1.svg" alt="">
-                    </div>
-                    <div class="cat-cap">
-                        <h5>Fast & Free Delivery</h5>
-                        <p>Free delivery on all orders</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="single-cat mb-50 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
-                    <div class="cat-icon">
-                        <img src="assets/img/icon/services2.svg" alt="">
-                    </div>
-                    <div class="cat-cap">
-                        <h5>Fast & Free Delivery</h5>
-                        <p>Free delivery on all orders</p>
+    </section>
+
+    <!-- Popular Products -->
+    <section class="popular-product pt-5 pb-5">
+        <div class="container-fluid">
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col">
+                    <div class="single-product">
+                        <div class="location-img">
+                            <img src="assets/img/gallery/popular-imtes1.png" alt="" class="img-fluid">
+                        </div>
+                        <div class="location-details">
+                            <p><a href="product_details.html">Established fact that by the<br> readable content</a></p>
+                            <a href="product_details.html" class="btn btn-primary">Read More</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="single-cat mb-30 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".4s">
-                    <div class="cat-icon">
-                        <img src="assets/img/icon/services3.svg" alt="">
-                    </div>
-                    <div class="cat-cap">
-                        <h5>Fast & Free Delivery</h5>
-                        <p>Free delivery on all orders</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="single-cat wow fadeInUp" data-wow-duration="1s" data-wow-delay=".5s">
-                    <div class="cat-icon">
-                        <img src="assets/img/icon/services4.svg" alt="">
-                    </div>
-                    <div class="cat-cap">
-                        <h5>Fast & Free Delivery</h5>
-                        <p>Free delivery on all orders</p>
+                <div class="col">
+                    <div class="single-product">
+                        <div class="location-img">
+                            <img src="assets/img/gallery/popular-imtes2.png" alt="" class="img-fluid">
+                        </div>
+                        <div class="location-details">
+                            <p><a href="product_details.html">Established fact that by the<br> readable content</a></p>
+                            <a href="product_details.html" class="btn btn-primary">Read More</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<!--? Services Area End -->
+    </section>
+
+    <!-- Services Area -->
+    <section class="categories-area section-padding40 gray-bg">
+        <div class="container-fluid">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                <div class="col">
+                    <div class="single-cat text-center">
+                        <div class="cat-icon">
+                            <img src="assets/img/icon/services1.svg" alt="" class="img-fluid">
+                        </div>
+                        <div class="cat-cap">
+                            <h5>Fast & Free Delivery</h5>
+                            <p>Free delivery on all orders</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="single-cat text-center">
+                        <div class="cat-icon">
+                            <img src="assets/img/icon/services2.svg" alt="" class="img-fluid">
+                        </div>
+                        <div class="cat-cap">
+                            <h5>Fast & Free Delivery</h5>
+                            <p>Free delivery on all orders</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="single-cat text-center">
+                        <div class="cat-icon">
+                            <img src="assets/img/icon/services3.svg" alt="" class="img-fluid">
+                        </div>
+                        <div class="cat-cap">
+                            <h5>Fast & Free Delivery</h5>
+                            <p>Free delivery on all orders</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="single-cat text-center">
+                        <div class="cat-icon">
+                            <img src="assets/img/icon/services4.svg" alt="" class="img-fluid">
+                        </div>
+                        <div class="cat-cap">
+                            <h5>Fast & Free Delivery</h5>
+                            <p>Free delivery on all orders</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
+
 <%- include("../../views/partials/user/footer") %>
 
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 var swiper = new Swiper('.swiper-container', {
     slidesPerView: 1,
     loop: true,
-    autoplay: {
-        delay: 5000,
-        disableOnInteraction: false,
-    },
+    autoplay: { delay: 5000, disableOnInteraction: false },
     effect: 'fade',
-    fadeEffect: {
-        crossFade: true
-    },
-    pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-    },
-    navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-    },
+    fadeEffect: { crossFade: true },
+    pagination: { el: '.swiper-pagination', clickable: true },
+    navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
 });
 </script>
-   

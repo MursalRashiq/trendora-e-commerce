@@ -26,6 +26,7 @@
             justify-content: center;
             align-items: center;
             position: relative;
+            padding: 20px; /* Added padding for smaller screens */
         }
 
         .logo-container {
@@ -125,6 +126,8 @@
             top: 0;
             left: 0;
             z-index: 1;
+            width: 100%;
+            height: 100%;
         }
 
         .glow {
@@ -136,6 +139,59 @@
                                       transparent 70%);
             pointer-events: none;
             z-index: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .brand-name {
+                font-size: 4rem; /* Reduced from 5.5rem */
+                -webkit-text-stroke: 1.5px #9F78FF; /* Slightly thinner stroke */
+                letter-spacing: 3px; /* Reduced from 5px */
+            }
+
+            .tagline {
+                font-size: 1.2rem; /* Reduced from 1.5rem */
+                margin-top: 15px; /* Reduced from 20px */
+            }
+
+            .cta-button {
+                margin-top: 30px; /* Reduced from 40px */
+            }
+
+            .explore-btn {
+                padding: 12px 30px; /* Reduced from 15px 40px */
+                font-size: 1rem; /* Reduced from 1.2rem */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .brand-name {
+                font-size: 2.5rem; /* Further reduced */
+                -webkit-text-stroke: 1px #9F78FF; /* Thinner stroke */
+                letter-spacing: 2px; /* Reduced from 3px */
+            }
+
+            .tagline {
+                font-size: 0.9rem; /* Further reduced */
+                margin-top: 10px; /* Reduced from 15px */
+            }
+
+            .cta-button {
+                margin-top: 20px; /* Further reduced */
+            }
+
+            .explore-btn {
+                padding: 10px 25px; /* Further reduced */
+                font-size: 0.9rem; /* Further reduced */
+            }
         }
     </style>
 </head>
@@ -162,7 +218,7 @@
         canvas.height = window.innerHeight;
 
         const particles = [];
-        const particleCount = 100;
+        const particleCount = Math.min(100, Math.floor(window.innerWidth / 10)); // Reduce particles on smaller screens
         
         class Particle {
             constructor() {
@@ -241,6 +297,13 @@
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            // Adjust particle count on resize
+            while (particles.length > Math.floor(window.innerWidth / 10)) {
+                particles.pop();
+            }
+            while (particles.length < Math.floor(window.innerWidth / 10)) {
+                particles.push(new Particle());
+            }
         });
     </script>
 </body>

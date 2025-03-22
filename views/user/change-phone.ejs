@@ -1,23 +1,426 @@
 <%- include("../../views/partials/user/header") %>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Change Phone Number</h5>
-                </div>
-                <div class="card-body">
-                    <form action="/change-phone" method="POST">
-                        <% if (messages.error) { %>
-                            <div class="alert alert-danger"><%= messages.error %></div>
-                        <% } %>
-                        <% if (messages.success) { %>
-                            <div class="alert alert-success"><%= messages.success %></div>
-                        <% } %>
-                        
-                        <div class="form-group mb-3">
-                            <label for="newPhone">New Phone Number</label>
+<style>
+.content-main {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 80px 0;
+}
+
+.card-login {
+    max-width: 500px;
+    margin: 0 auto;
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(4, 105, 99, 0.15);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card-login:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    background: linear-gradient(90deg, #046963, #03413c);
+    padding: 35px;
+    text-align: center;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-header::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    transform: skewY(-3deg);
+    animation: wave 3s infinite ease-in-out;
+}
+
+@keyframes wave {
+    0%, 100% { transform: skewY(-3deg) translateY(0); }
+    50% { transform: skewY(3deg) translateY(-10px); }
+}
+
+.card-title {
+    color: white;
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    padding: 45px;
+}
+
+.form-group {
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #046963;
+    margin-bottom: 12px;
+    display: block;
+    font-size: 1rem;
+    letter-spacing: 0.75px;
+}
+
+.form-control {
+    height: 60px;
+    padding: 15px 20px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    width: 100%;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.form-control:focus {
+    border-color: #046963;
+    box-shadow: 0 0 0 0.25rem rgba(4, 105, 99, 0.2), 0 5px 15px rgba(4, 105, 99, 0.1);
+    background: white;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    display: none;
+    padding-left: 5px;
+    font-style: italic;
+}
+
+.btn-primary {
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(90deg, #046963, #035750);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    margin-top: 35px;
+    letter-spacing: 1.5px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 5px 15px rgba(4, 105, 99, 0.2);
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-primary:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary:hover {
+    background: #035750;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(4, 105, 99, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(90deg, #6b7280, #4b5563);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    letter-spacing: 1.5px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 5px 15px rgba(107, 114, 128, 0.2);
+    text-decoration: none;
+}
+
+.btn-secondary::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-secondary:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(107, 114, 128, 0.4);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+.alert {
+    border-radius: 12px;
+    padding: 20px 25px;
+    margin-bottom: 30px;
+    border: none;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.alert-danger {
+    background-color: #fff5f5;
+    color: #dc3545;
+    border-left: 5px solid #dc3545;
+}
+
+.alert-success {
+    background-color: #f0fff4;
+    color: #046963;
+    border-left: 5px solid #046963;
+}
+
+.input-icon {
+    position: absolute;
+    right: 20px;
+    top: 50px;
+    color: #046963;
+    opacity: 0.8;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus + .input-icon {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+.input-group {
+    position: relative;
+}
+
+/* Animation for form elements */
+.form-group {
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInUp 0.6s forwards;
+}
+
+.form-group:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .content-main {
+        padding: 60px 0;
+    }
+
+    .card-login {
+        max-width: 480px;
+        margin: 0 25px;
+    }
+
+    .card-header {
+        padding: 30px;
+    }
+
+    .card-title {
+        font-size: 2.2rem;
+    }
+
+    .card-body {
+        padding: 35px;
+    }
+
+    .form-control {
+        height: 55px;
+        font-size: 1rem;
+    }
+
+    .input-icon {
+        top: 45px;
+    }
+
+    .btn-primary, .btn-secondary {
+        height: 55px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .content-main {
+        padding: 50px 0;
+    }
+
+    .card-login {
+        max-width: 90%; /* Larger card on mobile */
+        margin: 0 20px;
+        border-radius: 15px;
+    }
+
+    .card-header {
+        padding: 25px;
+    }
+
+    .card-title {
+        font-size: 2rem;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        height: 50px;
+        padding: 12px 15px;
+        font-size: 0.95rem;
+    }
+
+    .input-icon {
+        top: 40px;
+        right: 15px;
+        font-size: 1.1rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        height: 50px;
+        font-size: 1rem;
+        margin-top: 25px;
+    }
+
+    .btn-secondary {
+        margin-top: 15px;
+    }
+
+    .alert {
+        padding: 18px 20px;
+        font-size: 0.95rem;
+    }
+
+    .error-message {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .card-login {
+        max-width: 95%; /* Even larger for small screens */
+        margin: 0 10px;
+    }
+
+    .card-header {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.8rem;
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .form-control {
+        height: 45px;
+        font-size: 0.9rem;
+    }
+
+    .input-icon {
+        top: 36px;
+        font-size: 1rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        height: 45px;
+        font-size: 0.95rem;
+    }
+}
+</style>
+
+<div class="content-main">
+    <div class="container">
+        <div class="card-login">
+            <div class="card-header">
+                <h2 class="card-title">Change Phone</h2>
+            </div>
+            <div class="card-body">
+                <form action="/change-phone" method="POST" onsubmit="return validateForm()">
+                    <% if (messages.error) { %>
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <%= messages.error %>
+                        </div>
+                    <% } %>
+                    <% if (messages.success) { %>
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <%= messages.success %>
+                        </div>
+                    <% } %>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="newPhone">New Phone Number</label>
+                        <div class="input-group">
                             <input type="tel" 
                                    class="form-control" 
                                    id="newPhone" 
@@ -25,10 +428,14 @@
                                    pattern="[0-9]{10}"
                                    title="Please enter a valid 10-digit phone number"
                                    required>
+                            <i class="fas fa-phone input-icon"></i>
                         </div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="reNewPhone">Confirm Phone Number</label>
+                        <div class="error-message" id="newPhoneError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="reNewPhone">Confirm Phone Number</label>
+                        <div class="input-group">
                             <input type="tel" 
                                    class="form-control" 
                                    id="reNewPhone" 
@@ -36,15 +443,86 @@
                                    pattern="[0-9]{10}"
                                    title="Please enter a valid 10-digit phone number"
                                    required>
+                            <i class="fas fa-check input-icon"></i>
                         </div>
-                        
-                        <button type="submit" class="btn btn-primary">Update Phone Number</button>
-                        <a href="/profile" class="btn btn-secondary">Cancel</a>
-                    </form>
-                </div>
+                        <div class="error-message" id="reNewPhoneError"></div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        Update Phone
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <a href="/profile" class="btn btn-secondary">
+                        Cancel
+                        <i class="fas fa-times"></i>
+                    </a>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
 <%- include("../../views/partials/user/footer") %>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function validateForm() {
+    const newPhone = document.getElementById('newPhone');
+    const reNewPhone = document.getElementById('reNewPhone');
+    const newPhoneError = document.getElementById('newPhoneError');
+    const reNewPhoneError = document.getElementById('reNewPhoneError');
+    
+    let isValid = true;
+    
+    newPhoneError.style.display = 'none';
+    reNewPhoneError.style.display = 'none';
+    
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(newPhone.value)) {
+        newPhoneError.textContent = 'Please enter a valid 10-digit phone number';
+        newPhoneError.style.display = 'block';
+        isValid = false;
+    }
+    
+    if (newPhone.value !== reNewPhone.value) {
+        reNewPhoneError.textContent = 'Phone numbers do not match';
+        reNewPhoneError.style.display = 'block';
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Please check the form and try again',
+            confirmButtonColor: '#046963'
+        });
+    }
+    
+    return isValid;
+}
+
+document.getElementById('newPhone').addEventListener('input', function() {
+    const phoneRegex = /^[0-9]{10}$/;
+    const error = document.getElementById('newPhoneError');
+    
+    if (!phoneRegex.test(this.value)) {
+        error.textContent = 'Please enter a valid 10-digit phone number';
+        error.style.display = 'block';
+    } else {
+        error.style.display = 'none';
+    }
+});
+
+document.getElementById('reNewPhone').addEventListener('input', function() {
+    const error = document.getElementById('reNewPhoneError');
+    const newPhone = document.getElementById('newPhone').value;
+    
+    if (this.value !== newPhone) {
+        error.textContent = 'Phone numbers do not match';
+        error.style.display = 'block';
+    } else {
+        error.style.display = 'none';
+    }
+});
+</script>

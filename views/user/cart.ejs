@@ -21,6 +21,10 @@
     .breadcrumb {
         margin: 0;
         font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
     }
 
     .breadcrumb a {
@@ -42,12 +46,11 @@
         background: white;
         border-radius: 15px;
         box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-        overflow: hidden;
         margin-bottom: 30px;
     }
 
     .shopping-summery thead {
-        background: #046963;
+        background: #046963; /* Header color */
     }
 
     .shopping-summery thead tr {
@@ -55,7 +58,8 @@
     }
 
     .shopping-summery th {
-        color: white;
+        color: white; 
+        background-color: #046963;
         font-weight: 600;
         padding: 18px;
         font-size: 15px;
@@ -250,30 +254,6 @@
         margin-bottom: 40px;
     }
 
-    .breadcrumb {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 14px;
-        color: #666;
-    }
-
-    .breadcrumb a {
-        color: #046963;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    .breadcrumb a:hover {
-        color: #035750;
-    }
-
-    .breadcrumb span::before {
-        content: '/';
-        margin: 0 8px;
-        color: #ccc;
-    }
-
     .empty-cart-message {
         text-align: center;
         padding: 40px 20px;
@@ -295,27 +275,165 @@
         margin-bottom: 20px;
     }
 
+    /* Responsive Design */
+    @media (max-width: 991px) {
+        .cart-totals {
+            position: static;
+            margin-top: 30px;
+        }
+
+        .col-lg-9, .col-lg-3 {
+            width: 100%;
+        }
+    }
+
     @media (max-width: 768px) {
         .cart-page {
             padding: 30px 0;
         }
 
-        .shopping-summery td {
-            padding: 15px 10px;
+        .shopping-summery table {
+            width: 100%;
+            table-layout: fixed; /* Forces columns to respect widths */
+        }
+
+        .shopping-summery th, .shopping-summery td {
+            padding: 8px; /* Reduced padding */
+            font-size: 12px; /* Smaller font */
+            overflow: hidden; /* Prevent overflow */
+            text-overflow: ellipsis; /* Truncate with ellipsis */
+            white-space: nowrap; /* No wrapping */
+            vertical-align: middle;
+        }
+
+        .shopping-summery th {
+            display: table-cell; /* Ensure header is visible */
+            padding: 10px;
+            font-size: 11px; /* Slightly smaller header text */
         }
 
         .product-thumbnail img {
-            width: 60px;
-            height: 60px;
+            width: 40px; /* Smaller image */
+            height: 40px;
+        }
+
+        .product-name {
+            margin-left: 8px;
+            font-size: 12px; /* Smaller text */
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .font-xs {
+            font-size: 10px; /* Smaller subtext */
+            white-space: nowrap;
         }
 
         .quantity-control {
-            padding: 5px 10px;
+            padding: 3px 6px;
+            gap: 4px;
+            flex-shrink: 0; /* Prevent shrinking */
         }
 
-        .cart-totals {
-            margin-top: 30px;
-            position: static;
+        .increment-button, .decrement-button {
+            width: 20px; /* Smaller buttons */
+            height: 20px;
+            font-size: 11px;
+        }
+
+        .quantity-input {
+            width: 25px; /* Smaller input */
+            font-size: 12px;
+        }
+
+        .remove-btn {
+            padding: 4px 6px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        /* Adjusted column widths with min/max constraints */
+        .shopping-summery th:nth-child(1),
+        .shopping-summery td:nth-child(1) { 
+            width: 15%; 
+            min-width: 40px; /* Minimum for image */
+        } /* Product */
+        .shopping-summery th:nth-child(2),
+        .shopping-summery td:nth-child(2) { 
+            width: 40%; 
+            min-width: 100px; /* Minimum for details */
+        } /* Details */
+        .shopping-summery th:nth-child(3),
+        .shopping-summery td:nth-child(3) { 
+            width: 20%; 
+            min-width: 60px; /* Minimum for price */
+        } /* Price */
+        .shopping-summery th:nth-child(4),
+        .shopping-summery td:nth-child(4) { 
+            width: 15%; 
+            min-width: 60px; /* Minimum for quantity */
+        } /* Quantity */
+        .shopping-summery th:nth-child(5),
+        .shopping-summery td:nth-child(5) { 
+            width: 10%; 
+            min-width: 50px; /* Minimum for actions */
+        } /* Actions */
+    }
+
+    @media (max-width: 576px) {
+        .shopping-summery th, .shopping-summery td {
+            padding: 6px;
+            font-size: 11px;
+        }
+
+        .shopping-summery th {
+            font-size: 10px;
+        }
+
+        .product-thumbnail img {
+            width: 35px;
+            height: 35px;
+        }
+
+        .product-name {
+            font-size: 11px;
+            margin-left: 6px;
+        }
+
+        .font-xs {
+            font-size: 9px;
+        }
+
+        .quantity-control {
+            padding: 2px 4px;
+            gap: 3px;
+        }
+
+        .increment-button, .decrement-button {
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+        }
+
+        .quantity-input {
+            width: 20px;
+            font-size: 11px;
+        }
+
+        .remove-btn {
+            padding: 3px 5px;
+            font-size: 10px;
+        }
+
+        .btn {
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        .breadcrumb {
+            font-size: 12px;
         }
     }
 </style>
@@ -339,6 +457,7 @@
                 <div class="col-lg-9">
                     <div class="table-responsive">
                         <table class="table shopping-summery text-center clean">
+                            <% if (data && data.length > 0) { %>
                             <thead>
                                 <tr class="main-heading">
                                     <th scope="col">Product</th>
@@ -348,6 +467,7 @@
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
+                            <%}%>
                             <tbody>
                                 <% if (data && data.length > 0) { %>
                                     <% for (let i = 0; i < data.length; i++) { %>
@@ -465,7 +585,6 @@ function changeQuantity(productId, cartQuantity, count, productPrice, productInd
     const currentQuantity = cartQuantity;
     const newQuantity = currentQuantity + parseInt(count);
 
-    // Toast configuration
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -478,7 +597,6 @@ function changeQuantity(productId, cartQuantity, count, productPrice, productInd
         }
     });
 
-    // Validation
     if (newQuantity > maxQuantity) {
         Toast.fire({
             icon: 'error',
@@ -506,7 +624,6 @@ function changeQuantity(productId, cartQuantity, count, productPrice, productInd
         return;
     }
 
-    // Make AJAX request
     $.ajax({
         url: '/changeQuantity',
         method: 'POST',
@@ -516,13 +633,11 @@ function changeQuantity(productId, cartQuantity, count, productPrice, productInd
         },
         success: (response) => {
             if (response.status) {
-                // Show success toast
                 Toast.fire({
                     icon: 'success',
                     title: 'Quantity updated successfully'
                 });
                 
-                // Refresh the page after a short delay to let the toast be visible
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
@@ -547,8 +662,8 @@ function changeQuantity(productId, cartQuantity, count, productPrice, productInd
 
 function confirmRemove(productId) {
     const Toast = Swal.mixin({
-        toast: false, // Changed to false to show as modal instead of toast
-        position: 'center', // Changed to center
+        toast: false,
+        position: 'center',
         showConfirmButton: true,
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -574,4 +689,3 @@ function confirmRemove(productId) {
 }
 </script>
 <%- include("../../views/partials/user/footer") %>
-

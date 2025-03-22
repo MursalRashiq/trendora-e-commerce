@@ -10,6 +10,7 @@ const Order = require("../../models/orderSchema");
 const mongoose = require("mongoose");
 const Banner = require("../../models/bannerSchema");
 const asyncHandler = require("express-async-handler");
+const crypto = require('crypto');
 
 const loadHomePage = asyncHandler(async (req, res) => {
   const user = req.session.user;
@@ -81,87 +82,131 @@ async function sendVerificationEmail(email, otp) {
   }
 }
 
-const signup = asyncHandler(async (req, res) => {
-  const { fullname, email, password, phone } = req.body;
+const generateReferralCode = (email) => {
+  const randomString = crypto.randomBytes(3).toString('hex').toUpperCase();
+  return `REF${randomString}${email.slice(0, 3).toUpperCase()}`; // e.g., REF1A2B3JOH
+};
 
-  //console.log(req.body)
-  if (!fullname || !email || !password || !phone) {
-    return res
-      .status(400)
-      .json({ success: false, message: "All fields are required" });
-  }
-
-  // Check if user already exists
-  const existingUserByEmail = await User.findOne({ email });
-  const existingUserByPhone = await User.findOne({ phone });
-
-  //console.log(existingUserByEmail, existingUserByPhone)
-
-  if (existingUserByEmail || existingUserByPhone) {
-    res.render("signup", {
-      message: "User Already exist try with other details",
-    });
-  }
-
-  // Generate OTP
-  const otp = generateOtp();
-  console.log("Generated OTP:", otp);
-
-  // Send OTP to the user's email
-  const emailSent = await sendVerificationEmail(email, otp);
-  if (!emailSent) {
-    return res.json({
-      success: false,
-      message: "Failed to send OTP, please try again",
-    });
-  }
-
-  // Store OTP and user data in the session
-  req.session.userOtp = otp;
-  req.session.userData = { fullname, email, password, phone };
-  //req.session.otpExpiration = expirationTime
-
-  // Log session data to debug
-  console.log("Session data after OTP generation:", req.session);
-
-  // Redirect to the OTP verification page
-  return res.render("verify-otp");
-});
-
+// Secure password hashing
 const securePassword = asyncHandler(async (password) => {
   const passwordHash = await bcrypt.hash(password, 10);
   return passwordHash;
 });
 
+const signup = asyncHandler(async (req, res) => {
+  const { fullname, email, password, phone, referralCode } = req.body;
+  const referralCodeFromUrl = req.query.ref;
+  console.log("req.url:", req.url);
+  console.log("req.query:", req.query);
+  console.log("req.body:", req.body);
+  console.log("referralCodeFromUrl:", referralCodeFromUrl);
+  console.log("referralCode from form:", referralCode);
+
+  if (!fullname || !email || !password || !phone) {
+    return res.status(400).json({ success: false, message: "All fields are required" });
+  }
+
+  const existingUserByEmail = await User.findOne({ email });
+  const existingUserByPhone = await User.findOne({ phone });
+
+  if (existingUserByEmail || existingUserByPhone) {
+    return res.render("signup", { message: "User already exists", referralCode: referralCode || referralCodeFromUrl });
+  }
+
+  const otp = generateOtp();
+  console.log("Generated OTP:", otp);
+
+  const emailSent = await sendVerificationEmail(email, otp);
+  if (!emailSent) {
+    return res.json({ success: false, message: "Failed to send OTP" });
+  }
+
+  const referredBy = referralCode || referralCodeFromUrl || null;
+  console.log("Referred by set to:", referredBy);
+  req.session.userOtp = otp;
+  req.session.userData = { fullname, email, password, phone, referredBy };
+  console.log("Session data:", req.session.userData);
+
+  return res.render("verify-otp");
+});
+
 const verifyOtp = asyncHandler(async (req, res) => {
   const { otp } = req.body;
-  console.log(otp);
+  console.log("Entered OTP:", otp);
+
+  if (!req.session.userOtp || !req.session.userData) {
+    console.error("Session data missing:", req.session);
+    return res.status(400).json({
+      success: false,
+      message: "Session expired or invalid. Please sign up again.",
+    });
+  }
 
   if (otp == req.session.userOtp) {
-    const { fullname, email, phone, password } = req.session.userData;
+    const { fullname, email, phone, password, referredBy } = req.session.userData;
+    console.log("Session userData:", req.session.userData);
 
-    // Hash the password
-    const passwordHash = await securePassword(password);
-    const saveUserData = new User({
-      name: fullname,
-      email: email,
-      phone: phone,
-      password: passwordHash,
-    });
-    console.log("userData", saveUserData);
+    try {
+      let referralCode = generateReferralCode(email);
+      let codeExists = await User.findOne({ referralCode });
+      let attempts = 0;
+      while (codeExists && attempts < 5) {
+        referralCode = generateReferralCode(email);
+        codeExists = await User.findOne({ referralCode });
+        attempts++;
+      }
+      if (codeExists) {
+        throw new Error("Failed to generate unique referral code after retries");
+      }
 
-    await saveUserData.save();
+      const passwordHash = await securePassword(password);
 
-    req.session.user = saveUserData._id;
-    //console.log( req.session.user )
-    res.json({
-      success: true,
-      redirectUrl: "/                             ",
-    });
+      const saveUserData = new User({
+        name: fullname,
+        email: email,
+        phone: phone,
+        password: passwordHash,
+        referralCode,
+        referredBy: referredBy || null,
+        redeemed: false,
+        redeemedUsers: [],
+      });
+      console.log("User to save:", saveUserData);
+
+      await saveUserData.save();
+      console.log("User saved successfully:", saveUserData._id);
+
+      if (referredBy) {
+        const referrer = await User.findOne({ referralCode: referredBy });
+        if (referrer) {
+          referrer.redeemedUsers.push(saveUserData._id);
+          await referrer.save();
+          console.log(`Updated referrer ${referrer.email} with new referral: ${saveUserData._id}`);
+        }
+      }
+
+      req.session.user = saveUserData._id;
+      console.log("Session user ID set:", req.session.user);
+
+      req.session.userOtp = null;
+      req.session.userData = null;
+
+      res.json({
+        success: true,
+        redirectUrl: "/transition",
+      });
+    } catch (error) {
+      console.error("Error in verifyOtp:", error.message, error.stack);
+      res.status(500).json({
+        success: false,
+        message: `Server error: ${error.message}`,
+      });
+    }
   } else {
-    res
-      .status(400)
-      .json({ success: false, message: " Invalid OTP, Please try again " });
+    res.status(400).json({
+      success: false,
+      message: "Invalid OTP, please try again",
+    });
   }
 });
 
@@ -170,7 +215,7 @@ const resendOtp = asyncHandler(async (req, res) => {
   if (!email) {
     return res
       .status(400)
-      .json({ success: false, message: "Email not founding session" });
+      .json({ success: false, message: "Email not found in session" });
   }
 
   const otp = generateOtp();
@@ -178,16 +223,15 @@ const resendOtp = asyncHandler(async (req, res) => {
 
   const emailSent = await sendVerificationEmail(email, otp);
   if (emailSent) {
-    console.log("Resend OTP", otp);
-    res.status(200).json({ success: true, message: "OTP Resend Successfully" });
+    console.log("Resend OTP:", otp);
+    res.status(200).json({ success: true, message: "OTP Resent Successfully" });
   } else {
     res.status(500).json({
       success: false,
-      message: "Failed to resend OTP, Please try again",
+      message: "Failed to resend OTP, please try again",
     });
   }
 });
-
 const loadLogin = asyncHandler(async (req, res) => {
   res.render("login");
 });
@@ -230,9 +274,9 @@ const logout = asyncHandler(async (req, res) => {
 
 const loadShoppingPage = asyncHandler(async (req, res) => {
   const user = req.session.user;
-  const userData = await User.findOne({ _id: user });
-  const categories = await Category.find({ isListed: true });
-  const brand = await Brand.find({});
+  const userData = user ? await User.findOne({ _id: user }) : null;
+  const categories = await Category.find({ isListed: true }).lean();
+  const brand = await Brand.find({}).lean();
   const sortOption = req.query.sort || "latest";
 
   if (!req.session.flashMessage) {
@@ -272,7 +316,7 @@ const loadShoppingPage = asyncHandler(async (req, res) => {
     .sort(sortCriteria)
     .skip(skip)
     .limit(limit)
-    .lean(); // Use lean() for better performance
+    .lean();
 
   const totalProducts = await Product.countDocuments(query);
   const totalPages = Math.ceil(totalProducts / limit);
@@ -281,6 +325,7 @@ const loadShoppingPage = asyncHandler(async (req, res) => {
   console.log("Products found:", products.length);
   console.log("Total pages:", totalPages);
   console.log("Current page:", page);
+  console.log("Rendering loadShoppingPage with activeFilters:", { category: [], brand: [], price: [] });
 
   return res.render("shop", {
     locals: userData,
@@ -292,10 +337,14 @@ const loadShoppingPage = asyncHandler(async (req, res) => {
     sortOption: sortOption,
     count: totalProducts,
     query: "",
+    activeFilters: {
+      category: [],
+      brand: [],
+      price: [],
+    },
     session: req.session,
   });
 });
-
 const filterProducts = asyncHandler(async (req, res) => {
   const user = req.session.user;
   const categories = await Category.find({ isListed: true }).lean();
@@ -323,14 +372,14 @@ const filterProducts = asyncHandler(async (req, res) => {
   if (query) {
     searchFilter = {
       $or: [
-        { productName: { $regex: query, $options: "i" } }, // Search in product name
-        { brand: { $regex: query, $options: "i" } }, // Search in brand
+        { productName: { $regex: query, $options: "i" } },
+        { brand: { $regex: query, $options: "i" } },
       ],
     };
   }
 
   if (!req.session.flashMessage) {
-    req.session.flashMessage = null; // Ensure it's initialized
+    req.session.flashMessage = null;
   }
 
   let queryFilters = {
@@ -344,9 +393,7 @@ const filterProducts = asyncHandler(async (req, res) => {
   }
 
   if (selectedBrands.length > 0) {
-    const brandNames = await Brand.find({
-      _id: { $in: selectedBrands },
-    }).distinct("brandName");
+    const brandNames = await Brand.find({ _id: { $in: selectedBrands } }).distinct("brandName");
     queryFilters.brand = { $in: brandNames };
   }
 
@@ -356,7 +403,6 @@ const filterProducts = asyncHandler(async (req, res) => {
       const [min, max] = range.split("-").map(Number);
       priceConditions.push({ salePrice: { $gte: min, $lte: max } });
     });
-
     queryFilters.$or = priceConditions;
   }
 
@@ -395,6 +441,12 @@ const filterProducts = asyncHandler(async (req, res) => {
   if (user) {
     userData = await User.findOne({ _id: user });
   }
+
+  console.log("Rendering filterProducts with activeFilters:", {
+    category: selectedCategories,
+    brand: selectedBrands,
+    price: selectedPrices,
+  });
 
   res.render("shop", {
     locals: userData,

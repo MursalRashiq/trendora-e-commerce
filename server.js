@@ -99,7 +99,7 @@ app.use((err, req, res, next) => {
   if (!req.session.admin) {
     console.error("User Error:", err.message);
 
-    return res.status(500).render("404", {
+    return res.status(500).render("pageNotFound", {
       message:
         err.message ||
         "Something went wrong for the user. Please try again later.",
