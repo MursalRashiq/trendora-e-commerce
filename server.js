@@ -12,7 +12,7 @@ const flash = require("connect-flash");
 const { updateCounts } = require("./middleware/auth");
 const morgan = require("morgan")
 const helmet = require("helmet")
-
+const mongoose = require('mongoose');
 connectDB();
 
 const app = express();
