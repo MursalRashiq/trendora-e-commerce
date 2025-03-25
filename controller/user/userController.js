@@ -170,6 +170,7 @@ const verifyOtp = asyncHandler(async (req, res) => {
         referredBy: referredBy || null,
         redeemed: false,
         redeemedUsers: [],
+        googleId: null
       });
       console.log("User to save:", saveUserData);
 
