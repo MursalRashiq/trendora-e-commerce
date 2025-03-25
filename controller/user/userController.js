@@ -104,6 +104,7 @@ const signup = asyncHandler(async (req, res) => {
 
   if (!fullname || !email || !password || !phone) {
     return res.status(400).json({ success: false, message: "All fields are required" });
+    console.log('all fields are required');
   }
 
   const existingUserByEmail = await User.findOne({ email });
@@ -111,6 +112,7 @@ const signup = asyncHandler(async (req, res) => {
 
   if (existingUserByEmail || existingUserByPhone) {
     return res.render("signup", { message: "User already exists", referralCode: referralCode || referralCodeFromUrl });
+    console.log("error form already exists");
   }
 
   const otp = generateOtp();
@@ -170,7 +172,6 @@ const verifyOtp = asyncHandler(async (req, res) => {
         referredBy: referredBy || null,
         redeemed: false,
         redeemedUsers: [],
-        googleId: null
       });
       console.log("User to save:", saveUserData);
 
@@ -281,7 +282,7 @@ const loadShoppingPage = asyncHandler(async (req, res) => {
   const sortOption = req.query.sort || "latest";
 
   if (!req.session.flashMessage) {
-    req.session.flashMessage = null; // Ensure it's initialized
+    req.session.flashMessage = null; 
   }
 
   let sortCriteria = {};
