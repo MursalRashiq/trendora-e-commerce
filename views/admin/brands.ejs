@@ -1,353 +1,481 @@
 <%- include("../../views/partials/admin/header") %>
-<head>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #f4f7fa;
-            margin: 0;
-        }
 
-        .content-main {
-            padding: 4rem;
-            max-width: 100%;
-            margin: 0 auto;
-        }
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+        <style>
+            body {
+                font-family: 'Poppins', sans-serif;
+                background: #f4f7fa;
+                margin: 0;
+                display: flex;
+                min-height: 100vh;
+            }
 
-        .content-title {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #1a3c63;
-            letter-spacing: 1px;
-            text-align: center;
-            margin-bottom: 3rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #088178;
-        }
+            /* Sidebar adjustments */
+            .sidebar {
+                width: 250px;
+                flex-shrink: 0;
+                background: #1a3c63;
+                color: #fff;
+                position: fixed;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: 100;
+            }
 
-        .card {
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            animation: fadeIn 0.8s ease-in;
-        }
+            /* Main content adjustments */
+            .content-wrapper {
+                margin-left: 250px;
+                /* Space for sidebar */
+                flex-grow: 1;
+                padding: 2rem;
+            }
 
-        .card-body {
-            padding: 2rem;
-        }
+            .content-main {
+                padding: 2rem;
+                max-width: 100%;
+                margin: 0 auto;
+            }
 
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-        }
+            .content-title {
+                font-size: 2rem;
+                font-weight: 600;
+                color: #1a3c63;
+                letter-spacing: 1px;
+                text-align: center;
+                margin-bottom: 3rem;
+                padding-bottom: 1rem;
+                border-bottom: 2px solid #088178;
+            }
 
-        .col-md-4 {
-            flex: 0 0 300px;
-            max-width: 300px;
-        }
+            .card {
+                background: #fff;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+                animation: fadeIn 0.8s ease-in;
+            }
 
-        .col-md-8 {
-            flex: 1;
-            min-width: 0;
-        }
+            .card-body {
+                padding: 2rem;
+            }
 
-        .form-label {
-            font-weight: 500;
-            color: #1a3c63;
-            margin-bottom: 0.75rem;
-            font-size: 0.95rem;
-        }
+            .row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 2rem;
+            }
 
-        .form-control {
-            width: 100%;
-            padding: 0.875rem;
-            margin-bottom: 1.25rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            background: #fff;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
+            .col-md-4 {
+                flex: 0 0 calc(33.33% - 1.33rem);
+                max-width: calc(33.33% - 1.33rem);
+            }
 
-        .form-control:focus {
-            border-color: #088178;
-            box-shadow: 0 0 10px rgba(8, 129, 120, 0.2);
-            outline: none;
-        }
+            .col-md-8 {
+                flex: 1;
+                min-width: 0;
+            }
 
-        .table-responsive {
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
+            .form-label {
+                font-weight: 500;
+                color: #1a3c63;
+                margin-bottom: 0.75rem;
+                font-size: 0.95rem;
+            }
 
-        .table {
-            width: 100%;
-            margin-bottom: 0;
-            border-collapse: collapse;
-        }
+            .form-control {
+                width: 100%;
+                padding: 0.875rem;
+                margin-bottom: 1.25rem;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                background: #fff;
+                font-size: 0.95rem;
+                transition: all 0.3s ease;
+            }
 
-        .table th {
-            background: #f8f9fa;
-            color: #1a3c63;
-            padding: 1rem 1.5rem;
-            font-weight: 600;
-            font-size: 1rem;
-            border-bottom: 2px solid #e2e8f0;
-        }
+            .form-control:focus {
+                border-color: #088178;
+                box-shadow: 0 0 10px rgba(8, 129, 120, 0.2);
+                outline: none;
+            }
 
-        .table td {
-            padding: 1rem 1.5rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #e2e8f0;
-            color: #4a5568;
-        }
+            .table-responsive {
+                background: #fff;
+                border-radius: 15px;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+                overflow-x: auto;
+            }
 
-        .img-container {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f8f9fa;
-            border: 2px solid #e2e8f0;
-            transition: transform 0.3s ease;
-        }
+            .table {
+                width: 100%;
+                margin-bottom: 0;
+                border-collapse: collapse;
+            }
 
-        .img-container:hover {
-            transform: scale(1.1);
-        }
+            .table th {
+                background: #f8f9fa;
+                color: #1a3c63;
+                padding: 1rem 1.5rem;
+                font-weight: 600;
+                font-size: 1rem;
+                border-bottom: 2px solid #e2e8f0;
+            }
 
-        .img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+            .table td {
+                padding: 1rem 1.5rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #e2e8f0;
+                color: #4a5568;
+            }
 
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            min-width: 90px;
-            margin: 0 0.5rem;
-        }
+            .img-container {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #f8f9fa;
+                border: 2px solid #e2e8f0;
+                transition: transform 0.3s ease;
+            }
 
-        .btn-primary {
-            background: linear-gradient(90deg, #088178, #056b63);
-            color: #fff;
-        }
+            .img-container:hover {
+                transform: scale(1.1);
+            }
 
-        .btn-primary:hover {
-            background: linear-gradient(90deg, #056b63, #044e47);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(8, 129, 120, 0.3);
-        }
+            .img-container img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
 
-        .btn-danger {
-            background: #dc3545;
-            color: #fff;
-        }
+            .btn {
+                padding: 0.75rem 1.5rem;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 0.95rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border: none;
+                min-width: 90px;
+                margin: 0 0.5rem;
+            }
 
-        .btn-danger:hover {
-            background: #b71c1c;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
-        }
+            .btn-primary {
+                background: linear-gradient(90deg, #088178, #056b63);
+                color: #fff;
+            }
 
-        .btn-success {
-            background: #2ecc71;
-            color: #fff;
-        }
+            .btn-primary:hover {
+                background: linear-gradient(90deg, #056b63, #044e47);
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(8, 129, 120, 0.3);
+            }
 
-        .btn-success:hover {
-            background: #27ae60;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);
-        }
+            .btn-danger {
+                background: #dc3545;
+                color: #fff;
+            }
 
-        .badge {
-            padding: 0.5rem 1rem;
-            font-weight: 500;
-            border-radius: 10px;
-            min-width: 70px;
-            text-align: center;
-        }
+            .btn-danger:hover {
+                background: #b71c1c;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
+            }
 
-        .alert-danger {
-            background: #e35454;
-            color: #fff;
-        }
+            .btn-success {
+                background: #2ecc71;
+                color: #fff;
+            }
 
-        .alert-success {
-            background: #90EE90;
-            color: #1a3c63;
-        }
+            .btn-success:hover {
+                background: #27ae60;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);
+            }
 
-        .pagination-container {
-            margin-top: 3rem;
-            display: flex;
-            justify-content: center;
-            gap: 0.75rem;
-        }
+            .badge {
+                padding: 0.5rem 1rem;
+                font-weight: 500;
+                border-radius: 10px;
+                min-width: 70px;
+                text-align: center;
+            }
 
-        .pagination-container .btn {
-            padding: 0.75rem 1.25rem;
-            border-radius: 10px;
-            background: #fff;
-            color: #088178;
-            border: 2px solid #e2e8f0;
-            font-weight: 500;
-        }
+            .alert-danger {
+                background: #e35454;
+                color: #fff;
+            }
 
-        .pagination-container .btn:hover {
-            background: #eef2f7;
-            color: #056b63;
-        }
+            .alert-success {
+                background: #90EE90;
+                color: #1a3c63;
+            }
 
-        .pagination-container .btn-primary {
-            background: #088178;
-            color: #fff;
-            border-color: #088178;
-        }
+            .pagination-container {
+                margin-top: 3rem;
+                display: flex;
+                justify-content: center;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+            }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+            .pagination-container .btn {
+                padding: 0.75rem 1.25rem;
+                border-radius: 10px;
+                background: #fff;
+                color: #088178;
+                border: 2px solid #e2e8f0;
+                font-weight: 500;
+            }
 
-        @media (max-width: 1200px) {
-            .content-main { padding: 2rem; }
-            .row { gap: 1.5rem; }
-        }
+            .pagination-container .btn:hover {
+                background: #eef2f7;
+                color: #056b63;
+            }
 
-        @media (max-width: 768px) {
-            .col-md-4, .col-md-8 { flex: 0 0 100%; max-width: 100%; }
-            .table td, .table th { padding: 0.75rem 1rem; }
-            .btn { margin: 0.25rem; }
-        }
-    </style>
-</head>
-<body>
-    <section class="content-main">
-        <div class="content-header">
-            <h2 class="content-title">Brands</h2>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <!-- Add Brand Form -->
-                    <div class="col-md-4">
-                        <form method="POST" action="/admin/addBrand" enctype="multipart/form-data">
-                            <div class="mb-4">
-                                <label for="brand_name" class="form-label">Brand Name</label>
-                                <input type="text" name="name" placeholder="Type here" class="form-control" required />
+            .pagination-container .btn-primary {
+                background: #088178;
+                color: #fff;
+                border-color: #088178;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 1200px) {
+                .content-main {
+                    padding: 5rem;
+                }
+
+                .row {
+                    gap: 1.5rem;
+                }
+
+                .col-md-4 {
+                    flex: 0 0 calc(50% - 1rem);
+                    max-width: calc(50% - 1rem);
+                }
+            }
+
+            @media (max-width: 992px) {
+                .sidebar {
+                    width: 200px;
+                }
+
+                .content-wrapper {
+                    margin-left: 200px;
+                }
+
+                .col-md-4,
+                .col-md-8 {
+                    flex: 0 0 100%;
+                    max-width: 100%;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .sidebar {
+                    position: fixed;
+                    width: 100%;
+                    height: auto;
+                    top: 0;
+                    left: 0;
+                    z-index: 1000;
+                    padding: 1rem;
+                }
+
+                .content-wrapper {
+                    margin-left: 0;
+                    margin-top: 80px;
+                    /* Adjust based on sidebar height */
+                    padding: 1rem;
+                }
+
+                .content-main {
+                    padding: 1rem;
+                }
+
+                .table td,
+                .table th {
+                    padding: 0.75rem 1rem;
+                    font-size: 0.9rem;
+                }
+
+                .btn {
+                    margin: 0.25rem;
+                    padding: 0.5rem 1rem;
+                    font-size: 0.85rem;
+                }
+
+                .content-title {
+                    font-size: 1.5rem;
+                }
+
+                .pagination-container {
+                    gap: 0.5rem;
+                }
+            }
+
+            @media (max-width: 576px) {
+
+                .table th,
+                .table td {
+                    font-size: 0.85rem;
+                    padding: 0.5rem;
+                }
+
+                .img-container {
+                    width: 40px;
+                    height: 40px;
+                }
+
+                .btn {
+                    min-width: 70px;
+                    padding: 0.5rem 0.75rem;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- Sidebar Partial -->
+
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <section class="content-main">
+                <div class="content-header">
+                    <h2 class="content-title">Brands</h2>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Add Brand Form -->
+                            <div class="col-md-4">
+                                <form method="POST" action="/admin/addBrand" enctype="multipart/form-data">
+                                    <div class="mb-4">
+                                        <label for="brand_name" class="form-label">Brand Name</label>
+                                        <input type="text" name="name" placeholder="Type here" class="form-control"
+                                            required />
+                                    </div>
+                                    <label for="brand_image" class="form-label">Brand Image</label>
+                                    <div class="mb-4">
+                                        <input class="form-control" name="image" type="file" accept="image/*"
+                                            required />
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-primary" type="submit">Add Brand</button>
+                                    </div>
+                                </form>
                             </div>
-                            <label for="brand_image" class="form-label">Brand Image</label>
-                            <div class="mb-4">
-                                <input class="form-control" name="image" type="file" accept="image/*" required />
-                            </div>
-                            <div class="d-grid">
-                                <button class="btn btn-primary" type="submit">Add Brand</button>
-                            </div>
-                        </form>
-                    </div>
 
-                    <!-- Brands Table -->
-                    <div class="col-md-8">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Brand</th>
-                                        <th>Logo</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% if (data && data.length > 0) { %>
-                                        <% data.forEach((brand) => { %>
+                            <!-- Brands Table -->
+                            <div class="col-md-8">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
                                             <tr>
-                                                <td><%= brand.brandName || 'Unnamed Brand' %></td>
-                                                <td>
-                                                    <div class="img-container">
-                                                        <% let imageSrc = brand.brandImage && brand.brandImage.length > 0 
-                                                            ? `/uploads/re-image/${brand.brandImage[0]}` 
-                                                            : '/uploads/re-image/default-image.jpg'; %>
-                                                        <img src="<%= imageSrc %>" 
-                                                             alt="<%= brand.brandName || 'Brand Image' %>" 
-                                                             onerror="this.onerror=null; this.src='/uploads/re-image/default-image.jpg';" />
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <% if (brand.isBlocked) { %>
-                                                        <span class="badge alert-danger">Blocked</span>
-                                                    <% } else { %>
-                                                        <span class="badge alert-success">Active</span>
-                                                    <% } %>
-                                                </td>
-                                                <td>
-                                                    <% if (!brand.isBlocked) { %>
-                                                        <a href="/admin/blockBrand?id=<%= brand._id %>" 
-                                                           class="btn btn-danger" 
-                                                           onclick="return confirmAction('block', '<%= brand.brandName %>')">Block</a>
-                                                    <% } else { %>
-                                                        <a href="/admin/unBlockBrand?id=<%= brand._id %>" 
-                                                           class="btn btn-success" 
-                                                           onclick="return confirmAction('unblock', '<%= brand.brandName %>')">Unblock</a>
-                                                    <% } %>
-                                                    <a href="/admin/deleteBrand?id=<%= brand._id %>" 
-                                                       class="btn btn-danger" 
-                                                       onclick="return confirmAction('delete', '<%= brand.brandName %>')">Delete</a>
-                                                </td>
+                                                <th>Brand</th>
+                                                <th>Logo</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
                                             </tr>
-                                        <% }); %>
-                                    <% } else { %>
-                                        <tr>
-                                            <td colspan="4" class="text-center text-muted">No brands available</td>
-                                        </tr>
-                                    <% } %>
-                                </tbody>
-                            </table>
+                                        </thead>
+                                        <tbody>
+                                            <% if (data && data.length> 0) { %>
+                                                <% data.forEach((brand)=> { %>
+                                                    <tr>
+                                                        <td>
+                                                            <%= brand.brandName || 'Unnamed Brand' %>
+                                                        </td>
+                                                        <td>
+                                                            <div class="img-container">
+                                                                <% let imageSrc=brand.brandImage &&
+                                                                    brand.brandImage.length> 0
+                                                                    ? `/uploads/re-image/${brand.brandImage[0]}`
+                                                                    : '/uploads/re-image/default-image.jpg'; %>
+                                                                    <img src="<%= imageSrc %>"
+                                                                        alt="<%= brand.brandName || 'Brand Image' %>"
+                                                                        onerror="this.onerror=null; this.src='/uploads/re-image/default-image.jpg';" />
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <% if (brand.isBlocked) { %>
+                                                                <span class="badge alert-danger">Blocked</span>
+                                                                <% } else { %>
+                                                                    <span class="badge alert-success">Active</span>
+                                                                    <% } %>
+                                                        </td>
+                                                        <td>
+                                                            <% if (!brand.isBlocked) { %>
+                                                                <a href="/admin/blockBrand?id=<%= brand._id %>"
+                                                                    class="btn btn-danger"
+                                                                    onclick="return confirmAction('block', '<%= brand.brandName %>')">Block</a>
+                                                                <% } else { %>
+                                                                    <a href="/admin/unBlockBrand?id=<%= brand._id %>"
+                                                                        class="btn btn-success"
+                                                                        onclick="return confirmAction('unblock', '<%= brand.brandName %>')">Unblock</a>
+                                                                    <% } %>
+                                                                        <a href="/admin/deleteBrand?id=<%= brand._id %>"
+                                                                            class="btn btn-danger"
+                                                                            onclick="return confirmAction('delete', '<%= brand.brandName %>')">Delete</a>
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                                        <% } else { %>
+                                                            <tr>
+                                                                <td colspan="4" class="text-center text-muted">No brands
+                                                                    available</td>
+                                                            </tr>
+                                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container d-flex justify-content-center mt-4">
+                    <% if (currentPage> 1) { %>
+                        <a href="?page=<%= currentPage - 1 %>" class="btn btn-secondary">Previous</a>
+                        <% } %>
+                            <% for (let i=1; i <=totalPages; i++) { %>
+                                <a href="?page=<%= i %>"
+                                    class="btn <%= currentPage === i ? 'btn-primary' : 'btn-secondary' %>">
+                                    <%= i %>
+                                </a>
+                                <% } %>
+                                    <% if (currentPage < totalPages) { %>
+                                        <a href="?page=<%= currentPage + 1 %>" class="btn btn-secondary">Next</a>
+                                        <% } %>
+                </div>
+            </section>
         </div>
 
-        <!-- Pagination -->
-        <div class="pagination-container d-flex justify-content-center mt-4">
-            <% if (currentPage > 1) { %>
-                <a href="?page=<%= currentPage - 1 %>" class="btn btn-secondary">Previous</a>
-            <% } %>
-            <% for (let i = 1; i <= totalPages; i++) { %>
-                <a href="?page=<%= i %>" 
-                   class="btn <%= currentPage === i ? 'btn-primary' : 'btn-secondary' %>">
-                    <%= i %>
-                </a>
-            <% } %>
-            <% if (currentPage < totalPages) { %>
-                <a href="?page=<%= currentPage + 1 %>" class="btn btn-secondary">Next</a>
-            <% } %>
-        </div>
-    </section>
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function confirmAction(action, brandName) {
-            return confirm(`Are you sure you want to ${action} the brand "${brandName}"?`);
-        }
-    </script>
-</body>
-<%- include("../../views/partials/admin/footer") %>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            function confirmAction(action, brandName) {
+                return confirm(`Are you sure you want to ${action} the brand "${brandName}"?`);
+            }
+        </script>
+    </body>
+    <%- include("../../views/partials/admin/footer") %>

@@ -1,0 +1,348 @@
+<%- include("../../views/partials/user/header") %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    /* General Reset and Base Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        line-height: 1.6;
+        color: #333;
+        background-color: #f9f9f9;
+    }
+
+    /* Breadcrumb Styles */
+    .page-notification {
+        padding: 1.5rem 0;
+        background-color: #fff;
+        border-bottom: 1px solid #eee;
+        text-align: center;
+    }
+
+    .breadcrumb {
+        background: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .breadcrumb-item a {
+        color: #666;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .breadcrumb-item a:hover {
+        color: #9F78FF;
+    }
+
+    .breadcrumb-item+.breadcrumb-item::before {
+        color: #999;
+        content: ">";
+    }
+
+    /* Contact Section */
+    .contact-section {
+        padding: 4rem 0;
+    }
+
+    .contact-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #9F78FF;
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .contact-title::after {
+        content: '';
+        width: 80px;
+        height: 4px;
+        background: #ff4b6e;
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+
+    /* Map Styling */
+    .map-container {
+        height: 480px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+
+    .map-container iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+    /* Contact Form */
+    .form-contact {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .form-contact:hover {
+        transform: translateY(-5px);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #9F78FF;
+        box-shadow: 0 0 8px rgba(159, 120, 255, 0.3);
+        outline: none;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 150px;
+    }
+
+    .button-contactForm {
+        background: linear-gradient(135deg, #9F78FF, #ff4b6e);
+        color: white;
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .button-contactForm:hover {
+        background: linear-gradient(135deg, #8a66eb, #e03c5c);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(159, 120, 255, 0.4);
+    }
+
+    /* Contact Info */
+    .contact-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .contact-info:hover {
+        transform: translateY(-5px);
+    }
+
+    .contact-info__icon {
+        font-size: 2rem;
+        color: #9F78FF;
+        margin-right: 1.5rem;
+    }
+
+    .media-body h3 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .media-body p {
+        font-size: 1rem;
+        color: #666;
+        margin: 0;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 991px) {
+        .contact-section {
+            padding: 3rem 0;
+        }
+
+        .contact-title {
+            font-size: 2rem;
+        }
+
+        .col-lg-8, .col-lg-3 {
+            margin-bottom: 2rem;
+        }
+
+        .form-contact {
+            padding: 1.5rem;
+        }
+
+        .contact-info {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .contact-info__icon {
+            margin-right: 0;
+            margin-bottom: 1rem;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .map-container {
+            height: 300px;
+        }
+
+        .form-contact {
+            padding: 1rem;
+        }
+
+        .button-contactForm {
+            width: 100%;
+            padding: 0.8rem;
+        }
+
+        .contact-info {
+            padding: 0.75rem;
+        }
+
+        .contact-info__icon {
+            font-size: 1.5rem;
+        }
+
+        .media-body h3 {
+            font-size: 1.1rem;
+        }
+
+        .media-body p {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .contact-title {
+            font-size: 1.8rem;
+        }
+
+        .page-notification {
+            padding: 1rem 0;
+        }
+
+        .breadcrumb-item {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<main>
+    <!-- Breadcrumb Start -->
+    <div class="page-notification page-notification2">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item"><a href="#">Contact</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Contact Area Start -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="d-none d-sm-block mb-5 pb-4">
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3913.923806548072!2d75.85867231479552!3d11.18173399206873!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba659a7f11b2e2f%3A0x4b9e0f7e8b8e8e8e!2sRamanattukara%2C%20Kerala%2C%20India!5e0!3m2!1sen!2sus!4v1634567890123" 
+                        allowfullscreen="" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="contact-title">Get in Touch</h2>
+                </div>
+                <div class="col-lg-8">
+                    <form class="form-contact contact_form" action="" method="post" id="contactForm" novalidate="novalidate">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <textarea class="form-control w-100" name="message" id="message" cols="30" rows="9" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Message'" placeholder="Enter Message"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input class="form-control valid" name="name" id="name" type="text" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your name'" placeholder="Enter your name">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input class="form-control valid" name="email" id="email" type="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter email address'" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <input class="form-control" name="subject" id="subject" type="text" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Subject'" placeholder="Enter Subject">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <button type="submit" class="button button-contactForm boxed-btn">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-3 offset-lg-1">
+                    <div class="media contact-info">
+                        <span class="contact-info__icon"><i class="fas fa-home"></i></span>
+                        <div class="media-body">
+                            <h3>2sRamanattukara, Calicut</h3>
+                            <p>Kerala, 673631</p>
+                        </div>
+                    </div>
+                    <div class="media contact-info">
+                        <span class="contact-info__icon"><i class="fas fa-phone-alt"></i></span>
+                        <div class="media-body">
+                            <h3>+91 253 565 2365</h3>
+                            <p>Mon to Fri 9am - 6pm</p>
+                        </div>
+                    </div>
+                    <div class="media contact-info">
+                        <span class="contact-info__icon"><i class="fas fa-envelope"></i></span>
+                        <div class="media-body">
+                            <h3>support@colorlib.com</h3>
+                            <p>Send us your query anytime!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Contact Area End -->
+</main>
+
+<%- include("../../views/partials/user/footer") %>

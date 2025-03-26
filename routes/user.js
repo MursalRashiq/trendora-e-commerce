@@ -89,8 +89,16 @@ router.post("/addAddress", userAuth, profileController.postAddAddress);
 router.get("/editAddress", userAuth, profileController.editAddress);
 router.post("/editAddress", userAuth, profileController.postEditAddress);
 router.get("/deleteAddress", userAuth, profileController.deleteAddress);
-router.post("/addAddressFromCheckout",userAuth,profileController.addingAddressFromCheckout)
-router.post("/editAddressFromCheckout",userAuth,profileController.editAddressFromCheckout)
+router.post(
+  "/addAddressFromCheckout",
+  userAuth,
+  profileController.addingAddressFromCheckout
+);
+router.post(
+  "/editAddressFromCheckout",
+  userAuth,
+  profileController.editAddressFromCheckout
+);
 // cart Management
 
 router.get("/cart", userAuth, cartController.getCartPage);
@@ -140,5 +148,7 @@ router.post("/verify-payment", userAuth, walletController.verify_payment);
 router.get("/rate-product", userAuth, raitingController.getRatingPage);
 //count
 router.get("/getCountOfCartWish", userController.getCount);
+
+router.get("/getContactPage", userController.getContactPage);
 
 module.exports = router;

@@ -5,11 +5,11 @@ const asyncHandler = require("express-async-handler");
 
 const categoryInfo = asyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = 4;
+  const limit = 3;
   const skip = (page - 1) * limit;
 
   const categoryData = await Category.find({})
-    .sort({ createAt: -1 })
+    .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
 
@@ -25,20 +25,23 @@ const categoryInfo = asyncHandler(async (req, res) => {
 });
 
 const addCategory = asyncHandler(async (req, res) => {
-  const { name, description } = req.body;
+  const { name, description, offerPrice} = req.body;
 
-  // console.log(req.body)
+  console.log(name, description, offerPrice);
 
   const existingCategory = await Category.findOne({
     name: { $regex: new RegExp(`^${name}$`, "i") },
   });
   if (existingCategory) {
-    return res.status(400).json({ error: "Category alredy exist" });
+    return res.status(400).json({ error: "Category already exist" });
   }
+  console.log("Category not exist");
   const newCategory = new Category({
     name,
     description,
+    categoryOffer: offerPrice,
   });
+  console.log("Category created");
   await newCategory.save();
   return res.json({ message: "Category added successfully" });
 });

@@ -17,7 +17,7 @@ const loadLogin = asyncHandler(async (req, res) => {
     const totalProducts = (await Product.countDocuments()) || 0;
 
     const deliveredOrders = await Order.find({ status: "Delivered" });
-    console.log("delveredOrders",deliveredOrders)
+    console.log("delveredOrders", deliveredOrders);
 
     const totalRevenue = deliveredOrders.reduce((sum, order) => {
       const amount = order.finalAmount || 0;
@@ -68,7 +68,6 @@ const login = async (req, res) => {
   }
 };
 
-
 const loadDashboard = asyncHandler(async (req, res) => {
   if (req.session.admin) {
     const totalUsers = (await User.countDocuments({ isAdmin: false })) || 0;
@@ -81,108 +80,108 @@ const loadDashboard = asyncHandler(async (req, res) => {
       0
     );
 
-    // Top 5 Selling Products 
+    // Top 5 Selling Products
     const topProducts = await Order.aggregate([
-      { $match: { status: { $ne: 'Cancelled' } } },
-      { $unwind: '$orderItems' },
-      { $match: { 'orderItems.status': { $in: ['Shipped', 'Delivered'] } } },
+      { $match: { status: { $ne: "Cancelled" } } },
+      { $unwind: "$orderItems" },
+      { $match: { "orderItems.status": { $in: ["Shipped", "Delivered"] } } },
       {
         $group: {
-          _id: '$orderItems.product',
-          count: { $sum: '$orderItems.quantity' }
-        }
+          _id: "$orderItems.product",
+          count: { $sum: "$orderItems.quantity" },
+        },
       },
       {
         $lookup: {
-          from: 'products',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'productInfo'
-        }
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productInfo",
+        },
       },
-      { $unwind: '$productInfo' },
+      { $unwind: "$productInfo" },
       {
         $project: {
           _id: 0,
-          name: '$productInfo.productName',
+          name: "$productInfo.productName",
           count: 1,
-          image: { $arrayElemAt: ['$productInfo.productImage', 0] } 
-        }
+          image: { $arrayElemAt: ["$productInfo.productImage", 0] },
+        },
       },
       { $sort: { count: -1 } },
-      { $limit: 5 }
+      { $limit: 5 },
     ]);
 
-    // Top 5 Selling Brands 
+    // Top 5 Selling Brands
     const topBrands = await Order.aggregate([
-      { $match: { status: { $ne: 'Cancelled' } } },
-      { $unwind: '$orderItems' },
-      { $match: { 'orderItems.status': { $in: ['Shipped', 'Delivered'] } } },
+      { $match: { status: { $ne: "Cancelled" } } },
+      { $unwind: "$orderItems" },
+      { $match: { "orderItems.status": { $in: ["Shipped", "Delivered"] } } },
       {
         $lookup: {
-          from: 'products',
-          localField: 'orderItems.product',
-          foreignField: '_id',
-          as: 'productInfo'
-        }
+          from: "products",
+          localField: "orderItems.product",
+          foreignField: "_id",
+          as: "productInfo",
+        },
       },
-      { $unwind: '$productInfo' },
+      { $unwind: "$productInfo" },
       {
         $group: {
-          _id: '$productInfo.brand',
-          count: { $sum: '$orderItems.quantity' }
-        }
+          _id: "$productInfo.brand",
+          count: { $sum: "$orderItems.quantity" },
+        },
       },
       {
         $project: {
           _id: 0,
-          name: '$_id',
-          count: 1
-        }
+          name: "$_id",
+          count: 1,
+        },
       },
       { $sort: { count: -1 } },
-      { $limit: 5 }
+      { $limit: 5 },
     ]);
 
     // Top 5 Selling Categories
     const topCategories = await Order.aggregate([
-      { $match: { status: { $ne: 'Cancelled' } } },
-      { $unwind: '$orderItems' },
-      { $match: { 'orderItems.status': { $in: ['Shipped', 'Delivered'] } } },
+      { $match: { status: { $ne: "Cancelled" } } },
+      { $unwind: "$orderItems" },
+      { $match: { "orderItems.status": { $in: ["Shipped", "Delivered"] } } },
       {
         $lookup: {
-          from: 'products',
-          localField: 'orderItems.product',
-          foreignField: '_id',
-          as: 'productInfo'
-        }
+          from: "products",
+          localField: "orderItems.product",
+          foreignField: "_id",
+          as: "productInfo",
+        },
       },
-      { $unwind: '$productInfo' },
+      { $unwind: "$productInfo" },
       {
         $lookup: {
-          from: 'categories',
-          localField: 'productInfo.category',
-          foreignField: '_id',
-          as: 'categoryInfo'
-        }
+          from: "categories",
+          localField: "productInfo.category",
+          foreignField: "_id",
+          as: "categoryInfo",
+        },
       },
-      { $unwind: '$categoryInfo' },
+      { $unwind: "$categoryInfo" },
       {
         $group: {
-          _id: '$productInfo.category',
-          count: { $sum: '$orderItems.quantity' },
-          name: { $first: '$categoryInfo.name' }
-        }
+          _id: "$productInfo.category",
+          count: { $sum: "$orderItems.quantity" },
+          name: { $first: "$categoryInfo.name" },
+        },
       },
       {
         $project: {
           _id: 0,
           name: 1,
-          count: 1
-        }
+          count: 1,
+        },
       },
       { $sort: { count: -1 } },
-      { $limit: 5 }
+      { $limit: 5 },
     ]);
 
     console.log("Top Selling Products:", topProducts);
@@ -196,13 +195,12 @@ const loadDashboard = asyncHandler(async (req, res) => {
       totalRevenue,
       topProducts,
       topBrands,
-      topCategories
+      topCategories,
     });
   }
 
   res.redirect("/admin/login");
-})
-
+});
 
 const pageerror = async (req, res) => {
   res.render("admin-error");
@@ -218,7 +216,6 @@ const logout = asyncHandler(async (req, res) => {
     return res.redirect("/admin/login");
   });
 });
-
 
 const chartData = async (req, res) => {
   const filter = req.query.filter || "yearly";
@@ -239,7 +236,11 @@ const chartData = async (req, res) => {
       matchStage = {
         createdAt: {
           $gte: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
-          $lt: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
+          $lt: new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth() + 1,
+            1
+          ),
         },
       };
     }
@@ -264,16 +265,11 @@ const chartData = async (req, res) => {
   }
 };
 
-
-
-
-
-
 module.exports = {
   loadLogin,
   login,
   loadDashboard,
   pageerror,
   logout,
-  chartData
+  chartData,
 };

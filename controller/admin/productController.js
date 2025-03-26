@@ -36,10 +36,8 @@ const addProducts = asyncHandler(async (req, res) => {
       .send("Product already exists, please try with another name.");
   }
 
-  // Initialize images array for cloudinary URLs
   const images = [];
 
-  // Upload images to cloudinary
   if (req.files && req.files.length > 0) {
     for (const file of req.files) {
       try {
@@ -64,7 +62,6 @@ const addProducts = asyncHandler(async (req, res) => {
     return res.status(400).send("Invalid category name.");
   }
 
-  // Create new product with cloudinary URLs
   const newProduct = new Product({
     productName: products.productName,
     description: products.description,
@@ -75,13 +72,14 @@ const addProducts = asyncHandler(async (req, res) => {
     createdOn: new Date(),
     color: products.color,
     quantity: products.quantity,
-    productImage: images.map((img) => img.url), // Store only the URLs
-    cloudinaryIds: images.map((img) => img.public_id), // Store cloudinary public_ids
+    productImage: images.map((img) => img.url),
+    cloudinaryIds: images.map((img) => img.public_id),
     status: "Available",
   });
 
   await newProduct.save();
-  return res.redirect("/admin/products");
+  req.flash("success", "Product added successfully!");
+  return res.redirect("/admin/products?message=Product added successfully!");
 });
 
 const getAllProduct = asyncHandler(async (req, res) => {
@@ -95,7 +93,7 @@ const getAllProduct = asyncHandler(async (req, res) => {
       { brand: { $regex: new RegExp(".*" + search + ".*", "i") } },
     ],
   })
-    .sort({ createdAt: -1 }) // Sort by createdAt descending (newest first)
+    .sort({ createdAt: -1 })
     .limit(limit)
     .skip((page - 1) * limit)
     .populate("category")
@@ -127,7 +125,6 @@ const getAllProduct = asyncHandler(async (req, res) => {
 const addProductOffer = asyncHandler(async (req, res) => {
   const { productId, percentage } = req.body;
 
-  // Validate input
   if (!productId || !percentage) {
     return res.status(400).json({
       status: false,
@@ -135,7 +132,6 @@ const addProductOffer = asyncHandler(async (req, res) => {
     });
   }
 
-  // Find product by ID
   const findProduct = await Product.findOne({ _id: productId });
   if (!findProduct) {
     return res
@@ -143,7 +139,6 @@ const addProductOffer = asyncHandler(async (req, res) => {
       .json({ status: false, message: "Product not found" });
   }
 
-  // Find category by product's category ID
   const findCategory = await Category.findOne({ _id: findProduct.category });
   if (!findCategory) {
     return res
@@ -151,7 +146,6 @@ const addProductOffer = asyncHandler(async (req, res) => {
       .json({ status: false, message: "Category not found" });
   }
 
-  // Check if category offer is greater than the percentage
   if (findCategory.categoryOffer > percentage) {
     return res.json({
       status: false,
@@ -159,15 +153,12 @@ const addProductOffer = asyncHandler(async (req, res) => {
     });
   }
 
-  // Calculate new sale price and update product
   const discount = Math.floor(findProduct.regularPrice * (percentage / 100));
   findProduct.salePrice = findProduct.regularPrice - discount;
-  findProduct.productOffer = parseInt(percentage); // Ensure percentage is an integer
+  findProduct.productOffer = parseInt(percentage);
 
-  // Save the updated product
   await findProduct.save();
 
-  // Save the updated category offer (if needed)
   findCategory.categoryOffer = percentage;
   await findCategory.save();
 
@@ -176,16 +167,13 @@ const addProductOffer = asyncHandler(async (req, res) => {
 
 const removeProductOffer = asyncHandler(async (req, res) => {
   const { productId } = req.body;
-  // console.log("productId", productId)
 
-  // Check if productId is provided
   if (!productId) {
     return res
       .status(400)
       .json({ status: false, message: "Product ID is required" });
   }
 
-  // Find the product
   const findProduct = await Product.findOne({ _id: productId });
   if (!findProduct) {
     return res
@@ -193,21 +181,17 @@ const removeProductOffer = asyncHandler(async (req, res) => {
       .json({ status: false, message: "Product not found" });
   }
 
-  // Ensure productOffer exists
   const percentage = findProduct.productOffer || 0;
   if (percentage === 0) {
     return res.json({ status: false, message: "No offer to remove" });
   }
 
-  // Recalculate salePrice
   findProduct.salePrice = Math.floor(
     findProduct.salePrice + (findProduct.regularPrice * percentage) / 100
   );
 
-  // Reset product offer
   findProduct.productOffer = 0;
 
-  // Save the product
   await findProduct.save();
 
   return res.json({
@@ -237,23 +221,17 @@ const getEditProduct = asyncHandler(async (req, res) => {
     return res.redirect("/admin/products");
   }
 
-  // Fetch the product with populated category
   const product = await Product.findById(productId).populate("category");
 
   if (!product) {
-    console.log("Product not found");
     return res.redirect("/admin/products");
   }
 
-  // Fetch categories and brands
   const [categories, brands] = await Promise.all([
     Category.find({}),
     Brand.find({}),
   ]);
 
- 
-
-  // Render the page with all necessary data
   res.render("edit-product", {
     product: product,
     cat: categories,
@@ -288,7 +266,6 @@ const editProduct = asyncHandler(async (req, res) => {
     });
   }
 
-  // Handle image uploads to Cloudinary
   const images = [];
   if (req.files && req.files.length > 0) {
     for (const file of req.files) {
@@ -305,7 +282,6 @@ const editProduct = asyncHandler(async (req, res) => {
     }
   }
 
-  // Handle category
   let categoryId;
   if (mongoose.Types.ObjectId.isValid(data.category)) {
     categoryId = data.category;
@@ -317,7 +293,6 @@ const editProduct = asyncHandler(async (req, res) => {
     categoryId = category._id;
   }
 
-  // Build update fields
   const updateFields = {
     productName: data.productName,
     description: data.description,
@@ -342,13 +317,11 @@ const editProduct = asyncHandler(async (req, res) => {
     runValidators: true,
   });
 
-  console.log("Updated Product:", updatedProduct);
-  res.redirect("/admin/products");
+  res.redirect("/admin/products?message=Product edited successfully");
 });
 
 const deleteSingleImage = asyncHandler(async (req, res) => {
   const { imageUrl, productId } = req.body;
-  console.log("Delete request for:", { imageUrl, productId });
 
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return res.status(400).json({

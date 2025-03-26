@@ -6,10 +6,9 @@
     <title>Trendora | Follow the Trends</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="manifest" href="site.webmanifest">
     <link rel="shortcut icon" type="image/x-icon" href="/assets/img/logo/logo-removebg-preview.png">
 
-    <!-- CSS here -->
+    <!-- Original CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
     <link rel="stylesheet" href="assets/css/flaticon.css">
@@ -24,8 +23,8 @@
     <link rel="stylesheet" href="assets/css/nice-select.css">
     <link rel="stylesheet" href="assets/css/style.css">
 
+    <!-- Original Inline Styles -->
     <style>
-        /* Header Base */
         .header-area {
             background: #fff;
             position: sticky;
@@ -39,7 +38,7 @@
             padding: 0;
             margin: 0;
             align-items: center;
-            gap: 20px; /* Gap between nav items */
+            gap: 20px;
         }
 
         #navigation > li {
@@ -55,10 +54,10 @@
         }
 
         #navigation .sign-in-container {
-            margin-left: 120px; /* Increased gap after Contact */
+            margin-left: 120px;
             display: flex;
             align-items: center;
-            gap: 20px; /* Gap between sign-in/signup */
+            gap: 20px;
         }
 
         .dropdown {
@@ -109,7 +108,7 @@
         .header-right1 {
             display: flex;
             align-items: center;
-            gap: 20px; /* Gap between search/wishlist/cart */
+            gap: 20px;
         }
 
         .search ul {
@@ -137,7 +136,7 @@
         }
 
         .card-stor img {
-            width: 24px; /* Fixed size for cart icon */
+            width: 24px;
             height: 24px;
             object-fit: contain;
         }
@@ -173,11 +172,10 @@
             padding: 15px 0;
         }
 
-        /* Bootstrap Overrides and Responsive Adjustments */
         .navbar-toggler {
             border: none;
             padding: 5px;
-            margin-left: 10px; /* Gap between icons and toggler */
+            margin-left: 10px;
         }
 
         .navbar-toggler-icon {
@@ -213,7 +211,7 @@
                 align-items: start;
                 text-align: left;
                 width: 100%;
-                gap: 10px; /* Reduced gap in mobile menu */
+                gap: 10px;
             }
 
             #navigation > li {
@@ -241,12 +239,12 @@
                 box-shadow: none;
                 border-top: 1px solid #eee;
                 border-bottom: 1px solid #eee;
-                padding-left: 15px; /* Indent for alignment */
+                padding-left: 15px;
             }
 
             .header-right1 {
                 margin-left: 0;
-                gap: 15px; /* Reduced gap between cart/wishlist in mobile */
+                gap: 15px;
             }
 
             .search ul {
@@ -257,6 +255,10 @@
                 background: #fff;
                 padding: 15px;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .navbar-collapse:not(.show) {
+                display: none;
             }
 
             .logo img {
@@ -302,25 +304,12 @@
     </style>
 </head>
 <body class="full-wrapper">
-    <!-- Preloader Start -->
-    <div id="preloader-active">
-        <div class="preloader d-flex align-items-center justify-content-center">
-            <div class="preloader-inner position-relative">
-                <div class="preloader-circle"></div>
-                <div class="preloader-img pere-text">
-                    <h6>TRENDORA</h6>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Preloader End -->
-
+    <!-- Original Header -->
     <header>
         <div class="header-area">
             <div class="main-header header-sticky">
                 <nav class="navbar navbar-expand-lg navbar-light">
                     <div class="container-fluid">
-                        <!-- Top Bar for Mobile (Logo, Toggler, Cart/Wishlist) -->
                         <div class="navbar-top">
                             <div class="logo">
                                 <a href="/">
@@ -349,28 +338,26 @@
                                     </ul>
                                 </div>
                             </div>
-                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <button class="navbar-toggler" type="button" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                                 <span class="navbar-toggler-icon"></span>
                             </button>
                         </div>
 
-                        <!-- Navbar Content -->
                         <div class="collapse navbar-collapse" id="navbarContent">
                             <div class="menu-wrapper d-flex align-items-center justify-content-between w-100">
-                                <!-- Left Section with Navigation -->
                                 <div class="header-left d-flex align-items-center">
                                     <div class="main-menu">
                                         <nav>
                                             <ul id="navigation" class="navbar-nav">
                                                 <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                                                 <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
-                                                <li class="nav-item"><a class="nav-link" href="/contact.html">Contact</a></li>
+                                                <li class="nav-item"><a class="nav-link" href="/getContactPage">Contact</a></li>
                                                 <% if (locals && locals.name) { %>
                                                     <li class="nav-item dropdown">
                                                         <a href="#" class="sign-in-link nav-link"><%= locals.name %></a>
                                                         <div class="dropdown-content">
                                                             <a href="/profile">Profile</a>
-                                                            <a type="button" onclick="confirmLogout()">Logout</a>
+                                                            <a href="#" id="logoutBtn">Logout</a>
                                                         </div>
                                                     </li>
                                                 <% } else { %>
@@ -383,8 +370,6 @@
                                         </nav>
                                     </div>
                                 </div>
-
-                                <!-- Right Section with Search and Cart (Desktop Only) -->
                                 <div class="header-right1 d-none d-lg-flex">
                                     <div class="search d-md-block">
                                         <ul class="d-flex align-items-center">
@@ -421,86 +406,88 @@
             </div>
         </div>
     </header>
-    <!-- Header End -->
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
     <script>
-        function confirmLogout() {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You will be logged out of your session.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, logout',
-                cancelButtonText: 'Cancel',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch('/logout', {
-                        method: 'GET',
-                    })
-                    .then((response) => {
-                        if (response.ok) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Logged out!',
-                                text: 'You have been successfully logged out.',
-                                showConfirmButton: false,
-                                timer: 1500,
-                            }).then(() => {
-                                window.location.href = '/login';
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Failed to log out. Please try again.',
-                            });
-                        }
-                    })
-                    .catch((error) => {
-                        console.error('Logout error:', error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'An unexpected error occurred.',
-                        });
-                    });
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggler = document.querySelector('.navbar-toggler');
+            const collapse = document.getElementById('navbarContent');
+            let isOpen = false;
+
+            toggler.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent any default behavior
+                console.log('Toggler clicked');
+                
+                if (isOpen) {
+                    collapse.classList.remove('show');
+                    isOpen = false;
+                } else {
+                    collapse.classList.add('show');
+                    isOpen = true;
                 }
             });
-        }
 
-        async function updateCounts() {
-            try {
-                const response = await fetch('/getCountOfCartWish');
-                const data = await response.json();
-                // Mobile counts
-                document.getElementById('wishlistCount').innerText = data.wishlistQuantity;
-                document.getElementById('cartCount').innerText = data.cartQuantity;
-                // Desktop counts
-                document.getElementById('wishlistCountDesktop').innerText = data.wishlistQuantity;
-                document.getElementById('cartCountDesktop').innerText = data.cartQuantity;
-
-                // Show/hide counts
-                ['wishlistCount', 'cartCount', 'wishlistCountDesktop', 'cartCountDesktop'].forEach(id => {
-                    const elem = document.getElementById(id);
-                    if (elem) {
-                        elem.style.display = parseInt(elem.innerText) > 0 ? 'flex' : 'none';
-                    }
+            // Logout functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You will be logged out of your session.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, logout'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch('/logout', { method: 'GET' })
+                                .then(response => {
+                                    if (response.ok) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Logged out!',
+                                            timer: 1500,
+                                            showConfirmButton: false
+                                        }).then(() => {
+                                            window.location.href = '/login';
+                                        });
+                                    } else {
+                                        Swal.fire('Error', 'Failed to log out', 'error');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Logout error:', error);
+                                    Swal.fire('Error', 'An unexpected error occurred', 'error');
+                                });
+                        }
+                    });
                 });
-            } catch (error) {
-                console.error("Error updating counts:", error);
             }
-        }
 
-        // Fetch updated counts every 5 seconds
-        setInterval(updateCounts, 5000);
+            // Update counts
+            async function updateCounts() {
+                try {
+                    const response = await fetch('/getCountOfCartWish');
+                    const data = await response.json();
+                    ['wishlistCount', 'cartCount', 'wishlistCountDesktop', 'cartCountDesktop'].forEach(id => {
+                        const elem = document.getElementById(id);
+                        if (elem) {
+                            elem.innerText = id.includes('wishlist') ? data.wishlistQuantity : data.cartQuantity;
+                            elem.style.display = parseInt(elem.innerText) > 0 ? 'flex' : 'none';
+                        }
+                    });
+                } catch (error) {
+                    console.error("Error updating counts:", error);
+                }
+            }
 
-        // Call once when the page loads
-        updateCounts();
+            updateCounts();
+            setInterval(updateCounts, 5000);
+        });
     </script>
 </body>
 </html>

@@ -10,23 +10,22 @@ const adminRouter = require("./routes/admin");
 const bodyParser = require("body-parser");
 const flash = require("connect-flash");
 const { updateCounts } = require("./middleware/auth");
-const morgan = require("morgan")
-const helmet = require("helmet")
-const mongoose = require('mongoose');
+const morgan = require("morgan");
+const helmet = require("helmet");
+const mongoose = require("mongoose");
 connectDB();
 
 const app = express();
 
-// Body parsers 
+// Body parsers
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   "/admin/productImages",
   express.static(path.join(__dirname, "public/admin/productImages"))
 );
-app.use(morgan("dev"))
-// app.use(helmet())
-// Session Configuration
+app.use(morgan("dev"));
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -61,7 +60,7 @@ app.set("views", [
 // Static Files Middleware
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(express.urlencoded({ extended: true })); 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -94,7 +93,7 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-// User Error Handler 
+// User Error Handler
 app.use((err, req, res, next) => {
   if (!req.session.admin) {
     console.error("User Error:", err.message);

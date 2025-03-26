@@ -19,32 +19,32 @@
             background-color: #eef2f7;
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            overflow-x: hidden; /* Prevent horizontal scrolling */
-            display: flex; /* Match header layout */
+            overflow-x: hidden;
+            display: flex;
             min-height: 100vh;
         }
 
         .dashboard-container {
             flex: 1;
-            margin-left: 250px; /* Match sidebar width on laptop/TV */
-            width: calc(100% - 250px); /* Adjust for sidebar */
+            margin-left: 250px;
+            width: calc(100% - 250px);
             transition: margin-left 0.3s ease, width 0.3s ease;
-            overflow-x: hidden; /* Extra protection */
+            overflow-x: hidden;
         }
 
         .main-content {
             background: #fff;
-            padding: clamp(1rem, 3vw, 2rem); /* Responsive padding */
+            padding: clamp(1rem, 3vw, 2rem);
             width: 100%;
-            overflow-x: hidden; /* Ensure no horizontal scrolling */
-            padding-top: 70px; /* Match header height */
+            overflow-x: hidden;
+            padding-top: 70px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             min-height: calc(100vh - 70px);
         }
 
         .content-title {
-            font-size: clamp(1.5rem, 5vw, 2.2rem); /* Responsive font */
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
             color: #34495e;
             font-weight: 600;
             letter-spacing: 1px;
@@ -59,7 +59,7 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             padding: clamp(1rem, 2vw, 1.5rem);
             transition: all 0.3s ease;
-            overflow-x: hidden; /* Prevent card overflow */
+            overflow-x: hidden;
         }
 
         .card:hover {
@@ -74,7 +74,7 @@
 
         .card-header h4 {
             margin: 0;
-            font-size: clamp(1.2rem, 3vw, 1.5rem); /* Responsive font */
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
             font-weight: 600;
             color: #34495e;
         }
@@ -83,18 +83,18 @@
             font-weight: 500;
             color: #34495e;
             margin-bottom: 0.5rem;
-            font-size: clamp(0.85rem, 2vw, 0.95rem); /* Responsive font */
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
         }
 
         .form-control, .form-select {
             width: 100%;
-            padding: clamp(6px, 1.5vw, 8px); /* Responsive padding */
+            padding: clamp(6px, 1.5vw, 8px);
             margin-bottom: clamp(0.75rem, 2vw, 1rem);
             border: 1px solid #ced4da;
             border-radius: 5px;
-            font-size: clamp(0.85rem, 2vw, 0.95rem); /* Responsive font */
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
             transition: all 0.3s ease;
-            box-sizing: border-box; /* Include padding in width */
+            box-sizing: border-box;
         }
 
         .form-control:focus, .form-select:focus {
@@ -105,11 +105,11 @@
 
         .error-message {
             color: #e74c3c;
-            font-size: clamp(0.75rem, 1.8vw, 0.85rem); /* Responsive font */
+            font-size: clamp(0.75rem, 1.8vw, 0.85rem);
             margin-top: -0.5rem;
             margin-bottom: 0.75rem;
             font-weight: 500;
-            word-break: break-word; /* Prevent text overflow */
+            word-break: break-word;
         }
 
         .image-container {
@@ -129,7 +129,7 @@
 
         .product-image {
             width: 100%;
-            height: clamp(150px, 25vw, 200px); /* Responsive height */
+            height: clamp(150px, 25vw, 200px);
             object-fit: contain;
             display: block;
             background: #fff;
@@ -143,9 +143,9 @@
             background: rgba(0, 0, 0, 0.7);
             color: #fff;
             padding: clamp(4px, 1vw, 6px);
-            font-size: clamp(0.75rem, 1.8vw, 0.85rem); /* Responsive font */
+            font-size: clamp(0.75rem, 1.8vw, 0.85rem);
             text-align: center;
-            word-break: break-word; /* Prevent overflow */
+            word-break: break-word;
         }
 
         .delete-image {
@@ -169,13 +169,13 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: clamp(1rem, 2vw, 1.5rem); /* Responsive gap */
-            overflow-x: hidden; /* Prevent overflow */
+            gap: clamp(1rem, 2vw, 1.5rem);
+            overflow-x: hidden;
         }
 
         .image-upload-row {
             display: flex;
-            flex-wrap: wrap; /* Ensure wrapping */
+            flex-wrap: wrap;
             gap: clamp(1rem, 2vw, 1.5rem);
             align-items: flex-start;
             width: 100%;
@@ -187,11 +187,11 @@
             border-radius: 10px;
             background: #fafafa;
             width: 100%;
-            max-width: 300px; /* Default for desktop */
+            max-width: 300px;
             text-align: center;
             transition: border-color 0.3s ease;
-            box-sizing: border-box; /* Include padding in width */
-            overflow-x: hidden; /* Prevent overflow */
+            box-sizing: border-box;
+            overflow-x: hidden;
         }
 
         .image-card:hover {
@@ -210,27 +210,37 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 300px; /* Default for desktop */
-            height: clamp(200px, 40vw, 300px); /* Responsive height */
+            max-width: 300px;
+            height: clamp(200px, 40vw, 300px);
             margin: 0 auto;
             border: 1px solid #ced4da;
             padding: clamp(0.5rem, 1vw, 0.75rem);
             border-radius: 10px;
             background: #fff;
-            box-sizing: border-box; /* Include padding in width */
-            overflow-x: hidden; /* Prevent overflow */
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .image-cropper img {
+            max-height: 70%; /* Ensure image doesn’t overlap buttons */
+            width: auto;
+        }
+
+        .image-cropper button {
+            z-index: 10; /* Ensure buttons are above image */
+            margin-top: clamp(0.25rem, 0.5vw, 0.5rem); /* Space between buttons */
         }
 
         .btn {
-            padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 15px); /* Responsive padding */
+            padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 15px);
             border-radius: 5px;
             font-weight: 600;
-            font-size: clamp(0.85rem, 2vw, 0.95rem); /* Responsive font */
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
-            width: 100%; /* Ensure buttons fit container */
-            max-width: 200px; /* Limit width */
+            width: 100%;
+            max-width: 200px;
         }
 
         .btn-primary {
@@ -248,7 +258,7 @@
             background: #1abc9c;
             color: #fff;
             padding: clamp(8px, 2vw, 12px) clamp(16px, 3vw, 24px);
-            font-size: clamp(1rem, 2.5vw, 1.1rem); /* Responsive font */
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
             width: 100%;
             max-width: 300px;
         }
@@ -261,15 +271,14 @@
 
         .btn-sm {
             padding: clamp(4px, 1vw, 6px) clamp(8px, 1.5vw, 10px);
-            font-size: clamp(0.75rem, 1.8vw, 0.85rem); /* Responsive font */
-            max-width: 150px; /* Limit width */
+            font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+            max-width: 150px;
         }
 
-        /* Responsive Adjustments */
         @media (max-width: 992px) {
             .dashboard-container {
-                margin-left: 70px; /* Match minimized sidebar width */
-                width: calc(100% - 70px); /* Adjust for mobile sidebar */
+                margin-left: 70px;
+                width: calc(100% - 70px);
                 position: relative;
                 left: 0;
             }
@@ -280,21 +289,21 @@
 
         @media (max-width: 768px) {
             .image-upload-row {
-                flex-direction: column; /* Stack vertically */
+                flex-direction: column;
                 gap: clamp(0.75rem, 1.5vw, 1rem);
             }
             .image-container {
                 margin-bottom: clamp(0.5rem, 1vw, 0.75rem);
             }
             .image-card, .image-cropper {
-                max-width: 100%; /* Remove fixed max-width */
-                width: 100%; /* Full width on mobile */
+                max-width: 100%;
+                width: 100%;
             }
             .card {
                 padding: clamp(0.75rem, 1.5vw, 1rem);
             }
             .btn {
-                max-width: 100%; /* Full width buttons */
+                max-width: 100%;
             }
         }
 
@@ -471,6 +480,7 @@
                                             <div class="image-cropper" id="cropperContainer<%= i %>">
                                                 <img src="" id="croppedImg<%= i %>" alt="Cropped Image">
                                                 <button type="button" id="saveButton<%= i %>" class="btn btn-primary btn-sm mt-2">Save Crop</button>
+                                                <button type="button" id="resetButton<%= i %>" class="btn btn-primary btn-sm mt-2" style="display: none;">Reset Image</button>
                                             </div>
                                         </div>
                                     <% } %>
@@ -551,11 +561,13 @@
                     zoomable: true,
                     ready() {
                         cropperContainer.style.display = 'flex';
+                        console.log(`Cropper ready for index ${index}`);
                     }
                 });
 
                 document.getElementById(`saveButton${index}`).onclick = async function() {
                     try {
+                        console.log(`Saving crop for index ${index}`);
                         const croppedCanvas = croppers[index].getCroppedCanvas({
                             width: CONFIG.maxWidth,
                             height: CONFIG.maxHeight,
@@ -587,14 +599,14 @@
                         croppers[index].destroy();
                         croppers[index] = null;
                         cropperContainer.style.display = 'flex';
-                        document.getElementById(`saveButton${index}`).style.display = 'none';
 
-                        const resetButton = document.createElement('button');
-                        resetButton.textContent = 'Reset Image';
-                        resetButton.className = 'btn btn-primary btn-sm mt-2';
-                        resetButton.onclick = () => resetImage(index);
-                        cropperContainer.appendChild(resetButton);
+                        const saveButton = document.getElementById(`saveButton${index}`);
+                        const resetButton = document.getElementById(`resetButton${index}`);
+                        saveButton.style.display = 'none';
+                        resetButton.style.display = 'block';
+                        console.log(`Reset button for index ${index} set to display: block`);
                     } catch (error) {
+                        console.error(`Error in save crop for index ${index}:`, error);
                         showError(error.message || 'Error processing image.');
                         resetImage(index);
                     }
@@ -608,6 +620,8 @@
             const croppedImg = document.getElementById(`croppedImg${index}`);
             const cropperContainer = document.getElementById(`cropperContainer${index}`);
             const input = document.getElementById(`input${index}`);
+            const resetButton = document.getElementById(`resetButton${index}`);
+            const saveButton = document.getElementById(`saveButton${index}`);
 
             image.src = '';
             image.style.display = 'block';
@@ -615,10 +629,10 @@
             croppedImg.style.display = 'none';
             cropperContainer.style.display = 'none';
             input.value = '';
-
-            const resetButton = cropperContainer.querySelector('.btn-primary');
-            if (resetButton) resetButton.remove();
-            document.getElementById(`saveButton${index}`).style.display = 'block';
+            
+            resetButton.style.display = 'none';
+            saveButton.style.display = 'block';
+            console.log(`Reset image for index ${index}, reset button hidden`);
 
             delete croppedDataUrls[index];
             if (croppers[index]) {
@@ -726,7 +740,30 @@
             document.querySelectorAll('.product-image').forEach(img => {
                 img.onerror = function() { handleImageError(this); };
             });
+            <% for(let i = 1; i <= 4; i++) { %>
+                document.getElementById(`resetButton<%= i %>`).onclick = () => resetImage(<%= i %>);
+            <% } %>
         });
+
+        const urlParams = new URLSearchParams(window.location.search);
+  const message = urlParams.get('message');
+
+  console.log('Message:', message);  // Debug log
+
+  // Decode message and show alert
+  if (message) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Success!',
+      text: decodeURIComponent(message),
+      timer: 3000,
+      showConfirmButton: false
+    });
+  }
+
+  
+
+
     </script>
 </body>
 </html>

@@ -45,8 +45,6 @@ const getSalesReport = asyncHandler(async (req, res) => {
     };
   }
 
-  console.log("Query:", JSON.stringify(query, null, 2));
-
   const perPage = 10;
 
   const sampleOrder = await Order.findOne(query).select("user");
@@ -66,8 +64,6 @@ const getSalesReport = asyncHandler(async (req, res) => {
     .sort({ createdAt: -1 })
     .skip((page - 1) * perPage)
     .limit(perPage);
-
-  
 
   const totalOrders = await Order.countDocuments(query);
   const totalPages = Math.ceil(totalOrders / perPage);
@@ -114,7 +110,6 @@ const getSalesReport = asyncHandler(async (req, res) => {
   });
 });
 const downloadSalesReportPDF = asyncHandler(async (req, res) => {
-  // Create directory if it doesn't exist
   const pdfDir = path.join(__dirname, "../../public/mail");
   if (!fs.existsSync(pdfDir)) {
     fs.mkdirSync(pdfDir, { recursive: true });
@@ -309,30 +304,23 @@ const downloadSalesReportPDF = asyncHandler(async (req, res) => {
         .fillColor(styles.tableHeader.color);
 
       columns.forEach((column) => {
-        doc.text(
-          column.header,
-          xPosition,
-          y + 5, 
-          {
-            width: column.width,
-            align: column.align,
-            lineGap: 0,
-          }
-        );
+        doc.text(column.header, xPosition, y + 5, {
+          width: column.width,
+          align: column.align,
+          lineGap: 0,
+        });
         xPosition += column.width;
       });
 
-      return y + 20; 
+      return y + 20;
     };
 
     let yPosition = drawTableHeader(doc.y);
 
-    // Function to draw table row
     const drawTableRow = (order, y) => {
       let xPosition = margins.left;
       const rowHeight = 20;
 
-      // Alternate row background
       if (processedOrders.indexOf(order) % 2 === 0) {
         doc
           .rect(margins.left, y, contentWidth, rowHeight)
@@ -364,23 +352,17 @@ const downloadSalesReportPDF = asyncHandler(async (req, res) => {
       ];
 
       columns.forEach((column, idx) => {
-        doc.text(
-          rowData[idx].text,
-          xPosition,
-          y + 5, // Center text vertically in row
-          {
-            width: column.width,
-            align: rowData[idx].align,
-            lineGap: 0,
-          }
-        );
+        doc.text(rowData[idx].text, xPosition, y + 5, {
+          width: column.width,
+          align: rowData[idx].align,
+          lineGap: 0,
+        });
         xPosition += column.width;
       });
 
       return y + rowHeight;
     };
 
-    // Draw table rows with proper pagination
     processedOrders.forEach((order, index) => {
       if (yPosition > doc.page.height - margins.bottom - 100) {
         doc.addPage();
@@ -390,7 +372,6 @@ const downloadSalesReportPDF = asyncHandler(async (req, res) => {
       yPosition = drawTableRow(order, yPosition);
     });
 
-    // Summary Section with improved layout
     yPosition += 20;
     const summaryWidth = 300;
     const summaryX = (pageWidth - summaryWidth) / 2;
@@ -400,7 +381,6 @@ const downloadSalesReportPDF = asyncHandler(async (req, res) => {
       yPosition = margins.top + 20;
     }
 
-    // Draw summary box with shadow effect
     doc
       .rect(summaryX, yPosition, summaryWidth, 120)
       .fillColor("#f8f9fa")
@@ -433,7 +413,6 @@ const downloadSalesReportPDF = asyncHandler(async (req, res) => {
       yPosition += 20;
     });
 
-    // Footer with page numbers
     const range = doc.bufferedPageRange();
     for (let i = range.start; i < range.start + range.count; i++) {
       doc.switchToPage(i);
@@ -448,10 +427,8 @@ const downloadSalesReportPDF = asyncHandler(async (req, res) => {
         );
     }
 
-    // Finalize document
     doc.end();
 
-    // Handle download
     stream.on("finish", () => {
       const fileName = `Trendora_Sales_Report_${filter}_${
         new Date().toISOString().split("T")[0]
@@ -464,7 +441,6 @@ const downloadSalesReportPDF = asyncHandler(async (req, res) => {
           }
           return res.status(500).send("Error downloading file");
         }
-        // Clean up file after download
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
         }
@@ -479,12 +455,10 @@ const downloadSalesReportPDF = asyncHandler(async (req, res) => {
   }
 });
 
-// Generate Excel Report
 const downloadSalesReportExcel = asyncHandler(async (req, res) => {
   const { filter, startDate, endDate } = req.query;
   let query = {};
 
-  // Apply filter logic
   let now = new Date();
   if (filter === "daily") {
     const today = new Date();
@@ -519,7 +493,6 @@ const downloadSalesReportExcel = asyncHandler(async (req, res) => {
     };
   }
 
-  // Fetch orders with proper population
   const orders = await Order.find(query)
     .populate({
       path: "user",
@@ -531,7 +504,6 @@ const downloadSalesReportExcel = asyncHandler(async (req, res) => {
     )
     .sort({ createdAt: -1 });
 
-  // Process orders to handle potentially undefined values
   const processedOrders = orders.map((order) => {
     const orderObj = order.toObject ? order.toObject() : order;
     return {
@@ -544,11 +516,9 @@ const downloadSalesReportExcel = asyncHandler(async (req, res) => {
     };
   });
 
-  // Create workbook and worksheet
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Sales Report");
 
-  // Style the headers
   const headerStyle = {
     font: { bold: true, size: 12, color: { argb: "00000000" } },
     fill: {
@@ -571,12 +541,10 @@ const downloadSalesReportExcel = asyncHandler(async (req, res) => {
     { header: "Date", key: "date", width: 20 },
   ];
 
-  // Style the header row
   worksheet.getRow(1).eachCell((cell) => {
     cell.style = headerStyle;
   });
 
-  // Add report title
   worksheet.insertRow(1, [`Sales Report - ${filter.toUpperCase()}`]);
   worksheet.mergeCells("A1:I1");
   worksheet.getCell("A1").style = {
@@ -584,7 +552,6 @@ const downloadSalesReportExcel = asyncHandler(async (req, res) => {
     alignment: { horizontal: "center" },
   };
 
-  // Add date range info if applicable
   if (startDate && endDate) {
     worksheet.insertRow(2, [
       `Date Range: ${new Date(startDate).toLocaleDateString()} - ${new Date(
@@ -598,7 +565,6 @@ const downloadSalesReportExcel = asyncHandler(async (req, res) => {
     };
   }
 
-  // Add data rows
   processedOrders.forEach((order) => {
     worksheet.addRow({
       orderId: order.orderId || order._id?.toString()?.slice(-8) || "N/A",
@@ -613,7 +579,6 @@ const downloadSalesReportExcel = asyncHandler(async (req, res) => {
     });
   });
 
-  // Add totals row
   const totalRow = worksheet.addRow({
     customer: "TOTAL",
     totalPrice: Number(
@@ -628,21 +593,17 @@ const downloadSalesReportExcel = asyncHandler(async (req, res) => {
   });
   totalRow.font = { bold: true };
 
-  // Style number columns to show currency
   worksheet.getColumn("totalPrice").numFmt = "₹#,##0.00";
   worksheet.getColumn("finalAmount").numFmt = "₹#,##0.00";
   worksheet.getColumn("discount").numFmt = "₹#,##0.00";
 
-  // Center align certain columns
   ["orderId", "payment", "status", "date"].forEach((key) => {
     worksheet.getColumn(key).alignment = { horizontal: "center" };
   });
 
-  // Generate file
   const timestamp = new Date().getTime();
   const filePath = path.join(__dirname, "../../public/reports");
 
-  // Create directory if it doesn't exist
   if (!fs.existsSync(filePath)) {
     fs.mkdirSync(filePath, { recursive: true });
   }
@@ -650,7 +611,6 @@ const downloadSalesReportExcel = asyncHandler(async (req, res) => {
   const fileName = `Trendora_Sales_Report_${filter}_${timestamp}.xlsx`;
   const fullPath = path.join(filePath, fileName);
 
-  // Write file and send response
   await workbook.xlsx.writeFile(fullPath);
   res.download(fullPath, fileName, (err) => {
     if (err) {
@@ -659,7 +619,6 @@ const downloadSalesReportExcel = asyncHandler(async (req, res) => {
         .status(500)
         .json({ success: false, message: "Error downloading file" });
     }
-    // Delete file after download
     fs.unlink(fullPath, (unlinkErr) => {
       if (unlinkErr) console.error("Error deleting file:", unlinkErr);
     });

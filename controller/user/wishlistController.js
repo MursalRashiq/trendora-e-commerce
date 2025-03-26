@@ -41,7 +41,6 @@ const addToWishlist = async (req, res) => {
 
     const user = await User.findById(userId);
 
-    // Check if product is already in wishlist
     if (user.wishlist.includes(productId)) {
       return res.status(200).json({
         status: false,
@@ -49,7 +48,6 @@ const addToWishlist = async (req, res) => {
       });
     }
 
-    // Check if product is in cart
     const inCart = user.cart.some(
       (item) => item.productId.toString() === productId
     );
@@ -60,7 +58,6 @@ const addToWishlist = async (req, res) => {
       });
     }
 
-    // Add to wishlist if not in cart or wishlist
     user.wishlist.push(productId);
     await user.save();
 
@@ -96,9 +93,8 @@ const removeProduct = async (req, res) => {
 const addToCartFromWishlist = async (req, res) => {
   try {
     const { productId } = req.body;
-    const userId = req.session.user; // This is just the ID
+    const userId = req.session.user;
 
-    // First, find the user
     const user = await User.findById(userId);
     if (!user) {
       return res.json({
@@ -107,7 +103,6 @@ const addToCartFromWishlist = async (req, res) => {
       });
     }
 
-    // Get product details
     const product = await Product.findById(productId);
     if (!product) {
       return res.json({
@@ -116,7 +111,6 @@ const addToCartFromWishlist = async (req, res) => {
       });
     }
 
-    // Check stock
     if (product.stock < 1) {
       return res.json({
         status: false,
@@ -124,7 +118,6 @@ const addToCartFromWishlist = async (req, res) => {
       });
     }
 
-    // Check if product is already in cart
     const existingCartItem = user.cart.find(
       (item) => item.productId.toString() === productId
     );
@@ -136,7 +129,6 @@ const addToCartFromWishlist = async (req, res) => {
       });
     }
 
-    // Add to cart and remove from wishlist
     user.cart.push({ productId, quantity: 1 });
     user.wishlist = user.wishlist.filter((id) => id.toString() !== productId);
 

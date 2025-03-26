@@ -82,7 +82,6 @@ const getCheckoutPage = async (req, res) => {
     
 
     let shippingCharge = totalAmount > 1000 ? 0 : 49;
-    // console.log("Total Amount:", totalAmount);
 
     const currentDate = new Date();
     const availableCoupons = await Coupon.find({
@@ -123,8 +122,6 @@ const getCheckoutPage = async (req, res) => {
 const paymentConfirm = async (req, res) => {
   try {
     const { orderId, status, paymentMethod } = req.body; 
-    console.log(status, "hello im status ");
-    console.log(paymentMethod, "hey im from the paymentConfirm body");
 
     await Order.updateOne(
       { _id: orderId },
@@ -220,7 +217,6 @@ const orderPlaced = async (req, res) => {
     }
 
     const finalAmound = Number(totalPrice) - Number(discount || 0) + Number(shippingCharge || 0);
-    console.log("finalAmound", finalAmound);
 
     let newOrder = new Order({
       orderId: uuidv4(),
@@ -255,9 +251,7 @@ const orderPlaced = async (req, res) => {
       }
     }
 
-    // Referral Reward Logic
-    const updatedUser = await User.findOne({ _id: userId }); // Refresh after orderHistory update
-    console.log("Order history length:", updatedUser.orderHistory.length);
+    const updatedUser = await User.findOne({ _id: userId }); 
     if (
       updatedUser.referredBy &&
       updatedUser.referralRewardStatus === "pending" &&
@@ -286,13 +280,11 @@ const orderPlaced = async (req, res) => {
         updatedUser.redeemed = true;
         await updatedUser.save();
 
-        console.log(`Rewarded ${referrer.email} with $10 and ${updatedUser.email} with $5`);
       } else {
         console.warn(`Referral reward skipped: Referrer not found or user/referrer blocked`);
       }
     }
 
-    // Payment-specific responses
     switch (payment) {
       case "cod":
         return res.json({
@@ -401,35 +393,28 @@ const getOrderSuccessPage = async (req, res) => {
 
 const verify = async (req, res) => {
   try {
-    // 1. Create HMAC to verify Razorpay signature
     let hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
     hmac.update(
       `${req.body.payment.razorpay_order_id}|${req.body.payment.razorpay_payment_id}`
     );
     hmac = hmac.digest("hex");
 
-    console.log("Order ID in Verify:", req.body.orderId);
 
-    // 2. Check if signature matches
     if (hmac === req.body.payment.razorpay_signature) {
-      console.log("Payment Verified!");
 
-      // 3. Update the order status after successful payment
       const result = await Order.updateOne(
-        { _id: req.body.orderId },  // Make sure orderId is passed correctly from frontend
+        { _id: req.body.orderId },  
         {
           $set: {
             paymentStatus: "Paid",
-            status: "Confirmed",  // Or 'Processing' depending on your flow
+            status: "Confirmed",  
             "orderItems.$[].status": "Confirmed",
           },
         }
       );
 
-      console.log("Order Update Result:", result);
       res.json({ status: true });
     } else {
-      console.log("Payment Verification Failed!");
       res.json({ status: false });
     }
   } catch (error) {
@@ -477,7 +462,6 @@ const getOrderDetailsPage = async (req, res) => {
     const totalPrice = findOrder.totalPrice;
     const discount = totalGrant - totalPrice;
     const finalAmount = totalPrice+findOrder.shippingCharge;
-    console.log("hey im from the backend", finalAmount)
     res.render("orderDetails", {
       user: findOrder.user,
       totalGrant: totalGrant,
@@ -604,7 +588,6 @@ const cancelOrder = async (req, res) => {
     }
 
     const { orderId, productId, cancelReason } = req.body;
-    console.log(req.body);
 
     const findOrder = await Order.findById(orderId).populate(
       "orderItems.product"
@@ -627,14 +610,10 @@ const cancelOrder = async (req, res) => {
 
     const canceledItem = findOrder.orderItems[productIndex];
 
-    // Calculate the amount to deduct
     const itemAmount = canceledItem.price * canceledItem.quantity;
-    console.log(itemAmount);
     canceledItem.status = "Cancelled";
     canceledItem.cancelReason = cancelReason;
-    console.log(cancelReason);
 
-    // Refund 
     if (
       (findOrder.payment === "razorpay" || findOrder.payment === "wallet") &&
       findOrder.status === "Confirmed"
@@ -674,10 +653,8 @@ const cancelOrder = async (req, res) => {
         await product.save();
       }
     }
-    // Subtract the canceled item's amount from finalAmound
     findOrder.finalAmound -= itemAmount;
 
-    // Update order status based on remaining items
     const anyItemDelivered = findOrder.orderItems.some(
       (item) => item.status === "Confirmed"
     );
@@ -856,18 +833,16 @@ const paymentFailed = asyncHandler(async (req, res) => {
   }
 
   const order = await Order.findById(orderId);
-  console.log(order)
 
   
 
-  console.log("Order ID:",typeof orderId);
   res.render("paymentFailed", { order });
 });
 
 
 const retryPayment = async (req, res) => {
   try {
-    const { orderId, paymentMethod } = req.body;  // Get paymentMethod from frontend
+    const { orderId, paymentMethod } = req.body;  
     console.log(req.body, "I'm the body from retryPayment");
 
     const order = await Order.findById(orderId);
@@ -875,13 +850,11 @@ const retryPayment = async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    // Update payment method to Razorpay if needed
     if (paymentMethod && order.payment !== paymentMethod) {
       order.payment = paymentMethod;
       await order.save();
     }
 
-    // Generate new Razorpay order for retry
     const razorPayOrder = await generateOrderRazorpay(order._id, order.finalAmound);
 
     res.json({
@@ -897,13 +870,11 @@ const retryPayment = async (req, res) => {
 };
 
 
-// Cancel Entire Order Endpoint
 const cancelEntireOrder = async (req, res) => {
   try {
     const { orderId, cancelReason } = req.body;
-    const userId = req.session.user; // Assuming session-based authentication
+    const userId = req.session.user; 
 
-    // Check if user is logged in
     if (!userId) {
       return res.status(401).json({ 
         success: false, 
@@ -911,7 +882,6 @@ const cancelEntireOrder = async (req, res) => {
       });
     }
 
-    // Validate input
     if (!orderId || !cancelReason) {
       return res.status(400).json({ 
         success: false, 
@@ -919,7 +889,6 @@ const cancelEntireOrder = async (req, res) => {
       });
     }
 
-    // Find the order by ID and ensure it belongs to the user
     const order = await Order.findOne({ 
       _id: orderId, 
       user: userId 
@@ -932,7 +901,6 @@ const cancelEntireOrder = async (req, res) => {
       });
     }
 
-    // Check if the order can be cancelled (only "Confirmed" status allowed)
     if (order.status !== "Confirmed") {
       return res.status(400).json({ 
         success: false, 
@@ -940,11 +908,9 @@ const cancelEntireOrder = async (req, res) => {
       });
     }
 
-    // Update the order status and reason
     order.status = "Cancelled";
     order.cancelReason = cancelReason;
 
-    // Update all order items to "Cancelled" unless they are already "Returned" or "Return Request"
     order.orderItems.forEach(item => {
       if (!["Returned", "Return Request", "Return Rejected"].includes(item.status)) {
         item.status = "Cancelled";
@@ -952,10 +918,8 @@ const cancelEntireOrder = async (req, res) => {
       }
     });
 
-    // Save the updated order
     await order.save();
 
-    // Send success response
     res.status(200).json({ 
       success: true, 
       message: "Entire order cancelled successfully." 

@@ -161,55 +161,9 @@
     margin: 30px 0;
 }
 
-.quantity-controls {
-    display: flex;
-    align-items: center;
-    border: 1px solid #e5e5e5;
-    border-radius: 5px;
-    overflow: hidden;
-    background: #fff;
-}
-
-.qty-btn {
-    width: 50px; /* Increased size */
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f5f5f5;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 20px; /* Larger symbols */
-    font-weight: bold; /* Bolder symbols */
-    color: #046963; /* Match theme color */
-}
-
-.qty-btn:hover {
-    background: #046963;
-    color: white;
-}
-
-.qty-input {
-    width: 60px; /* Slightly larger input */
-    height: 50px;
-    text-align: center;
-    font-size: 18px; /* Larger text */
-    font-weight: 500;
-    border: none;
-    background: transparent;
-    -moz-appearance: textfield;
-}
-
-.qty-input::-webkit-outer-spin-button,
-.qty-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
 .add-to-cart {
     flex: 1;
-    height: 50px; /* Match quantity controls height */
+    height: 50px;
     background: #046963;
     color: white;
     border: none;
@@ -272,11 +226,11 @@
     }
 
     .thumbnail-container {
-        justify-content: center; /* Center thumbnails */
+        justify-content: center;
     }
 
     .thumbnail {
-        flex: 0 0 80px; /* Smaller thumbnails */
+        flex: 0 0 80px;
         height: 80px;
     }
 
@@ -287,24 +241,24 @@
 
 @media (max-width: 767px) {
     .product-details-wrapper {
-        padding: 20px 10px; /* Reduced padding */
+        padding: 20px 10px;
     }
 
     .main-image {
-        height: 40vh; /* Smaller image */
+        height: 40vh;
     }
 
     .thumbnail {
-        flex: 0 0 60px; /* Even smaller thumbnails */
+        flex: 0 0 60px;
         height: 60px;
     }
 
     .product-name {
-        font-size: 1.8rem; /* Smaller title */
+        font-size: 1.8rem;
     }
 
     .price-container {
-        flex-wrap: wrap; /* Wrap prices if needed */
+        flex-wrap: wrap;
         gap: 10px;
     }
 
@@ -321,26 +275,8 @@
     }
 
     .quantity-selector {
-        flex-direction: column; /* Stack vertically */
+        flex-direction: column;
         gap: 15px;
-    }
-
-    .quantity-controls {
-        width: 100%; /* Full width */
-        max-width: 160px; /* Limit max width */
-        margin: 0 auto;
-    }
-
-    .qty-btn {
-        width: 40px; /* Slightly smaller for mobile */
-        height: 40px;
-        font-size: 18px;
-    }
-
-    .qty-input {
-        width: 50px;
-        height: 40px;
-        font-size: 16px;
     }
 
     .add-to-cart {
@@ -368,7 +304,7 @@
 
 @media (max-width: 576px) {
     .main-image {
-        height: 30vh; /* Even smaller */
+        height: 30vh;
     }
 
     .thumbnail {
@@ -399,7 +335,7 @@
     margin: 0;
     padding: 0;
     list-style: none;
-    flex-wrap: wrap; /* Wrap on small screens */
+    flex-wrap: wrap;
 }
 
 .breadcrumb a {
@@ -427,7 +363,7 @@
     margin-right: 5px;
 }
 
-/* Modal zoom styles remain unchanged for brevity */
+/* Modal zoom styles */
 .zoom-modal {
     display: none;
     position: fixed;
@@ -583,10 +519,10 @@
                                          Only <%= product.quantity %> items left in stock - order soon
                                      </div>
                                  <% } else { %>
-                                     <div class="stock-status in-stock">
+                                     <!-- <div class="stock-status in-stock">
                                          <i class="fi-rs-check"></i>
                                          In Stock (<%= product.quantity %> available)
-                                     </div>
+                                     </div> -->
                                  <% } %>
                              <% } else { %>
                                  <div class="stock-status out-of-stock">
@@ -599,11 +535,6 @@
                          <p class="product-description"><%= product.description %></p>
                          
                          <div class="quantity-selector">
-                            <div class="quantity-controls">
-                                <button type="button" class="qty-btn minus">−</button>
-                                <input type="text" class="qty-input" value="1" readonly>
-                                <button type="button" class="qty-btn plus">+</button>
-                            </div>
                              <button class="add-to-cart" 
                                      onclick="addToCart('<%= product._id %>')"
                                      <%= product.quantity === 0 ? 'disabled' : '' %>>
@@ -624,21 +555,21 @@
                                  </div>
                                  <div class="feature-text">7 Day Return Policy</div>
                              </div>
-                             <% if (product.salePrice < 1000){%>
-                             <div class="feature-item">
-                                 <div class="feature-icon">
-                                     <i class="fi-rs-credit-card"></i>
+                             <% if (product.salePrice < 1000) { %>
+                                 <div class="feature-item">
+                                     <div class="feature-icon">
+                                         <i class="fi-rs-credit-card"></i>
+                                     </div>
+                                     <div class="feature-text">Cash on Delivery Available</div>
                                  </div>
-                                 <div class="feature-text">Cash on Delivery Available</div>
-                             </div>
-                             <%}else{%>
-                                <div class="feature-item">
-                                    <div class="feature-icon">
-                                        <i class="fi-rs-credit-card"></i>
-                                    </div>
-                                    <div class="feature-text">Cash on Delivery Not Available</div>
-                                </div>
-                                <%}%>
+                             <% } else { %>
+                                 <div class="feature-item">
+                                     <div class="feature-icon">
+                                         <i class="fi-rs-credit-card"></i>
+                                     </div>
+                                     <div class="feature-text">Cash on Delivery Not Available</div>
+                                 </div>
+                             <% } %>
                          </div>
                      </div>
                  </div>
@@ -680,55 +611,15 @@ function updateMainImage(thumbnail, imageUrl) {
     }
 }
 
-// Quantity control functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const minusBtn = document.querySelector('.qty-btn.minus');
-    const plusBtn = document.querySelector('.qty-btn.plus');
-    const qtyInput = document.querySelector('.qty-input');
-    const maxStock = <%= product.quantity %>;
-
-    minusBtn.addEventListener('click', function() {
-        let currentValue = parseInt(qtyInput.value);
-        if (currentValue > 1) {
-            qtyInput.value = currentValue - 1;
-        }
-    });
-
-    plusBtn.addEventListener('click', function() {
-        let currentValue = parseInt(qtyInput.value);
-        if (currentValue < maxStock) {
-            qtyInput.value = currentValue + 1;
-        } else {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Stock Limit Reached',
-                text: `Only ${maxStock} items available`,
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000
-            });
-        }
-    });
-
-    // Prevent manual input
-    qtyInput.addEventListener('keydown', function(e) {
-        e.preventDefault();
-        return false;
-    });
-});
-
-// Updated addToCart function
+// Add to Cart function (default quantity of 1)
 function addToCart(productId) {
-    const quantityInput = document.querySelector('.qty-input');
-    const requestedQuantity = parseInt(quantityInput.value);
     const availableStock = <%= product.quantity %>;
 
-    if (requestedQuantity > availableStock) {
+    if (availableStock < 1) {
         Swal.fire({
             icon: 'error',
-            title: 'Not Enough Stock',
-            text: `Only ${availableStock} items available`,
+            title: 'Out of Stock',
+            text: 'This item is currently unavailable',
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
@@ -742,7 +633,7 @@ function addToCart(productId) {
         method: 'POST',
         data: { 
             productId: productId,
-            quantity: requestedQuantity
+            quantity: 1 // Default quantity since controls are removed
         },
         success: function(response) {
             if (response.status === true) {
@@ -751,7 +642,7 @@ function addToCart(productId) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Added to Cart',
-                    text: `${requestedQuantity} item${requestedQuantity > 1 ? 's' : ''} added successfully`,
+                    text: '1 item added successfully',
                     toast: true,
                     position: 'top-end',
                     showConfirmButton: false,
@@ -784,7 +675,7 @@ function addToCart(productId) {
     });
 }
 
-// Zoom functionality (unchanged for brevity, but included for completeness)
+// Zoom functionality
 document.addEventListener('DOMContentLoaded', function() {
     const mainImageContainer = document.querySelector('.main-image');
     const mainImage = document.getElementById('mainImage');
@@ -837,7 +728,7 @@ document.addEventListener('DOMContentLoaded', function() {
     mainImageContainer.addEventListener('mouseleave', hideZoom);
 });
 
-// Modal functionality (unchanged for brevity)
+// Modal functionality
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('zoomModal');
     const modalImg = document.getElementById('zoomModalImage');

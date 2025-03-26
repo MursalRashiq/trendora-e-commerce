@@ -10,7 +10,7 @@ const Order = require("../../models/orderSchema");
 const mongoose = require("mongoose");
 const Banner = require("../../models/bannerSchema");
 const asyncHandler = require("express-async-handler");
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 const loadHomePage = asyncHandler(async (req, res) => {
   const user = req.session.user;
@@ -27,8 +27,6 @@ const loadHomePage = asyncHandler(async (req, res) => {
     category: { $in: categories.map((category) => category._id) },
     quantity: { $gt: 0 },
   });
-
-  console.log(productData, "qwertyuigf");
 
   productData.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
   productData = productData.slice(0, 4);
@@ -83,11 +81,10 @@ async function sendVerificationEmail(email, otp) {
 }
 
 const generateReferralCode = (email) => {
-  const randomString = crypto.randomBytes(3).toString('hex').toUpperCase();
-  return `REF${randomString}${email.slice(0, 3).toUpperCase()}`; // e.g., REF1A2B3JOH
+  const randomString = crypto.randomBytes(3).toString("hex").toUpperCase();
+  return `REF${randomString}${email.slice(0, 3).toUpperCase()}`;
 };
 
-// Secure password hashing
 const securePassword = asyncHandler(async (password) => {
   const passwordHash = await bcrypt.hash(password, 10);
   return passwordHash;
@@ -96,22 +93,22 @@ const securePassword = asyncHandler(async (password) => {
 const signup = asyncHandler(async (req, res) => {
   const { fullname, email, password, phone, referralCode } = req.body;
   const referralCodeFromUrl = req.query.ref;
-  console.log("req.url:", req.url);
-  console.log("req.query:", req.query);
-  console.log("req.body:", req.body);
-  console.log("referralCodeFromUrl:", referralCodeFromUrl);
-  console.log("referralCode from form:", referralCode);
 
   if (!fullname || !email || !password || !phone) {
-    return res.status(400).json({ success: false, message: "All fields are required" });
-    console.log('all fields are required');
+    return res
+      .status(400)
+      .json({ success: false, message: "All fields are required" });
+    console.log("all fields are required");
   }
 
   const existingUserByEmail = await User.findOne({ email });
   const existingUserByPhone = await User.findOne({ phone });
 
   if (existingUserByEmail || existingUserByPhone) {
-    return res.render("signup", { message: "User already exists", referralCode: referralCode || referralCodeFromUrl });
+    return res.render("signup", {
+      message: "User already exists",
+      referralCode: referralCode || referralCodeFromUrl,
+    });
     console.log("error form already exists");
   }
 
@@ -124,17 +121,14 @@ const signup = asyncHandler(async (req, res) => {
   }
 
   const referredBy = referralCode || referralCodeFromUrl || null;
-  console.log("Referred by set to:", referredBy);
   req.session.userOtp = otp;
   req.session.userData = { fullname, email, password, phone, referredBy };
-  console.log("Session data:", req.session.userData);
 
   return res.render("verify-otp");
 });
 
 const verifyOtp = asyncHandler(async (req, res) => {
   const { otp } = req.body;
-  console.log("Entered OTP:", otp);
 
   if (!req.session.userOtp || !req.session.userData) {
     console.error("Session data missing:", req.session);
@@ -145,8 +139,8 @@ const verifyOtp = asyncHandler(async (req, res) => {
   }
 
   if (otp == req.session.userOtp) {
-    const { fullname, email, phone, password, referredBy } = req.session.userData;
-    console.log("Session userData:", req.session.userData);
+    const { fullname, email, phone, password, referredBy } =
+      req.session.userData;
 
     try {
       let referralCode = generateReferralCode(email);
@@ -158,7 +152,9 @@ const verifyOtp = asyncHandler(async (req, res) => {
         attempts++;
       }
       if (codeExists) {
-        throw new Error("Failed to generate unique referral code after retries");
+        throw new Error(
+          "Failed to generate unique referral code after retries"
+        );
       }
 
       const passwordHash = await securePassword(password);
@@ -173,22 +169,21 @@ const verifyOtp = asyncHandler(async (req, res) => {
         redeemed: false,
         redeemedUsers: [],
       });
-      console.log("User to save:", saveUserData);
 
       await saveUserData.save();
-      console.log("User saved successfully:", saveUserData._id);
 
       if (referredBy) {
         const referrer = await User.findOne({ referralCode: referredBy });
         if (referrer) {
           referrer.redeemedUsers.push(saveUserData._id);
           await referrer.save();
-          console.log(`Updated referrer ${referrer.email} with new referral: ${saveUserData._id}`);
+          console.log(
+            `Updated referrer ${referrer.email} with new referral: ${saveUserData._id}`
+          );
         }
       }
 
       req.session.user = saveUserData._id;
-      console.log("Session user ID set:", req.session.user);
 
       req.session.userOtp = null;
       req.session.userData = null;
@@ -240,9 +235,7 @@ const loadLogin = asyncHandler(async (req, res) => {
 
 const loginPage = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  console.log("password:", password);
   const findUser = await User.findOne({ isAdmin: 0, email: email });
-  console.log(findUser, "findUser");
   if (!findUser) {
     return res.render("login", { message: "User not Found" });
   }
@@ -251,11 +244,7 @@ const loginPage = asyncHandler(async (req, res) => {
     return res.render("userBlocked");
   }
 
-  console.log(findUser.password, "findUser.password");
-  // console.log(password, "password")
-
   const passwordMatch = await bcrypt.compare(password, findUser.password);
-  console.log(passwordMatch, "password");
   if (!passwordMatch) {
     return res.render("login", { message: "Incorrect Password" });
   }
@@ -282,7 +271,7 @@ const loadShoppingPage = asyncHandler(async (req, res) => {
   const sortOption = req.query.sort || "latest";
 
   if (!req.session.flashMessage) {
-    req.session.flashMessage = null; 
+    req.session.flashMessage = null;
   }
 
   let sortCriteria = {};
@@ -303,12 +292,10 @@ const loadShoppingPage = asyncHandler(async (req, res) => {
       sortCriteria = { createdAt: -1 };
   }
 
-  // Pagination
   const page = parseInt(req.query.page) || 1;
   const limit = 8;
   const skip = (page - 1) * limit;
 
-  // Query products
   const query = {
     isBlocked: false,
     quantity: { $gt: 0 },
@@ -322,12 +309,6 @@ const loadShoppingPage = asyncHandler(async (req, res) => {
 
   const totalProducts = await Product.countDocuments(query);
   const totalPages = Math.ceil(totalProducts / limit);
-
-  // Debug logs
-  console.log("Products found:", products.length);
-  console.log("Total pages:", totalPages);
-  console.log("Current page:", page);
-  console.log("Rendering loadShoppingPage with activeFilters:", { category: [], brand: [], price: [] });
 
   return res.render("shop", {
     locals: userData,
@@ -395,7 +376,9 @@ const filterProducts = asyncHandler(async (req, res) => {
   }
 
   if (selectedBrands.length > 0) {
-    const brandNames = await Brand.find({ _id: { $in: selectedBrands } }).distinct("brandName");
+    const brandNames = await Brand.find({
+      _id: { $in: selectedBrands },
+    }).distinct("brandName");
     queryFilters.brand = { $in: brandNames };
   }
 
@@ -444,12 +427,6 @@ const filterProducts = asyncHandler(async (req, res) => {
     userData = await User.findOne({ _id: user });
   }
 
-  console.log("Rendering filterProducts with activeFilters:", {
-    category: selectedCategories,
-    brand: selectedBrands,
-    price: selectedPrices,
-  });
-
   res.render("shop", {
     locals: userData,
     products,
@@ -475,7 +452,6 @@ const transition = asyncHandler(async (req, res) => {
 const applyCoupon = asyncHandler(async (req, res) => {
   const userId = req.session.user;
   const selectedCoupon = await Coupon.findOne({ name: req.body.coupon });
-  console.log(req.body);
 
   if (!selectedCoupon) {
     return res.json({ success: false, message: "Coupon not found" });
@@ -510,7 +486,6 @@ const searchProducts = asyncHandler(async (req, res) => {
 
   let sortCriteria = {};
 
-  // Add sorting logic
   switch (sortOption) {
     case "lowToHigh":
       sortCriteria = { salePrice: 1 };
@@ -529,7 +504,7 @@ const searchProducts = asyncHandler(async (req, res) => {
   }
 
   if (!req.session.flashMessage) {
-    req.session.flashMessage = null; // Ensure it's initialized
+    req.session.flashMessage = null;
   }
 
   const query = {
@@ -560,7 +535,7 @@ const searchProducts = asyncHandler(async (req, res) => {
     totalPages,
     currentPage: page,
     sortOption: sortOption,
-    query: search, // Send search term to frontend
+    query: search,
     count: totalProducts,
     session: req.session,
   });
@@ -590,6 +565,10 @@ const getCount = asyncHandler(async (req, res) => {
   });
 });
 
+const getContactPage = asyncHandler(async (req, res) => {
+  res.render("contact");
+});
+
 module.exports = {
   loadHomePage,
   pageNotFound,
@@ -606,4 +585,5 @@ module.exports = {
   applyCoupon,
   searchProducts,
   getCount,
+  getContactPage,
 };

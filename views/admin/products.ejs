@@ -279,6 +279,7 @@
             .main-content {
                 padding: clamp(0.5rem, 1.5vw, 1rem);
                 border-radius: 5px;
+                padding-top: 6rem;
             }
             .content-title {
                 font-size: clamp(1.2rem, 4vw, 1.6rem);
@@ -322,6 +323,8 @@
         @media (min-width: 1200px) {
             .main-content {
                 padding: clamp(2rem, 3vw, 2.5rem);
+                padding-top: 8rem;
+
             }
             .content-title {
                 font-size: 2.2rem;
@@ -414,6 +417,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         async function addOffer(productId) {
             const { value: amount } = await Swal.fire({
@@ -499,6 +503,22 @@
                 });
             }
         }
+
+        const urlParams = new URLSearchParams(window.location.search);
+  const message = urlParams.get('message');
+
+  console.log('Message:', message);  // Debug log
+
+  // Decode message and show alert
+  if (message) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Success!',
+      text: decodeURIComponent(message),
+      timer: 3000,
+      showConfirmButton: false
+    });
+  }
     </script>
 </body>
 </html>

@@ -467,11 +467,11 @@
         <h2 class="content-title">Order Details</h2>
       </div>
 
-      <div class="filter-trigger">
+      <!-- <div class="filter-trigger">
         <button class="filter-btn" id="openFilterModal">
           <i class="fas fa-filter"></i> Filter
         </button>
-      </div>
+      </div> -->
 
       <div class="card">
         <div class="card-body">
@@ -542,7 +542,7 @@
                     </div>
                   <% } %>
 
-                  <div class="action-buttons">
+                  <!-- <div class="action-buttons">
                     <% if (item.status === "Confirmed") { %>
                       <button class="btn btn-primary" onclick="changeItemStatus('<%= orders.orderId %>', '<%= index %>', 'Processing')">
                         <i class="fas fa-cogs"></i> Start Processing
@@ -557,7 +557,7 @@
                       <button class="btn btn-success" onclick="changeItemStatus('<%= orders.orderId %>', '<%= index %>', 'Delivered')">
                         <i class="fas fa-check-circle"></i> Mark as Delivered
                       </button>
-                    <% } %>
+                    <% } %> -->
                     <% if (item.status === "Return Request") { %>
                       <button class="btn btn-success" onclick="handleItemReturnApproval('<%= orders._id %>', '<%= item._id %>')">
                         <i class="fas fa-thumbs-up"></i> Approve Return

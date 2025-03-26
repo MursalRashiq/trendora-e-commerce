@@ -41,10 +41,22 @@ const createCoupon = asyncHandler(async (req, res) => {
     maximumPrice: parseInt(req.body.maximumPrice),
   };
   // checking the coupon name already exist
-  const existingCoupon = await Coupon.findOne({ name: { $regex: `^${data.couponName}$`, $options: "i" } });
-  
+  const existingCoupon = await Coupon.findOne({
+    name: { $regex: `^${data.couponName}$`, $options: "i" },
+  });
+
   if (existingCoupon) {
-    return res.render("coupon", { message: "Coupon name already exists", messageType: "error" });
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const coupons = await Coupon.find().skip(skip).limit(limit);
+    const totalCoupons = await Coupon.countDocuments();
+    const totalPages = Math.ceil(totalCoupons / limit);
+
+    return res.redirect(
+      `/admin/coupon?message=Coupon name already exists&messageType=error`
+    );
   }
 
   const newCoupon = new Coupon({
@@ -56,7 +68,9 @@ const createCoupon = asyncHandler(async (req, res) => {
     maximumPrice: data.maximumPrice,
   });
   await newCoupon.save();
-  res.render("coupon", { message: "Coupon created successfully", messageType: "success" });
+  return res.redirect(
+    `/admin/coupon?message=Coupon created successfully&messageType=success`
+  );
 });
 
 const editCoupon = async (req, res) => {

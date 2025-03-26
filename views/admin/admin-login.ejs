@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <!-- <link rel="stylesheet" href="/css/bootstrap.min.css" /> -->
-  
+
   <style>
-    body, html {
+    body,
+    html {
       height: 100%;
       margin: 0;
       background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
@@ -113,9 +115,9 @@
       cursor: pointer;
       padding: 0;
     }
-   
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="login-container">
@@ -123,53 +125,39 @@
         <h1>Admin Login</h1>
       </div>
       <form id="adminLoginForm" method="post" action="/admin/login">
-        <div class="form-group" >
-          <label for="adminEmail" >Email Address</label>
-          <input
-
-            type="email"
-            class="form-control"
-            id="adminEmail"
-            name="email"
-            placeholder="Enter your email"
-            required
-          />
+        <div class="form-group">
+          <label for="adminEmail">Email Address</label>
+          <input type="email" class="form-control" id="adminEmail" name="email" placeholder="Enter your email"
+            required />
           <div id="emailError" class="error-message"></div>
         </div>
         <div class="form-group">
           <label for="adminPassword">Password</label>
           <div class="password-wrapper">
-            <input
-              type="password"
-              class="form-control"
-              id="adminPassword"
-              name="password"
-              placeholder="Enter your password"
-              required
-            />
+            <input type="password" class="form-control" id="adminPassword" name="password"
+              placeholder="Enter your password" required />
             <button type="button" class="toggle-password">👁️</button>
           </div>
           <div id="passwordError" class="error-message"></div>
         </div>
 
         <% if (messages.error) { %>
-          <div class="alert alert-danger" 
-          style="margin-bottom: 10px;
+          <div class="alert alert-danger" style="margin-bottom: 10px;
           color: #dc3545;">
             <%= messages.error %>
           </div>
-        <% } %>
-        <!-- <div><p><%= locals.message%></p></div> -->
-        <button type="submit" class="btn-primary">Log In</button>
+          <% } %>
+            <!-- <div><p><%= locals.message%></p></div> -->
+            <button type="submit" class="btn-primary">Log In</button>
       </form>
     </div>
   </div>
 
   <!-- <script src="/js/jquery.min.js"></script>
   <script src="/js/bootstrap.bundle.min.js"></script> -->
-  
+
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       const form = document.getElementById("adminLoginForm");
       const emailField = document.getElementById("adminEmail");
       const passwordField = document.getElementById("adminPassword");
@@ -177,7 +165,7 @@
       const passwordError = document.getElementById("passwordError");
       const togglePassword = document.querySelector(".toggle-password");
 
-      togglePassword.addEventListener("click", function() {
+      togglePassword.addEventListener("click", function () {
         const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
         passwordField.setAttribute("type", type);
         this.textContent = type === "password" ? "👁️" : "🔒";
@@ -188,7 +176,7 @@
         return emailPattern.test(emailField.value);
       }
 
-      form.addEventListener("submit", function(event) {
+      form.addEventListener("submit", function (event) {
         let isValid = true;
 
         if (!validateEmail()) {
@@ -212,4 +200,5 @@
     });
   </script>
 </body>
+
 </html>

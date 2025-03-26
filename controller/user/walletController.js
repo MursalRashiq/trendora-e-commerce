@@ -20,7 +20,6 @@ const addMoneyToWallet = async (req, res) => {
         console.log("Error while creating order : ", err);
       } else {
         var amount = order.amount / 100;
-        console.log(amount);
         await User.updateOne(
           {
             _id: req.session.user,
@@ -46,10 +45,7 @@ const addMoneyToWallet = async (req, res) => {
 const verify_payment = async (req, res) => {
   try {
     let { payment_id, order_id, signature, amount } = req.body;
-    console.log("===== Payment Details Received =====", req.body);
     let transactionId = req.body.payment_id || "N/A";
-
-    console.log("transactionIdtransactionIdtransactionId", transactionId);
 
     if (!amount) {
       console.error("Error: Amount not found in request!");
@@ -89,7 +85,6 @@ const verify_payment = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    console.log(" Wallet Updated Successfully:", updatedUser.wallet);
     res.json({ success: true, wallet: updatedUser.wallet });
   } catch (error) {
     console.error("Payment Verification Error:", error);

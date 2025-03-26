@@ -18,7 +18,6 @@ const getRatingPage = async (req, res) => {
       return res.status(404).redirect("/404");
     }
 
-    // Verify user has purchased product
     const hasOrdered = await Order.findOne({
       userId: req.session.user._id,
       "products.productId": productId,

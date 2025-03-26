@@ -65,39 +65,39 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  referralCode: { // Fixed typo from "referalCode"
+  referralCode: {
     type: String,
     unique: true,
     sparse: true,
   },
-  referredBy: { // Tracks who referred this user
+  referredBy: {
     type: String,
     default: null,
   },
-  redeemed: { // Indicates if this user's referral reward is claimed
+  redeemed: {
     type: Boolean,
     default: false,
   },
-  redeemedUsers: [ // Users referred by this user
+  redeemedUsers: [
     {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
   ],
-  referralCount: { // Number of successful referrals
+  referralCount: {
     type: Number,
     default: 0,
   },
-  referralRewardStatus: { // Status of this user's referral reward
+  referralRewardStatus: {
     type: String,
     enum: ["pending", "claimed", "ineligible"],
     default: "pending",
   },
-  referralEarnings: { // Total earnings from referrals
+  referralEarnings: {
     type: Number,
     default: 0,
   },
-  referredAt: { // When this user was referred
+  referredAt: {
     type: Date,
     default: null,
   },

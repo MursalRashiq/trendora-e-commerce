@@ -47,7 +47,6 @@ const sendVerificationEmail = async (email, otp) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log("Email send:", info.messageId);
     return true;
   } catch (error) {
     console.error(error, ":error sending email");
@@ -165,9 +164,6 @@ const userProfile = async (req, res) => {
     const userData = await User.findById(userId).populate("orderHistory");
     const addressData = await Address.findOne({ userId: userId });
 
-    console.log(userData, "user data");
-    console.log(userData.walletHistory, "Wallet History");
-
     const walletHistory = userData.walletHistory
       .map((x) => ({
         status: x.type,
@@ -176,12 +172,11 @@ const userProfile = async (req, res) => {
       }))
       .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // Remove pagination logic from controller
     res.render("profile", {
       locals: userData,
       userAddress: addressData,
       walletHistory,
-      query: req.query, // Pass query params to view for pagination
+      query: req.query,
     });
   } catch (error) {
     console.error("Error retrieving profile data", error);
@@ -213,8 +208,8 @@ const changeEmailValid = async (req, res) => {
         req.session.userOtp = otp;
         req.session.userData = req.body;
         req, (session.email = email);
-        res.render("change-email-otp",{
-          locals: userExists
+        res.render("change-email-otp", {
+          locals: userExists,
         });
         console.log("Otp :", otp);
         console.log("email :", email);
@@ -235,7 +230,6 @@ const changeEmailValid = async (req, res) => {
 const verifyEmailOtp = async (req, res) => {
   try {
     const enteredOtp = req.session.userOtp;
-    console.log("enteredOtp:", enteredOtp);
     if (enteredOtp === req.session.userOtp) {
       req.session.userData = req.body.userData;
       res.render("new-email", {
@@ -281,17 +275,14 @@ const changeUserPassPost = async (req, res) => {
   try {
     const userId = req.session.user;
 
-    // If user is not logged in
     if (!userId) {
       return res
         .status(400)
         .json({ success: false, message: "User not logged in." });
     }
 
-    // Get the data from the POST request
     const { currentPassword, newPassword, confirmNewPassword } = req.body;
 
-    // Find the user in the database
     const userData = await User.findById(userId);
     if (!userData) {
       return res
@@ -299,14 +290,12 @@ const changeUserPassPost = async (req, res) => {
         .json({ success: false, message: "User not found." });
     }
 
-    // Check if the current password is provided
     if (!currentPassword) {
       return res
         .status(400)
         .json({ success: false, message: "Current password is required." });
     }
 
-    // Compare the entered current password with the hashed password in the database
     const isMatch = await bcrypt.compare(currentPassword, userData.password);
     if (!isMatch) {
       return res
@@ -314,41 +303,34 @@ const changeUserPassPost = async (req, res) => {
         .json({ success: false, message: "Current password is incorrect." });
     }
 
-    // Check if the new password and confirm new password match
     if (newPassword !== confirmNewPassword) {
       return res
         .status(400)
         .json({ success: false, message: "New passwords do not match." });
     }
 
-    // Check if the new password is provided
     if (!newPassword) {
       return res
         .status(400)
         .json({ success: false, message: "New password is required." });
     }
 
-    // Hash the new password
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-    // Update the user's password in the database
     userData.password = hashedNewPassword;
     await userData.save();
 
-    // Send a success response
     res.json({
       success: true,
       message: "Password changed successfully.",
-      redirectUrl: "/profile", // You can change this to any page you want to redirect to
+      redirectUrl: "/profile",
     });
   } catch (error) {
     console.error("Error in changing password: ", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "An error occurred. Please try again later.",
-      });
+    res.status(500).json({
+      success: false,
+      message: "An error occurred. Please try again later.",
+    });
   }
 };
 
@@ -369,8 +351,6 @@ const addAddress = async (req, res) => {
 
 const postAddAddress = async (req, res) => {
   try {
-    conosle.log("hitting")
-
     const userId = req.session.user;
     if (!userId) {
       console.log("User ID not found in session");
@@ -394,9 +374,6 @@ const postAddAddress = async (req, res) => {
       altPhone,
     } = req.body;
 
-    // Log the received data for debugging
-    // console.log("Received address data:--------------------------------------------------------------------------------------", req.body);
-
     const userAddress = await Address.findOne({ userId: userData._id });
     if (!userAddress) {
       const newAddress = new Address({
@@ -415,7 +392,6 @@ const postAddAddress = async (req, res) => {
         ],
       });
       await newAddress.save();
-      console.log("New address added for user:", userData._id);
     } else {
       userAddress.address.push({
         addressType,
@@ -445,7 +421,6 @@ const editAddress = async (req, res) => {
   try {
     const addressId = req.query.id?.trim();
 
-    // Check if ID exists and is a valid ObjectId
     if (!addressId || !mongoose.Types.ObjectId.isValid(addressId)) {
       console.error("Invalid address ID:", addressId);
       return res.status(400).send("Invalid Address ID");
@@ -477,7 +452,6 @@ const editAddress = async (req, res) => {
 const postEditAddress = async (req, res) => {
   try {
     const data = req.body;
-    // console.log("===============",req.body)
     const addressId = req.query.id;
     const user = req.session.user;
     const findAddress = await Address.findOne({ "address._id": addressId });
@@ -557,7 +531,7 @@ const changeName = async (req, res) => {
     res.locals.user = userData;
     res.locals.message = req.flash();
 
-    res.render("change-name",{locals:userData});
+    res.render("change-name", { locals: userData });
   } catch (error) {
     console.error("Error in changeName:", error);
     req.flash("error", "Something went wrong");
@@ -577,12 +551,18 @@ const changeNamePost = async (req, res) => {
 
     if (!newName || !reNewName) {
       req.flash("error", "Please fill all fields");
-      return res.render("change-name", { user: userData, message: req.flash() });
+      return res.render("change-name", {
+        user: userData,
+        message: req.flash(),
+      });
     }
 
     if (newName !== reNewName) {
       req.flash("error", "Names do not match");
-      return res.render("change-name", { user: userData, message: req.flash() });
+      return res.render("change-name", {
+        user: userData,
+        message: req.flash(),
+      });
     }
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -593,7 +573,10 @@ const changeNamePost = async (req, res) => {
 
     if (!updatedUser) {
       req.flash("error", "User not found");
-      return res.render("change-name", { user: userData, message: req.flash() });
+      return res.render("change-name", {
+        user: userData,
+        message: req.flash(),
+      });
     }
 
     req.session.user.name = newName;
@@ -624,8 +607,6 @@ const changePhone = async (req, res) => {
     res.render("change-phone", {
       locals: userData,
       message: req.flash(),
-      // cartQuantity,
-      // wishlistQuantity
     });
   } catch (error) {
     console.error("Error in changePhone:", error);
@@ -643,13 +624,11 @@ const changePhonePost = async (req, res) => {
       return res.redirect("/login");
     }
 
-    // Basic validation
     if (!newPhone || !reNewPhone) {
       req.flash("error", "Please fill all fields");
       return res.redirect("/change-phone");
     }
 
-    // Phone number validation
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(newPhone)) {
       req.flash("error", "Please enter a valid 10-digit phone number");
@@ -661,14 +640,12 @@ const changePhonePost = async (req, res) => {
       return res.redirect("/change-phone");
     }
 
-    // Check if phone number already exists
     const existingUser = await User.findOne({ phone: newPhone });
     if (existingUser && existingUser._id.toString() !== userId.toString()) {
       req.flash("error", "Phone number already in use");
       return res.redirect("/change-phone");
     }
 
-    // Update user phone
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { $set: { phone: newPhone } },
@@ -680,7 +657,6 @@ const changePhonePost = async (req, res) => {
       return res.redirect("/change-phone");
     }
 
-    // Update session
     req.session.user.phone = newPhone;
 
     req.flash("success", "Phone number updated successfully");
@@ -692,8 +668,6 @@ const changePhonePost = async (req, res) => {
   }
 };
 
-
-
 const addingAddressFromCheckout = async (req, res) => {
   try {
     console.log("Hitting /addAddressFromCheckout");
@@ -701,15 +675,28 @@ const addingAddressFromCheckout = async (req, res) => {
 
     const userId = req.body.userId || req.session.user; // Fallback to session if used
     if (!userId) {
-      return res.status(401).json({ success: false, message: "User not authenticated" });
+      return res
+        .status(401)
+        .json({ success: false, message: "User not authenticated" });
     }
 
     const userData = await User.findOne({ _id: userId });
     if (!userData) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
-    const { addressType, name, city, landmark, state, pincode, phone, altPhone } = req.body;
+    const {
+      addressType,
+      name,
+      city,
+      landmark,
+      state,
+      pincode,
+      phone,
+      altPhone,
+    } = req.body;
     const missingFields = [];
     if (!addressType) missingFields.push("addressType");
     if (!name) missingFields.push("name");
@@ -723,12 +710,21 @@ const addingAddressFromCheckout = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "All required fields must be provided",
-        missing: missingFields
+        missing: missingFields,
       });
     }
 
     let userAddress = await Address.findOne({ userId: userData._id });
-    const newAddressEntry = { addressType, name, city, landmark, state, pincode, phone, altPhone };
+    const newAddressEntry = {
+      addressType,
+      name,
+      city,
+      landmark,
+      state,
+      pincode,
+      phone,
+      altPhone,
+    };
 
     if (!userAddress) {
       userAddress = new Address({
@@ -740,7 +736,9 @@ const addingAddressFromCheckout = async (req, res) => {
     }
 
     await userAddress.save();
-    res.status(200).json({ success: true, message: "Address added successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Address added successfully" });
   } catch (error) {
     console.error("Error adding address:", error);
     res.status(500).json({ success: false, message: "Server error" });
@@ -749,20 +747,34 @@ const addingAddressFromCheckout = async (req, res) => {
 
 const editAddressFromCheckout = async (req, res) => {
   try {
-    console.log("Hitting /editAddressFromCheckout");
-    console.log("Received address data:", req.body);
-
-    const { userId, addressId, addressType, name, city, landmark, state, pincode, phone, altPhone } = req.body;
+    const {
+      userId,
+      addressId,
+      addressType,
+      name,
+      city,
+      landmark,
+      state,
+      pincode,
+      phone,
+      altPhone,
+    } = req.body;
     if (!userId) {
-      return res.status(401).json({ success: false, message: "User not authenticated" });
+      return res
+        .status(401)
+        .json({ success: false, message: "User not authenticated" });
     }
     if (!addressId) {
-      return res.status(400).json({ success: false, message: "Address ID is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Address ID is required" });
     }
 
     const userData = await User.findOne({ _id: userId });
     if (!userData) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     const missingFields = [];
@@ -778,30 +790,46 @@ const editAddressFromCheckout = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "All required fields must be provided",
-        missing: missingFields
+        missing: missingFields,
       });
     }
 
     const userAddress = await Address.findOne({ userId: userData._id });
     if (!userAddress) {
-      return res.status(404).json({ success: false, message: "Address document not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Address document not found" });
     }
 
-    const addressIndex = userAddress.address.findIndex(addr => addr._id.toString() === addressId);
+    const addressIndex = userAddress.address.findIndex(
+      (addr) => addr._id.toString() === addressId
+    );
     if (addressIndex === -1) {
-      return res.status(404).json({ success: false, message: "Address not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Address not found" });
     }
 
-    userAddress.address[addressIndex] = { addressType, name, city, landmark, state, pincode, phone, altPhone };
+    userAddress.address[addressIndex] = {
+      addressType,
+      name,
+      city,
+      landmark,
+      state,
+      pincode,
+      phone,
+      altPhone,
+    };
     await userAddress.save();
 
-    res.status(200).json({ success: true, message: "Address updated successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Address updated successfully" });
   } catch (error) {
     console.error("Error editing address:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 
 module.exports = {
   getForgotPassPage,
@@ -827,5 +855,5 @@ module.exports = {
   changePhone,
   changePhonePost,
   addingAddressFromCheckout,
-  editAddressFromCheckout
+  editAddressFromCheckout,
 };

@@ -1,669 +1,733 @@
 <%- include("../../views/partials/admin/header") %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category Management - Trendora Admin</title>
+    <!DOCTYPE html>
+    <html lang="en">
 
-    <!-- CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/logo/logo-removebg-preview.png">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Category Management - Trendora Admin</title>
 
-    <style>
-        body {
-            background-color: #eef2f7;
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            overflow-x: hidden;
-            display: flex;
-            min-height: 100vh;
-        }
+        <!-- CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+        <link rel="shortcut icon" type="image/x-icon" href="/assets/img/logo/logo-removebg-preview.png">
 
-        .dashboard-container {
-            flex: 1;
-            margin-left: 250px;
-            width: calc(100% - 250px);
-            transition: margin-left 0.3s ease, width 0.3s ease;
-        }
+        <style>
+            body {
+                background-color: #eef2f7;
+                font-family: 'Poppins', sans-serif;
+                margin: 0;
+                overflow-x: hidden;
+                display: flex;
+                min-height: 100vh;
+            }
 
-        .main-content {
-            background: #fff;
-            padding: clamp(1rem, 3vw, 2rem);
-            width: 100%;
-            overflow-x: hidden;
-            padding-top: 70px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            min-height: calc(100vh - 70px);
-        }
-
-        .content-header {
-            margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
-            text-align: center;
-        }
-
-        .content-title {
-            font-size: clamp(1.5rem, 5vw, 2.2rem);
-            color: #34495e;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .search-container {
-            margin: 0 auto clamp(1.5rem, 3vw, 2.5rem);
-            padding: 0 clamp(0.5rem, 2vw, 1rem);
-            max-width: 700px;
-            width: 100%;
-        }
-
-        .search-form {
-            display: flex;
-            align-items: center;
-            background: #fff;
-            border-radius: 50px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            width: 100%;
-            gap: clamp(0.5rem, 1.5vw, 1rem);
-        }
-
-        .search-form:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .search-input {
-            border: none;
-            padding: clamp(8px, 2vw, 12px) clamp(10px, 2vw, 15px);
-            flex: 1;
-            border-radius: 50px 0 0 50px;
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-            background: transparent;
-            outline: none;
-            width: 100%;
-        }
-
-        .search-button {
-            padding: clamp(8px, 2vw, 12px) clamp(15px, 3vw, 22px);
-            border-radius: 0 50px 50px 0;
-            background: #1abc9c;
-            border: none;
-            color: white;
-            font-weight: 600;
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .search-button:hover {
-            background: #16a085;
-            transform: scale(1.05);
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            margin-bottom: clamp(1rem, 2vw, 1.5rem);
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .card-body {
-            padding: clamp(1rem, 2vw, 1.5rem);
-        }
-
-        .form-control {
-            border: 1px solid #ced4da;
-            padding: clamp(8px, 2vw, 10px);
-            border-radius: 5px;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: #1abc9c;
-            box-shadow: 0 0 5px rgba(26, 188, 156, 0.5);
-            outline: none;
-        }
-
-        .btn-primary {
-            background: #1abc9c;
-            border: none;
-            padding: clamp(8px, 2vw, 10px) clamp(15px, 2.5vw, 20px);
-            border-radius: 5px;
-            color: white;
-            font-weight: 600;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background: #16a085;
-            transform: scale(1.05);
-        }
-
-        .table-container {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin: 0 0 clamp(1.5rem, 3vw, 2.5rem);
-            transition: all 0.3s ease;
-            padding: clamp(0.5rem, 1.5vw, 1rem);
-        }
-
-        .table-container:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: clamp(0.85rem, 2vw, 0.95rem);
-        }
-
-        .table th {
-            background: #34495e;
-            padding: clamp(10px, 2vw, 15px);
-            font-weight: 700;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-align: center;
-        }
-
-        .table td {
-            padding: clamp(8px, 2vw, 12px);
-            border-bottom: 1px solid #edf2f7;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .table tr:hover {
-            background: #f7fafc;
-        }
-
-        .badge {
-            padding: 0.5em 0.75em;
-            font-size: clamp(0.75rem, 2vw, 0.85rem);
-            font-weight: 700;
-            border-radius: 5px;
-            width: 70px;
-            display: inline-block;
-        }
-
-        .alert-success {
-            background: #2ecc71;
-            color: white;
-        }
-
-        .alert-danger {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btn {
-            padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 12px);
-            border-radius: 5px;
-            border: none;
-            color: white;
-            font-weight: 600;
-            font-size: clamp(0.85rem, 2vw, 0.95rem);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-info { background: #3498db; }
-        .btn-info:hover { background: #2980b9; }
-        .btn-danger { background: #e74c3c; }
-        .btn-danger:hover { background: #c0392b; }
-        .btn-success { background: #2ecc71; }
-        .btn-success:hover { background: #27ae60; }
-
-        .pagination {
-            margin: clamp(1.5rem, 3vw, 2.5rem) 0;
-            display: flex;
-            justify-content: center;
-            gap: clamp(0.4rem, 1vw, 0.7rem);
-            flex-wrap: wrap;
-        }
-
-        .page-link {
-            padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 12px);
-            border-radius: 5px;
-            color: #34495e;
-            border: 1px solid #ced4da;
-            font-weight: 500;
-            font-size: clamp(0.85rem, 2vw, 1rem);
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .page-link:hover {
-            background: #eef2f7;
-            color: #1abc9c;
-            transform: scale(1.05);
-        }
-
-        .page-item.active .page-link {
-            background: #1abc9c;
-            border-color: #1abc9c;
-            color: white;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 992px) {
             .dashboard-container {
-                margin-left: 70px;
-                width: calc(100% - 70px);
-                position: relative;
-                left: 0;
+                flex: 1;
+                margin-left: 250px;
+                width: calc(100% - 250px);
+                transition: margin-left 0.3s ease, width 0.3s ease;
             }
-            .main-content {
-                padding: clamp(0.75rem, 2vw, 1.5rem);
-            }
-            .row > div {
-                flex: 0 0 100%;
-                max-width: 100%;
-            }
-        }
 
-        @media (max-width: 768px) {
-            .search-form {
-                flex-direction: column;
-                padding: clamp(0.5rem, 1vw, 0.75rem);
-                border-radius: 10px;
-            }
-            .search-input {
-                margin: clamp(0rem, 0.5vw, 0.25rem);
-                padding: clamp(6px, 1.5vw, 10px);
-                border-radius: 5px;
-                width: 100%;
-            }
-            .search-button {
-                margin: clamp(0rem, 0.5vw, 0.25rem);
-                padding: clamp(6px, 1.5vw, 10px);
-                border-radius: 5px;
-                width: 100%;
-            }
-            .table thead {
-                display: none;
-            }
-            .table, .table tbody, .table tr, .table td {
-                display: block;
-                width: 100%;
-            }
-            .table tr {
-                margin-bottom: clamp(0.75rem, 2vw, 1rem);
-                border-radius: 10px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            .main-content {
                 background: #fff;
-                overflow: hidden;
+                padding: clamp(1rem, 3vw, 2rem);
+                width: 100%;
+                overflow-x: hidden;
+                padding-top: 70px;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                min-height: calc(100vh - 70px);
             }
-            .table td {
-                padding: clamp(6px, 1.5vw, 10px);
-                border-bottom: none;
-                position: relative;
-                text-align: left;
-                font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+
+            .content-header {
+                margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+                text-align: center;
             }
-            .table td:before {
-                content: attr(data-label);
-                font-weight: 600;
+
+            .content-title {
+                font-size: clamp(1.5rem, 5vw, 2.2rem);
                 color: #34495e;
-                display: block;
-                margin-bottom: 0.25rem;
-                font-size: clamp(0.8rem, 2vw, 0.95rem);
+                font-weight: 600;
+                letter-spacing: 1px;
                 text-transform: uppercase;
             }
-            .table td:last-child {
-                border-bottom: none;
-            }
-        }
 
-        @media (max-width: 576px) {
-            .main-content {
-                padding: clamp(0.5rem, 1.5vw, 1rem);
-                border-radius: 5px;
-            }
-            .content-title {
-                font-size: clamp(1.2rem, 4vw, 1.6rem);
-            }
             .search-container {
+                margin: 0 auto clamp(1.5rem, 3vw, 2.5rem);
+                padding: 0 clamp(0.5rem, 2vw, 1rem);
+                max-width: 700px;
+                width: 100%;
+            }
+
+            .search-form {
+                display: flex;
+                align-items: center;
+                background: #fff;
+                border-radius: 50px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                width: 100%;
+                gap: clamp(0.5rem, 1.5vw, 1rem);
+            }
+
+            .search-form:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            }
+
+            .search-input {
+                border: none;
+                padding: clamp(8px, 2vw, 12px) clamp(10px, 2vw, 15px);
+                flex: 1;
+                border-radius: 50px 0 0 50px;
+                font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+                background: transparent;
+                outline: none;
+                width: 100%;
+            }
+
+            .search-button {
+                padding: clamp(8px, 2vw, 12px) clamp(15px, 3vw, 22px);
+                border-radius: 0 50px 50px 0;
+                background: #1abc9c;
+                border: none;
+                color: white;
+                font-weight: 600;
+                font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+                transition: all 0.3s ease;
+                white-space: nowrap;
+            }
+
+            .search-button:hover {
+                background: #16a085;
+                transform: scale(1.05);
+            }
+
+            .card {
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
                 margin-bottom: clamp(1rem, 2vw, 1.5rem);
             }
-            .search-input, .search-button {
-                font-size: clamp(0.75rem, 2vw, 0.95rem);
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
             }
+
+            .card-body {
+                padding: clamp(1rem, 2vw, 1.5rem);
+            }
+
+            .form-control {
+                border: 1px solid #ced4da;
+                padding: clamp(8px, 2vw, 10px);
+                border-radius: 5px;
+                font-size: clamp(0.9rem, 2.5vw, 1rem);
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .form-control:focus {
+                border-color: #1abc9c;
+                box-shadow: 0 0 5px rgba(26, 188, 156, 0.5);
+                outline: none;
+            }
+
+            .btn-primary {
+                background: #1abc9c;
+                border: none;
+                padding: clamp(8px, 2vw, 10px) clamp(15px, 2.5vw, 20px);
+                border-radius: 5px;
+                color: white;
+                font-weight: 600;
+                font-size: clamp(0.9rem, 2.5vw, 1rem);
+                transition: all 0.3s ease;
+            }
+
+            .btn-primary:hover {
+                background: #16a085;
+                transform: scale(1.05);
+            }
+
             .table-container {
-                margin: 0 0 clamp(1rem, 2vw, 1.5rem);
-                padding: clamp(0.25rem, 1vw, 0.5rem);
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                margin: 0 0 clamp(1.5rem, 3vw, 2.5rem);
+                transition: all 0.3s ease;
+                padding: clamp(0.5rem, 1.5vw, 1rem);
             }
-            .table tr {
-                margin-bottom: clamp(0.5rem, 1.5vw, 0.75rem);
+
+            .table-container:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
             }
-            .table td {
-                padding: clamp(4px, 1vw, 6px);
-                font-size: clamp(0.65rem, 1.5vw, 0.8rem);
-            }
-            .table td:before {
-                font-size: clamp(0.7rem, 1.8vw, 0.85rem);
-            }
-            .btn {
-                padding: clamp(4px, 1vw, 6px) clamp(8px, 1.5vw, 10px);
-                font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+
+            .table {
                 width: 100%;
-                margin: 0.2rem 0;
+                border-collapse: collapse;
+                font-size: clamp(0.85rem, 2vw, 0.95rem);
             }
+
+            .table th {
+                background: #34495e;
+                padding: clamp(10px, 2vw, 15px);
+                font-weight: 700;
+                color: white;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                text-align: center;
+            }
+
+            .table td {
+                padding: clamp(8px, 2vw, 12px);
+                border-bottom: 1px solid #edf2f7;
+                text-align: center;
+                transition: all 0.3s ease;
+            }
+
+            .table tr:hover {
+                background: #f7fafc;
+            }
+
+            .badge {
+                padding: 0.5em 0.75em;
+                font-size: clamp(0.75rem, 2vw, 0.85rem);
+                font-weight: 700;
+                border-radius: 5px;
+                width: 70px;
+                display: inline-block;
+            }
+
+            .alert-success {
+                background: #2ecc71;
+                color: white;
+            }
+
+            .alert-danger {
+                background: #e74c3c;
+                color: white;
+            }
+
+            .btn {
+                padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 12px);
+                border-radius: 5px;
+                border: none;
+                color: white;
+                font-weight: 600;
+                font-size: clamp(0.85rem, 2vw, 0.95rem);
+                transition: all 0.3s ease;
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            .btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .btn-info {
+                background: #3498db;
+            }
+
+            .btn-info:hover {
+                background: #2980b9;
+            }
+
+            .btn-danger {
+                background: #e74c3c;
+            }
+
+            .btn-danger:hover {
+                background: #c0392b;
+            }
+
+            .btn-success {
+                background: #2ecc71;
+            }
+
+            .btn-success:hover {
+                background: #27ae60;
+            }
+
             .pagination {
-                gap: clamp(0.3rem, 0.8vw, 0.4rem);
-                margin: clamp(1rem, 2vw, 1.5rem) 0;
+                margin: clamp(1.5rem, 3vw, 2.5rem) 0;
+                display: flex;
+                justify-content: center;
+                gap: clamp(0.4rem, 1vw, 0.7rem);
+                flex-wrap: wrap;
             }
+
             .page-link {
-                padding: clamp(4px, 1vw, 6px) clamp(8px, 1.5vw, 10px);
-                font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+                padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 12px);
+                border-radius: 5px;
+                color: #34495e;
+                border: 1px solid #ced4da;
+                font-weight: 500;
+                font-size: clamp(0.85rem, 2vw, 1rem);
+                transition: all 0.3s ease;
+                text-decoration: none;
             }
-        }
 
-        @media (min-width: 1200px) {
-            .main-content {
-                padding: clamp(2rem, 3vw, 2.5rem);
+            .page-link:hover {
+                background: #eef2f7;
+                color: #1abc9c;
+                transform: scale(1.05);
             }
-            .content-title {
-                font-size: 2.2rem;
-            }
-            .row > .col-md-4 {
-                flex: 0 0 33.3333%;
-                max-width: 33.3333%;
-            }
-            .row > .col-md-8 {
-                flex: 0 0 66.6667%;
-                max-width: 66.6667%;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="dashboard-container">
-        <div class="main-content">
-            <div class="content-header">
-                <h2 class="content-title">Category Management</h2>
-            </div>
 
-            <div class="search-container">
-                <form action="/admin/category" method="get" class="search-form">
-                    <input type="text" class="search-input" placeholder="Search categories" name="search">
-                    <button class="btn btn-primary search-button" type="submit">Search</button>
-                </form>
-            </div>
+            .page-item.active .page-link {
+                background: #1abc9c;
+                border-color: #1abc9c;
+                color: white;
+            }
 
-            <div class="row">
-                <!-- Create Category Form -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <form method="post" action="/admin/addCategory" onsubmit="return handleFormSubmit(event)">
-                                <div class="mb-3">
-                                    <label for="categoryName" class="form-label">Category Name</label>
-                                    <input type="text" class="form-control" id="categoryName" name="name" required>
-                                    <div id="name-error" class="error-message text-danger"></div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="categoryDescription" class="form-label">Description</label>
-                                    <textarea class="form-control" id="categoryDescription" name="description" rows="3" required></textarea>
-                                    <div id="description-error" class="error-message text-danger"></div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="offerPrice" class="form-label">Offer Price (%)</label>
-                                    <input type="number" class="form-control" id="offerPrice" name="offerPrice" min="0" max="100" required>
-                                    <div id="offer-price-error" class="error-message text-danger"></div>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100">Create Category</button>
-                            </form>
+            /* Responsive Adjustments */
+            @media (max-width: 992px) {
+                .dashboard-container {
+                    margin-left: 70px;
+                    width: calc(100% - 70px);
+                    position: relative;
+                    left: 0;
+                }
+
+                .main-content {
+                    padding: clamp(0.75rem, 2vw, 1.5rem);
+                }
+
+                .row>div {
+                    flex: 0 0 100%;
+                    max-width: 100%;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .search-form {
+                    flex-direction: column;
+                    padding: clamp(0.5rem, 1vw, 0.75rem);
+                    border-radius: 10px;
+                }
+
+                .search-input {
+                    margin: clamp(0rem, 0.5vw, 0.25rem);
+                    padding: clamp(6px, 1.5vw, 10px);
+                    border-radius: 5px;
+                    width: 100%;
+                }
+
+                .search-button {
+                    margin: clamp(0rem, 0.5vw, 0.25rem);
+                    padding: clamp(6px, 1.5vw, 10px);
+                    border-radius: 5px;
+                    width: 100%;
+                }
+
+                .table thead {
+                    display: none;
+                }
+
+                .table,
+                .table tbody,
+                .table tr,
+                .table td {
+                    display: block;
+                    width: 100%;
+                }
+
+                .table tr {
+                    margin-bottom: clamp(0.75rem, 2vw, 1rem);
+                    border-radius: 10px;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                    background: #fff;
+                    overflow: hidden;
+                }
+
+                .table td {
+                    padding: clamp(6px, 1.5vw, 10px);
+                    border-bottom: none;
+                    position: relative;
+                    text-align: left;
+                    font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+                }
+
+                .table td:before {
+                    content: attr(data-label);
+                    font-weight: 600;
+                    color: #34495e;
+                    display: block;
+                    margin-bottom: 0.25rem;
+                    font-size: clamp(0.8rem, 2vw, 0.95rem);
+                    text-transform: uppercase;
+                }
+
+                .table td:last-child {
+                    border-bottom: none;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .main-content {
+                    padding: clamp(0.5rem, 1.5vw, 1rem);
+                    border-radius: 5px;
+                }
+
+                .content-title {
+                    font-size: clamp(1.2rem, 4vw, 1.6rem);
+                }
+
+                .search-container {
+                    margin-bottom: clamp(1rem, 2vw, 1.5rem);
+                }
+
+                .search-input,
+                .search-button {
+                    font-size: clamp(0.75rem, 2vw, 0.95rem);
+                }
+
+                .table-container {
+                    margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+                    padding: clamp(0.25rem, 1vw, 0.5rem);
+                }
+
+                .table tr {
+                    margin-bottom: clamp(0.5rem, 1.5vw, 0.75rem);
+                }
+
+                .table td {
+                    padding: clamp(4px, 1vw, 6px);
+                    font-size: clamp(0.65rem, 1.5vw, 0.8rem);
+                }
+
+                .table td:before {
+                    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+                }
+
+                .btn {
+                    padding: clamp(4px, 1vw, 6px) clamp(8px, 1.5vw, 10px);
+                    font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+                    width: 100%;
+                    margin: 0.2rem 0;
+                }
+
+                .pagination {
+                    gap: clamp(0.3rem, 0.8vw, 0.4rem);
+                    margin: clamp(1rem, 2vw, 1.5rem) 0;
+                }
+
+                .page-link {
+                    padding: clamp(4px, 1vw, 6px) clamp(8px, 1.5vw, 10px);
+                    font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+                }
+            }
+
+            @media (min-width: 1200px) {
+                .main-content {
+                    padding: clamp(2rem, 3vw, 2.5rem);
+                }
+
+                .content-title {
+                    font-size: 2.2rem;
+                }
+
+                .row>.col-md-4 {
+                    flex: 0 0 33.3333%;
+                    max-width: 33.3333%;
+                }
+
+                .row>.col-md-8 {
+                    flex: 0 0 66.6667%;
+                    max-width: 66.6667%;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="dashboard-container">
+            <div class="main-content">
+                <div class="content-header">
+                    <h2 class="content-title">Category Management</h2>
+                </div>
+
+                <div class="search-container">
+                    <form action="/admin/category" method="get" class="search-form">
+                        <input type="text" class="search-input" placeholder="Search categories" name="search">
+                        <button class="btn btn-primary search-button" type="submit">Search</button>
+                    </form>
+                </div>
+
+                <div class="row">
+                    <!-- Create Category Form -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="post" action="/admin/addCategory"
+                                    onsubmit="return handleFormSubmit(event)">
+                                    <div class="mb-3">
+                                        <label for="categoryName" class="form-label">Category Name</label>
+                                        <input type="text" class="form-control" id="categoryName" name="name" required>
+                                        <div id="name-error" class="error-message text-danger"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="categoryDescription" class="form-label">Description</label>
+                                        <textarea class="form-control" id="categoryDescription" name="description"
+                                            rows="3" required></textarea>
+                                        <div id="description-error" class="error-message text-danger"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="offerPrice" class="form-label">Offer Price (%)</label>
+                                        <input type="number" class="form-control" id="offerPrice" name="offerPrice"
+                                            min="0" max="100" required>
+                                        <div id="offer-price-error" class="error-message text-danger"></div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Create Category</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category List Table -->
+                    <div class="col-md-8">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Offer Price</th>
+                                        <th>Offer</th>
+                                        <th>Status</th>
+                                        <th>List/Unlist</th>
+                                        <th>Edit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for(let i=0; i < cat.length; i++) { %>
+                                        <tr>
+                                            <td data-label="#">
+                                                <%= i + 1 %>
+                                            </td>
+                                            <td data-label="Name">
+                                                <%= cat[i].name || 'No Name' %>
+                                            </td>
+                                            <td data-label="Description">
+                                                <%= cat[i].description || 'No Description' %>
+                                            </td>
+                                            <td data-label="Offer Price">
+                                                <%= cat[i].categoryOffer ? `${cat[i].categoryOffer}%` : '0%' %>
+                                            </td>
+                                            <td data-label="Offer">
+                                                <% if (!cat[i].categoryOffer || cat[i].categoryOffer===0) { %>
+                                                    <button class="btn btn-info"
+                                                        onclick="addOffer('<%= cat[i]._id %>')">Add Offer</button>
+                                                    <% } else { %>
+                                                        <button class="btn btn-info"
+                                                            onclick="removeOffer('<%= cat[i]._id %>')">Remove</button>
+                                                        <% } %>
+                                            </td>
+                                            <td data-label="Status">
+                                                <% if (cat[i].isListed) { %>
+                                                    <span class="badge alert-success">Listed</span>
+                                                    <% } else { %>
+                                                        <span class="badge alert-danger">Unlisted</span>
+                                                        <% } %>
+                                            </td>
+                                            <td data-label="List/Unlist">
+                                                <% if (cat[i].isListed) { %>
+                                                    <button class="btn btn-danger">
+                                                        <a href="/admin/listCategory?id=<%=cat[i]._id%>"
+                                                            class="text-white">Unlist</a>
+                                                    </button>
+                                                    <% } else { %>
+                                                        <button class="btn btn-success">
+                                                            <a href="/admin/unlistCategory?id=<%=cat[i]._id%>"
+                                                                class="text-white">List</a>
+                                                        </button>
+                                                        <% } %>
+                                            </td>
+                                            <td data-label="Edit">
+                                                <button class="btn btn-info">
+                                                    <a href="/admin/editCategory/<%= cat[i]._id %>"
+                                                        class="text-white">Edit</a>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- Category List Table -->
-                <div class="col-md-8">
-                    <div class="table-container">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Offer Price</th>
-                                    <th>Offer</th>
-                                    <th>Status</th>
-                                    <th>List/Unlist</th>
-                                    <th>Edit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% for(let i = 0; i < cat.length; i++) { %>
-                                    <tr>
-                                        <td data-label="#"> <%= i + 1 %> </td>
-                                        <td data-label="Name"><%= cat[i].name || 'No Name' %></td>
-                                        <td data-label="Description"><%= cat[i].description || 'No Description' %></td>
-                                        <td data-label="Offer Price">
-                                            <%= cat[i].categoryOffer ? `${cat[i].categoryOffer}%` : '0%' %>
-                                        </td>
-                                        <td data-label="Offer">
-                                            <% if (!cat[i].categoryOffer || cat[i].categoryOffer === 0) { %>
-                                                <button class="btn btn-info" onclick="addOffer('<%= cat[i]._id %>')">Add Offer</button>
-                                            <% } else { %>
-                                                <button class="btn btn-info" onclick="removeOffer('<%= cat[i]._id %>')">Remove</button>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <% if (currentPage> 1) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= currentPage - 1 %>">« Previous</a>
+                            </li>
+                            <% } %>
+                                <% for (let i=1; i <=totalPages; i++) { %>
+                                    <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
+                                        <a class="page-link" href="?page=<%= i %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                    <% } %>
+                                        <% if (currentPage < totalPages) { %>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page=<%= currentPage + 1 %>">Next »</a>
+                                            </li>
                                             <% } %>
-                                        </td>
-                                        <td data-label="Status">
-                                            <% if (cat[i].isListed) { %>
-                                                <span class="badge alert-success">Listed</span>
-                                            <% } else { %>
-                                                <span class="badge alert-danger">Unlisted</span>
-                                            <% } %>
-                                        </td>
-                                        <td data-label="List/Unlist">
-                                            <% if (cat[i].isListed) { %>
-                                                <button class="btn btn-danger">
-                                                    <a href="/admin/listCategory?id=<%=cat[i]._id%>" class="text-white">Unlist</a>
-                                                </button>
-                                            <% } else { %>
-                                                <button class="btn btn-success">
-                                                    <a href="/admin/unlistCategory?id=<%=cat[i]._id%>" class="text-white">List</a>
-                                                </button>
-                                            <% } %>
-                                        </td>
-                                        <td data-label="Edit">
-                                            <button class="btn btn-info">
-                                                <a href="/admin/editCategory/<%= cat[i]._id %>" class="text-white">Edit</a>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <% } %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                    </ul>
+                </nav>
             </div>
-
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    <% if (currentPage > 1) { %>
-                        <li class="page-item">
-                            <a class="page-link" href="?page=<%= currentPage - 1 %>">« Previous</a>
-                        </li>
-                    <% } %>
-                    <% for (let i = 1; i <= totalPages; i++) { %>
-                        <li class="page-item <%=(i === currentPage) ? 'active' : '' %>">
-                            <a class="page-link" href="?page=<%= i %>"><%= i %></a>
-                        </li>
-                    <% } %>
-                    <% if (currentPage < totalPages) { %>
-                        <li class="page-item">
-                            <a class="page-link" href="?page=<%= currentPage + 1 %>">Next »</a>
-                        </li>
-                    <% } %>
-                </ul>
-            </nav>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            if (!validateForm()) return;
+        <script>
+            function handleFormSubmit(event) {
+                event.preventDefault();
+                if (!validateForm()) return;
 
-            const name = document.getElementById("categoryName").value.trim();
-            const description = document.getElementById("categoryDescription").value.trim();
-            const offerPrice = document.getElementById("offerPrice").value.trim();
+                const name = document.getElementById("categoryName").value.trim();
+                const description = document.getElementById("categoryDescription").value.trim();
+                const offerPrice = document.getElementById("offerPrice").value.trim();
 
-            fetch('/admin/addCategory', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, description, offerPrice })
-            })
-            .then(response => {
-                if (!response.ok) return response.json().then(err => { throw new Error(err.error); });
-                return response.json();
-            })
-            .then(data => {
-                Swal.fire("Success", "Category added successfully", "success").then(() => location.reload());
-            })
-            .catch(error => {
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops",
-                    text: error.message === "Category already exist" ? "Category already exists" : "An error occurred"
+                fetch('/admin/addCategory', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description, offerPrice })
+                })
+                    .then(response => {
+                        if (!response.ok) return response.json().then(err => { throw new Error(err.error); });
+                        return response.json();
+                    })
+                    .then(data => {
+                        Swal.fire("Success", "Category added successfully", "success").then(() => location.reload());
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops",
+                            text: error.message === "Category already exist" ? "Category already exists" : "An error occurred"
+                        });
+                    });
+            }
+
+            function validateForm() {
+                clearErrorMessages();
+                const name = document.getElementById("categoryName").value.trim();
+                const description = document.getElementById("categoryDescription").value.trim();
+                const offerPrice = document.getElementById("offerPrice").value.trim();
+                let isValid = true;
+
+                if (!name) {
+                    displayErrorMessage("name-error", "Please enter a category name");
+                    isValid = false;
+                } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                    displayErrorMessage("name-error", "Only alphabetic characters and spaces allowed");
+                    isValid = false;
+                }
+
+                if (!description) {
+                    displayErrorMessage("description-error", "Please enter a description");
+                    isValid = false;
+                }
+
+                if (!offerPrice || parseFloat(offerPrice) < 0 || parseFloat(offerPrice) > 100) {
+                    displayErrorMessage("offer-price-error", offerPrice === "" ? "Please enter an offer price" : "Offer price must be between 0 and 100");
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            function displayErrorMessage(elementId, message) {
+                const errorElement = document.getElementById(elementId);
+                errorElement.innerText = message;
+                errorElement.style.display = "block";
+            }
+
+            function clearErrorMessages() {
+                document.querySelectorAll(".error-message").forEach(element => {
+                    element.innerText = "";
+                    element.style.display = "none";
                 });
-            });
-        }
-
-        function validateForm() {
-            clearErrorMessages();
-            const name = document.getElementById("categoryName").value.trim();
-            const description = document.getElementById("categoryDescription").value.trim();
-            const offerPrice = document.getElementById("offerPrice").value.trim();
-            let isValid = true;
-
-            if (!name) {
-                displayErrorMessage("name-error", "Please enter a category name");
-                isValid = false;
-            } else if (!/^[a-zA-Z\s]+$/.test(name)) {
-                displayErrorMessage("name-error", "Only alphabetic characters and spaces allowed");
-                isValid = false;
             }
 
-            if (!description) {
-                displayErrorMessage("description-error", "Please enter a description");
-                isValid = false;
-            }
+            async function addOffer(categoryId) {
+                const { value: amount } = await Swal.fire({
+                    title: "Add Category Offer",
+                    input: "number",
+                    inputLabel: "Offer Percentage",
+                    inputPlaceholder: "Enter percentage (0-100)",
+                    inputAttributes: {
+                        min: 0,
+                        max: 100,
+                        step: 1
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#1abc9c',
+                    cancelButtonColor: '#e74c3c',
+                    confirmButtonText: 'Add Offer'
+                });
 
-            if (!offerPrice || parseFloat(offerPrice) < 0 || parseFloat(offerPrice) > 100) {
-                displayErrorMessage("offer-price-error", offerPrice === "" ? "Please enter an offer price" : "Offer price must be between 0 and 100");
-                isValid = false;
-            }
-
-            return isValid;
-        }
-
-        function displayErrorMessage(elementId, message) {
-            const errorElement = document.getElementById(elementId);
-            errorElement.innerText = message;
-            errorElement.style.display = "block";
-        }
-
-        function clearErrorMessages() {
-            document.querySelectorAll(".error-message").forEach(element => {
-                element.innerText = "";
-                element.style.display = "none";
-            });
-        }
-
-        async function addOffer(categoryId) {
-            const { value: amount } = await Swal.fire({
-                title: "Add Category Offer",
-                input: "number",
-                inputLabel: "Offer Percentage",
-                inputPlaceholder: "Enter percentage (0-100)",
-                inputAttributes: {
-                    min: 0,
-                    max: 100,
-                    step: 1
-                },
-                showCancelButton: true,
-                confirmButtonColor: '#1abc9c',
-                cancelButtonColor: '#e74c3c',
-                confirmButtonText: 'Add Offer'
-            });
-
-            if (amount) {
-                try {
-                    const response = await fetch("/admin/addCategoryOffer", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ percentage: amount, categoryId })
-                    });
-                    const data = await response.json();
-                    if (response.ok && data.status) {
-                        Swal.fire("Offer Added", "The offer has been successfully added", "success").then(() => location.reload());
-                    } else {
-                        Swal.fire("Failed", data.message || "Adding offer failed", "error");
+                if (amount) {
+                    try {
+                        const response = await fetch("/admin/addCategoryOffer", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ percentage: amount, categoryId })
+                        });
+                        const data = await response.json();
+                        if (response.ok && data.status) {
+                            Swal.fire("Offer Added", "The offer has been successfully added", "success").then(() => location.reload());
+                        } else {
+                            Swal.fire("Failed", data.message || "Adding offer failed", "error");
+                        }
+                    } catch (error) {
+                        Swal.fire("Error", "An error occurred while adding the offer", "error");
                     }
-                } catch (error) {
-                    Swal.fire("Error", "An error occurred while adding the offer", "error");
                 }
             }
-        }
 
-        async function removeOffer(categoryId) {
-            const result = await Swal.fire({
-                title: "Remove Offer",
-                text: "Are you sure you want to remove this offer?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: '#e74c3c',
-                cancelButtonColor: '#1abc9c',
-                confirmButtonText: 'Yes, remove it!'
-            });
+            async function removeOffer(categoryId) {
+                const result = await Swal.fire({
+                    title: "Remove Offer",
+                    text: "Are you sure you want to remove this offer?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#e74c3c',
+                    cancelButtonColor: '#1abc9c',
+                    confirmButtonText: 'Yes, remove it!'
+                });
 
-            if (result.isConfirmed) {
-                try {
-                    const response = await fetch("/admin/removeCategoryOffer", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ categoryId })
-                    });
-                    const data = await response.json();
-                    if (response.ok && data.status) {
-                        Swal.fire("Offer Removed", "The offer has been removed successfully", "success").then(() => location.reload());
-                    } else {
-                        Swal.fire("Failed", data.message || "Removing offer failed", "error");
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch("/admin/removeCategoryOffer", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ categoryId })
+                        });
+                        const data = await response.json();
+                        if (response.ok && data.status) {
+                            Swal.fire("Offer Removed", "The offer has been removed successfully", "success").then(() => location.reload());
+                        } else {
+                            Swal.fire("Failed", data.message || "Removing offer failed", "error");
+                        }
+                    } catch (error) {
+                        Swal.fire("Error", "An error occurred while removing the offer", "error");
                     }
-                } catch (error) {
-                    Swal.fire("Error", "An error occurred while removing the offer", "error");
                 }
             }
-        }
-    </script>
-</body>
-</html>
-<%- include("../../views/partials/admin/footer") %>
+        </script>
+    </body>
+
+    </html>
+    <%- include("../../views/partials/admin/footer") %>

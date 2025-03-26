@@ -1,93 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>404 - Page Not Found</title>
     <style>
-        body {
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #60a4ce, #65a9e1, #2a79e7);
-            color: #fff;
-            text-align: center;
-        }
+      body {
+        margin: 0;
+        font-family: "Arial", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #60a4ce, #65a9e1, #2a79e7);
+        color: #fff;
+        text-align: center;
+      }
 
-        .container {
-            max-width: 600px;
-            padding: 20px;
-        }
+      .container {
+        max-width: 600px;
+        padding: 20px;
+      }
 
+      h1 {
+        font-size: 8rem;
+        margin: 0;
+        color: #ffffff;
+        text-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin: 1rem 0;
+      }
+
+      p {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: #f4f4f4;
+      }
+
+      .cta {
+        margin-top: 20px;
+      }
+
+      .cta a {
+        text-decoration: none;
+        padding: 15px 30px;
+        background-color: #4babff;
+        border: none;
+        border-radius: 25px;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .cta a:hover {
+        background-color: #2a9fff;
+        box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.4);
+        transform: scale(1.05);
+      }
+
+      .error-image {
+        max-width: 100%;
+        margin: 30px 0;
+      }
+
+      @media screen and (max-width: 768px) {
         h1 {
-            font-size: 8rem;
-            margin: 0;
-            color: #ffffff;
-            text-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+          font-size: 6rem;
         }
 
         h2 {
-            font-size: 2.5rem;
-            margin: 1rem 0;
+          font-size: 2rem;
         }
-
-        p {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            color: #f4f4f4;
-        }
-
-        .cta {
-            margin-top: 20px;
-        }
-
-        .cta a {
-            text-decoration: none;
-            padding: 15px 30px;
-            background-color: #4babff;
-            border: none;
-            border-radius: 25px;
-            color: #fff;
-            font-size: 1rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .cta a:hover {
-            background-color: #2a9fff;
-            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.4);
-            transform: scale(1.05);
-        }
-
-        .error-image {
-            max-width: 100%;
-            margin: 30px 0;
-        }
-
-        @media screen and (max-width: 768px) {
-            h1 {
-                font-size: 6rem;
-            }
-
-            h2 {
-                font-size: 2rem;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>404</h1>
-        <h2>We can't seem to find the page you're looking for</h2>
-        <p>Don't worry! You can either go back to the homepage or check out our site menu to navigate.</p>
-        <div class="cta">
-            <a href="/admin">Return to Homepage</a>
-        </div>
+      <h1>404</h1>
+      <h2>We can't seem to find the page you're looking for</h2>
+      <p>
+        Don't worry! You can either go back to the homepage or check out our
+        site menu to navigate.
+      </p>
+      <div class="cta">
+        <a href="/admin">Return to Homepage</a>
+      </div>
     </div>
-</body>
+  </body>
 </html>

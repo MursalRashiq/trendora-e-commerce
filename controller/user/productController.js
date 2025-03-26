@@ -4,14 +4,11 @@ const User = require("../../models/userSchema");
 
 const getProductDetails = async (req, res) => {
   try {
-    // Validate user session
     const userId = req.session.user;
     if (!userId) {
-      console.error("User not logged in. Redirecting to login page.");
       return res.redirect("/login");
     }
 
-    // Fetch user data
     const userData = await User.findOne({ _id: userId });
     if (!userData) {
       throw new Error("User not found in the database.");
@@ -25,7 +22,6 @@ const getProductDetails = async (req, res) => {
       );
     }
 
-    // Fetch product data
     const productId = req.query.id;
     if (!productId) {
       throw new Error("Product ID not provided.");
@@ -44,13 +40,12 @@ const getProductDetails = async (req, res) => {
       return res.redirect("/shop");
     }
 
-    // Extract category and offers
+    //  category and offers
     const findCategory = product.category;
     const categoryOffer = findCategory?.categoryOffer || 0;
     const productOffer = product.productOffer || 0;
     const totalOffer = categoryOffer + productOffer;
 
-    // Render the product details page
     res.render("product-details", {
       locals: userData,
       product: product,

@@ -148,15 +148,6 @@ const changeItemStatus = asyncHandler(async (req, res) => {
   try {
     const { orderId, itemIndex, status } = req.body;
 
-    // console.log(
-    //   "Changing item status for orderId",
-    //   orderId,
-    //   "index",
-    //   itemIndex,
-    //   "to",
-    //   status
-    // );
-
     if (!orderId || itemIndex === undefined || !status) {
       return res.status(400).json({
         status: false,
@@ -344,9 +335,6 @@ const approveReturn = asyncHandler(async (req, res) => {
   const userId = findOrder.user;
   const returnMoney = orderItem.price * orderItem.quantity;
 
-  console.log("order", findOrder);
-  console.log(returnMoney, "hello");
-
   await User.updateOne(
     { _id: userId },
     {
@@ -411,13 +399,14 @@ const rejectReturnRequest = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Invalid orderId or itemIndex" });
   }
 
-  const findOrder = await Order.findOne({ _id: orderId }).populate("orderItems")
+  const findOrder = await Order.findOne({ _id: orderId }).populate(
+    "orderItems"
+  );
 
   if (!findOrder) {
     return res.status(404).json({ message: "Order not found" });
   }
 
-  // Check if the specific item has a return request
   if (
     !findOrder.orderItems[index] ||
     findOrder.orderItems[index].status !== "Return Request"
@@ -451,16 +440,12 @@ const rejectReturnRequest = asyncHandler(async (req, res) => {
     }
   }
 
-  
-
   const result = await Order.updateOne(
     { orderId: findOrder.orderId },
     { $set: { paymentStatus: "Paid" } }
   );
   console.log(result);
-  
 
-  
   res
     .status(200)
     .json({ status: true, message: "Return request rejected successfully" });

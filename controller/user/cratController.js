@@ -39,13 +39,11 @@ const getCartPage = asyncHandler(async (req, res) => {
     },
   ]);
 
-  // Calculate the total quantity of items in the cart
   let quantity = 0;
   for (const item of locals.cart) {
     quantity += item.quantity;
   }
 
-  // Calculate the grand total
   let grandTotal = 0;
   for (let i = 0; i < data.length; i++) {
     if (data[i].productDetails.length > 0) {
@@ -85,7 +83,6 @@ const addToCart = asyncHandler(async (req, res) => {
 
   const cartIndex = findUser.cart.findIndex((item) => item.productId == id);
 
-  // Check and remove from wishlist if present
   let removedFromWishlist = false;
   if (findUser.wishlist.includes(id)) {
     await User.findByIdAndUpdate(userId, {
@@ -103,7 +100,6 @@ const addToCart = asyncHandler(async (req, res) => {
           quantity: quantity,
         },
       },
-      // Remove from wishlist to ensure consistency
       $pull: { wishlist: id },
     });
     return res.json({
@@ -120,7 +116,6 @@ const addToCart = asyncHandler(async (req, res) => {
         { _id: userId, "cart.productId": id },
         {
           $set: { "cart.$.quantity": newQuantity },
-          // Remove from wishlist to ensure consistency
           $pull: { wishlist: id },
         }
       );
@@ -141,12 +136,10 @@ const changeQuantity = asyncHandler(async (req, res) => {
   const userId = req.session.user;
   const count = parseInt(req.body.count);
 
-  // Validate count
   if (count !== 1 && count !== -1) {
     return res.status(400).json({ status: false, error: "Invalid count" });
   }
 
-  // Find user and product
   const user = await User.findOne({ _id: userId });
   const product = await Product.findOne({ _id: productId });
 
@@ -156,7 +149,6 @@ const changeQuantity = asyncHandler(async (req, res) => {
       .json({ status: false, error: "User or product not found" });
   }
 
-  // Find the specific product in cart
   const cartItem = user.cart.find(
     (item) => item.productId.toString() === productId.toString()
   );
@@ -167,10 +159,8 @@ const changeQuantity = asyncHandler(async (req, res) => {
       .json({ status: false, error: "Product not found in cart" });
   }
 
-  // Calculate new quantity
   const newQuantity = cartItem.quantity + count;
 
-  // Validate new quantity
   if (newQuantity <= 0) {
     return res.json({ status: false, error: "Quantity cannot be less than 1" });
   }
@@ -179,7 +169,6 @@ const changeQuantity = asyncHandler(async (req, res) => {
     return res.json({ status: false, error: "Out of stock" });
   }
 
-  // Update cart quantity
   const quantityUpdated = await User.updateOne(
     {
       _id: userId,
@@ -196,7 +185,7 @@ const changeQuantity = asyncHandler(async (req, res) => {
     return res.json({ status: false, error: "Failed to update quantity" });
   }
 
-  // Calculate totals using aggregation
+  // Calculate totals 
   const oid = new mongodb.ObjectId(userId);
   const grandTotal = await User.aggregate([
     { $match: { _id: oid } },
